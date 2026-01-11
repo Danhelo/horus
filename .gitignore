@@ -75,3 +75,10 @@ debug.log
 
 # Optional: local development overrides
 .claude/settings.local.json
+
+# UMAP Pipeline
+scripts/compute_positions/cache/
+scripts/compute_positions/output/
+
+# Release artifacts
+release/

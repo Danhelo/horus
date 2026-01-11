@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import { featuresRoutes } from '../routes/features';
 import { neuronpediaService } from '../services/neuronpedia';
+import { errorHandler } from '../middleware/error-handler';
 
 // Type for feature response
 interface FeatureResponse {
@@ -45,7 +46,9 @@ describe('Features Routes', () => {
   let app: Hono;
 
   beforeEach(() => {
-    app = new Hono().route('/api/features', featuresRoutes);
+    app = new Hono()
+      .route('/api/features', featuresRoutes)
+      .onError(errorHandler);
     vi.clearAllMocks();
   });
 

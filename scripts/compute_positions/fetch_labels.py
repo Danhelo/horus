@@ -191,6 +191,7 @@ async def fetch_layer_labels(
         Dict mapping feature index to label string
     """
     config = DEFAULT_NEURONPEDIA_CONFIG
+    config.validate()  # Ensure API key is set
 
     if top_k is None:
         top_k = config.top_k_labels
