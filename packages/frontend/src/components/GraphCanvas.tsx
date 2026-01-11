@@ -1,13 +1,12 @@
 import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Perf } from 'r3f-perf';
 
 import {
   NodeMesh,
+  NodeLabels,
   EdgeLines,
   LODController,
   CameraController,
-  KeyboardController,
   TrajectoryPath,
   TrajectoryMarker,
 } from './graph';
@@ -61,18 +60,12 @@ export function GraphCanvas() {
         alpha: false,
       }}
     >
-      {/* Performance monitor in dev mode */}
-      {import.meta.env.DEV && <Perf position="top-left" />}
-
       {/* Lighting */}
       <ambientLight intensity={0.4} />
       <pointLight position={[10, 10, 10]} intensity={0.6} />
 
-      {/* Camera controls with sync & animations */}
+      {/* FPS Camera controller (handles WASD, mouse look, pointer lock) */}
       <CameraController />
-
-      {/* Keyboard navigation (WASD + Q/E) */}
-      <KeyboardController />
 
       {/* Scene background */}
       <color attach="background" args={['#0a0a0f']} />
@@ -84,6 +77,7 @@ export function GraphCanvas() {
       <Suspense fallback={null}>
         <EdgeLines />
         <NodeMesh />
+        <NodeLabels />
         <ActiveTrajectory />
       </Suspense>
     </Canvas>

@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { GraphCanvas } from './components/GraphCanvas';
 import { ActivationPanel } from './components/panels';
 import { MixerPanel } from './components/mixer';
+import { GraphHUD } from './components/hud';
+import { SettingsBar } from './components/settings';
 import { useAppStore } from './stores';
 
 export function App() {
@@ -29,6 +31,8 @@ export function App() {
       <GraphCanvas />
       <MixerPanel position="left" />
       <ActivationPanel />
+      <GraphHUD />
+      <SettingsBar />
     </div>
   );
 }

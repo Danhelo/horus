@@ -1,7 +1,5 @@
 import { useRef, useEffect, useCallback, useMemo } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 
 import { useAppStore, useLargeDataStore } from '../../stores';
@@ -9,14 +7,32 @@ import { useAppStore, useLargeDataStore } from '../../stores';
 // Pre-allocated vectors to avoid GC pressure
 const tempVec3 = new THREE.Vector3();
 const startPos = new THREE.Vector3();
-const startTarget = new THREE.Vector3();
 const endPos = new THREE.Vector3();
-const endTarget = new THREE.Vector3();
+const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+const PI_2 = Math.PI / 2;
 
 // Animation state (kept outside React to avoid re-renders)
 let animationProgress = 0;
 let isAnimating = false;
 let animationDuration = 1000;
+let animStartPos = new THREE.Vector3();
+let animEndPos = new THREE.Vector3();
+
+// FPS state (outside React for performance)
+let yaw = 0;
+let pitch = 0;
+
+// Movement state
+const moveState = {
+  forward: false,
+  backward: false,
+  left: false,
+  right: false,
+  up: false,
+  down: false,
+  shift: false,
+  ctrl: false,
+};
 
 // Easing function: ease-out cubic
 function easeOutCubic(t: number): number {
@@ -40,7 +56,8 @@ const CAMERA_STORAGE_KEY = 'horus-camera-state';
 
 interface CameraState {
   position: [number, number, number];
-  target: [number, number, number];
+  yaw: number;
+  pitch: number;
 }
 
 function loadCameraFromStorage(): CameraState | null {
@@ -48,12 +65,11 @@ function loadCameraFromStorage(): CameraState | null {
     const stored = localStorage.getItem(CAMERA_STORAGE_KEY);
     if (!stored) return null;
     const parsed = JSON.parse(stored);
-    // Basic validation
     if (
       Array.isArray(parsed.position) &&
       parsed.position.length === 3 &&
-      Array.isArray(parsed.target) &&
-      parsed.target.length === 3
+      typeof parsed.yaw === 'number' &&
+      typeof parsed.pitch === 'number'
     ) {
       return parsed as CameraState;
     }
@@ -72,31 +88,43 @@ function saveCameraToStorage(state: CameraState): void {
 }
 
 /**
- * Camera controller with:
- * - Bidirectional sync between OrbitControls and Zustand store
- * - Smooth animated transitions (flyTo, focusOnNode)
+ * FPS-style camera controller with:
+ * - Click to lock pointer (FPS mode)
+ * - Mouse look (pitch/yaw) when locked
+ * - WASD movement, Q/E for up/down
+ * - Scroll wheel for base speed
+ * - Shift=sprint (3x), Ctrl=slow (0.3x)
+ * - Smooth animated transitions (flyTo)
  * - LocalStorage persistence
- * - Demand-based rendering invalidation
  */
 export function CameraController() {
-  const controlsRef = useRef<OrbitControlsImpl>(null);
-  const { camera, invalidate } = useThree();
+  const { camera, gl, invalidate } = useThree();
   const initializedRef = useRef(false);
+  const canvasRef = useRef(gl.domElement);
+
+  // Get settings from store
+  const isPointerLocked = useAppStore((state) => state.isPointerLocked);
+  const setPointerLocked = useAppStore((state) => state.setPointerLocked);
+  const movementSpeed = useAppStore((state) => state.movementSpeed);
+  const setMovementSpeed = useAppStore((state) => state.setMovementSpeed);
 
   // Debounced sync to store (100ms)
   const syncToStore = useMemo(
     () =>
       debounce(() => {
-        const controls = controlsRef.current;
-        if (!controls || isAnimating) return;
+        if (isAnimating) return;
 
         const position = camera.position.toArray() as [number, number, number];
-        const target = controls.target.toArray() as [number, number, number];
+        // Compute target from camera direction
+        const target = camera.position
+          .clone()
+          .add(camera.getWorldDirection(tempVec3).multiplyScalar(10))
+          .toArray() as [number, number, number];
 
         useAppStore.getState().setCameraState(position, target);
 
-        // Also persist to localStorage
-        saveCameraToStorage({ position, target });
+        // Persist to localStorage
+        saveCameraToStorage({ position, yaw, pitch });
       }, 100),
     [camera]
   );
@@ -106,43 +134,256 @@ export function CameraController() {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
-    const controls = controlsRef.current;
-    if (!controls) return;
+    // Load settings from storage
+    useAppStore.getState().loadSettingsFromStorage();
 
-    // Try to load from localStorage first
+    // Load camera position and orientation
     const stored = loadCameraFromStorage();
     if (stored) {
       camera.position.set(...stored.position);
-      controls.target.set(...stored.target);
-      useAppStore.getState().setCameraState(stored.position, stored.target);
+      yaw = stored.yaw;
+      pitch = stored.pitch;
     } else {
-      // Use store defaults
-      const { position, target } = useAppStore.getState();
-      camera.position.set(...position);
-      controls.target.set(...target);
+      // Default position looking at origin
+      camera.position.set(0, 0, 50);
+      yaw = 0;
+      pitch = 0;
     }
 
-    controls.update();
+    // Apply rotation
+    euler.set(pitch, yaw, 0, 'YXZ');
+    camera.quaternion.setFromEuler(euler);
+
     invalidate();
   }, [camera, invalidate]);
 
-  // flyTo: animate camera to a new position/target
+  // Pointer lock event handlers
+  const handlePointerLockChange = useCallback(() => {
+    const locked = document.pointerLockElement === canvasRef.current;
+    setPointerLocked(locked);
+    invalidate();
+  }, [setPointerLocked, invalidate]);
+
+  const handlePointerLockError = useCallback(() => {
+    console.warn('Pointer lock error');
+    setPointerLocked(false);
+  }, [setPointerLocked]);
+
+  // Mouse move handler for FPS look
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!useAppStore.getState().isPointerLocked) return;
+
+      const movementX = event.movementX || 0;
+      const movementY = event.movementY || 0;
+
+      // Sensitivity (lower = slower rotation)
+      const sensitivity = 0.002;
+
+      yaw -= movementX * sensitivity;
+      pitch -= movementY * sensitivity;
+
+      // Clamp pitch to prevent flipping
+      pitch = Math.max(-PI_2, Math.min(PI_2, pitch));
+
+      // Apply rotation
+      euler.set(pitch, yaw, 0, 'YXZ');
+      camera.quaternion.setFromEuler(euler);
+
+      invalidate();
+    },
+    [camera, invalidate]
+  );
+
+  // Canvas click to lock pointer
+  const handleCanvasClick = useCallback(() => {
+    if (!useAppStore.getState().isPointerLocked) {
+      canvasRef.current.requestPointerLock();
+    }
+  }, []);
+
+  // Scroll wheel for speed adjustment
+  const handleWheel = useCallback(
+    (event: WheelEvent) => {
+      event.preventDefault();
+      const delta = event.deltaY > 0 ? -5 : 5;
+      const currentSpeed = useAppStore.getState().movementSpeed;
+      setMovementSpeed(currentSpeed + delta);
+    },
+    [setMovementSpeed]
+  );
+
+  // Key handlers
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    // Don't capture if typing in an input
+    const activeElement = document.activeElement;
+    if (
+      activeElement?.tagName.toLowerCase() === 'input' ||
+      activeElement?.tagName.toLowerCase() === 'textarea' ||
+      activeElement?.getAttribute('contenteditable') === 'true'
+    ) {
+      return;
+    }
+
+    switch (event.code) {
+      case 'KeyW':
+      case 'ArrowUp':
+        moveState.forward = true;
+        event.preventDefault();
+        break;
+      case 'KeyS':
+      case 'ArrowDown':
+        moveState.backward = true;
+        event.preventDefault();
+        break;
+      case 'KeyA':
+      case 'ArrowLeft':
+        moveState.left = true;
+        event.preventDefault();
+        break;
+      case 'KeyD':
+      case 'ArrowRight':
+        moveState.right = true;
+        event.preventDefault();
+        break;
+      case 'KeyQ':
+        moveState.down = true;
+        event.preventDefault();
+        break;
+      case 'KeyE':
+        moveState.up = true;
+        event.preventDefault();
+        break;
+      case 'ShiftLeft':
+      case 'ShiftRight':
+        moveState.shift = true;
+        break;
+      case 'ControlLeft':
+      case 'ControlRight':
+        moveState.ctrl = true;
+        break;
+      case 'KeyR':
+      case 'Home':
+        event.preventDefault();
+        // Reset camera
+        const store = useAppStore.getState() as unknown as Record<string, unknown>;
+        if (typeof store.resetCamera === 'function') {
+          (store.resetCamera as () => void)();
+        }
+        break;
+      case 'Escape':
+        // Let browser handle pointer lock exit
+        break;
+    }
+  }, []);
+
+  const handleKeyUp = useCallback((event: KeyboardEvent) => {
+    switch (event.code) {
+      case 'KeyW':
+      case 'ArrowUp':
+        moveState.forward = false;
+        break;
+      case 'KeyS':
+      case 'ArrowDown':
+        moveState.backward = false;
+        break;
+      case 'KeyA':
+      case 'ArrowLeft':
+        moveState.left = false;
+        break;
+      case 'KeyD':
+      case 'ArrowRight':
+        moveState.right = false;
+        break;
+      case 'KeyQ':
+        moveState.down = false;
+        break;
+      case 'KeyE':
+        moveState.up = false;
+        break;
+      case 'ShiftLeft':
+      case 'ShiftRight':
+        moveState.shift = false;
+        break;
+      case 'ControlLeft':
+      case 'ControlRight':
+        moveState.ctrl = false;
+        break;
+    }
+  }, []);
+
+  // Handle blur (release all keys)
+  const handleBlur = useCallback(() => {
+    moveState.forward = false;
+    moveState.backward = false;
+    moveState.left = false;
+    moveState.right = false;
+    moveState.up = false;
+    moveState.down = false;
+    moveState.shift = false;
+    moveState.ctrl = false;
+  }, []);
+
+  // Set up event listeners
+  useEffect(() => {
+    const canvas = canvasRef.current;
+
+    document.addEventListener('pointerlockchange', handlePointerLockChange);
+    document.addEventListener('pointerlockerror', handlePointerLockError);
+    document.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('click', handleCanvasClick);
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('blur', handleBlur);
+
+    return () => {
+      document.removeEventListener('pointerlockchange', handlePointerLockChange);
+      document.removeEventListener('pointerlockerror', handlePointerLockError);
+      document.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('click', handleCanvasClick);
+      canvas.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('blur', handleBlur);
+    };
+  }, [
+    handlePointerLockChange,
+    handlePointerLockError,
+    handleMouseMove,
+    handleCanvasClick,
+    handleWheel,
+    handleKeyDown,
+    handleKeyUp,
+    handleBlur,
+  ]);
+
+  // flyTo: animate camera to a new position
   const flyTo = useCallback(
     (
       targetPosition: [number, number, number],
       targetLookAt: [number, number, number],
       duration = 1000
     ) => {
-      const controls = controlsRef.current;
-      if (!controls) return;
+      // Exit pointer lock during animation
+      if (document.pointerLockElement) {
+        document.exitPointerLock();
+      }
 
       // Capture start state
-      startPos.copy(camera.position);
-      startTarget.copy(controls.target);
+      animStartPos.copy(camera.position);
+      animEndPos.set(...targetPosition);
 
-      // Set end state
-      endPos.set(...targetPosition);
-      endTarget.set(...targetLookAt);
+      // Calculate target yaw/pitch from targetLookAt
+      tempVec3.set(...targetLookAt).sub(animEndPos).normalize();
+      const targetYaw = Math.atan2(-tempVec3.x, -tempVec3.z);
+      const targetPitch = Math.asin(tempVec3.y);
+
+      // Store animation targets
+      (window as unknown as Record<string, number>).__animTargetYaw = targetYaw;
+      (window as unknown as Record<string, number>).__animTargetPitch = targetPitch;
+      (window as unknown as Record<string, number>).__animStartYaw = yaw;
+      (window as unknown as Record<string, number>).__animStartPitch = pitch;
 
       // Start animation
       animationProgress = 0;
@@ -163,12 +404,10 @@ export function CameraController() {
         return;
       }
 
-      // Get node position
       const nodeX = positions[nodeIndex * 3];
       const nodeY = positions[nodeIndex * 3 + 1];
       const nodeZ = positions[nodeIndex * 3 + 2];
 
-      // Calculate camera position (slightly above and in front)
       const cameraPosition: [number, number, number] = [
         nodeX,
         nodeY + viewDistance * 0.3,
@@ -185,7 +424,6 @@ export function CameraController() {
   // focusOnRegion: frame a region in view
   const focusOnRegion = useCallback(
     (center: [number, number, number], radius: number) => {
-      // Position camera at distance proportional to radius
       const viewDistance = radius * 2.5;
       const cameraPosition: [number, number, number] = [
         center[0],
@@ -207,25 +445,23 @@ export function CameraController() {
 
   // Expose camera actions on the store
   useEffect(() => {
-    // Extend the store with camera actions at runtime
-    // This is a pattern to avoid circular dependencies
-    (useAppStore.getState() as unknown as Record<string, unknown>).focusOnNode = focusOnNode;
-    (useAppStore.getState() as unknown as Record<string, unknown>).focusOnRegion = focusOnRegion;
-    (useAppStore.getState() as unknown as Record<string, unknown>).resetCamera = resetCamera;
-    (useAppStore.getState() as unknown as Record<string, unknown>).flyTo = flyTo;
+    const store = useAppStore.getState() as unknown as Record<string, unknown>;
+    store.focusOnNode = focusOnNode;
+    store.focusOnRegion = focusOnRegion;
+    store.resetCamera = resetCamera;
+    store.flyTo = flyTo;
 
     return () => {
-      delete (useAppStore.getState() as unknown as Record<string, unknown>).focusOnNode;
-      delete (useAppStore.getState() as unknown as Record<string, unknown>).focusOnRegion;
-      delete (useAppStore.getState() as unknown as Record<string, unknown>).resetCamera;
-      delete (useAppStore.getState() as unknown as Record<string, unknown>).flyTo;
+      delete store.focusOnNode;
+      delete store.focusOnRegion;
+      delete store.resetCamera;
+      delete store.flyTo;
     };
   }, [focusOnNode, focusOnRegion, resetCamera, flyTo]);
 
-  // Animation and sync in useFrame
+  // Main update loop
   useFrame((_, delta) => {
-    const controls = controlsRef.current;
-    if (!controls) return;
+    let needsInvalidate = false;
 
     if (isAnimating) {
       // Progress animation
@@ -236,63 +472,80 @@ export function CameraController() {
         animationProgress = 1;
         isAnimating = false;
 
-        // Set final positions exactly
-        camera.position.copy(endPos);
-        controls.target.copy(endTarget);
+        camera.position.copy(animEndPos);
+
+        // Set final yaw/pitch
+        const w = window as unknown as Record<string, number>;
+        yaw = w.__animTargetYaw ?? yaw;
+        pitch = w.__animTargetPitch ?? pitch;
       } else {
         // Interpolate with easing
         const t = easeOutCubic(animationProgress);
 
-        tempVec3.lerpVectors(startPos, endPos, t);
+        tempVec3.lerpVectors(animStartPos, animEndPos, t);
         camera.position.copy(tempVec3);
 
-        tempVec3.lerpVectors(startTarget, endTarget, t);
-        controls.target.copy(tempVec3);
+        // Interpolate yaw/pitch
+        const w = window as unknown as Record<string, number>;
+        const startYaw = w.__animStartYaw ?? yaw;
+        const startPitch = w.__animStartPitch ?? pitch;
+        const targetYaw = w.__animTargetYaw ?? yaw;
+        const targetPitch = w.__animTargetPitch ?? pitch;
+
+        yaw = startYaw + (targetYaw - startYaw) * t;
+        pitch = startPitch + (targetPitch - startPitch) * t;
       }
 
-      controls.update();
-      invalidate();
+      // Apply rotation
+      euler.set(pitch, yaw, 0, 'YXZ');
+      camera.quaternion.setFromEuler(euler);
 
-      // Sync final state to store
+      needsInvalidate = true;
+
       if (!isAnimating) {
         syncToStore();
       }
     } else {
-      // Not animating - sync camera state to store (debounced)
-      syncToStore();
+      // Not animating - handle movement
+      const { forward, backward, left, right, up, down, shift, ctrl } = moveState;
+      const anyMovement = forward || backward || left || right || up || down;
+
+      if (anyMovement) {
+        const baseSpeed = useAppStore.getState().movementSpeed;
+        const speedMultiplier = shift ? 3 : ctrl ? 0.3 : 1;
+        const speed = baseSpeed * speedMultiplier * delta;
+
+        // Calculate movement direction
+        tempVec3.set(0, 0, 0);
+
+        // Get camera forward/right vectors
+        const cameraDir = camera.getWorldDirection(new THREE.Vector3());
+        const cameraRight = new THREE.Vector3()
+          .crossVectors(cameraDir, camera.up)
+          .normalize();
+
+        if (forward) tempVec3.add(cameraDir);
+        if (backward) tempVec3.sub(cameraDir);
+        if (right) tempVec3.add(cameraRight);
+        if (left) tempVec3.sub(cameraRight);
+        if (up) tempVec3.y += 1;
+        if (down) tempVec3.y -= 1;
+
+        if (tempVec3.lengthSq() > 0) {
+          tempVec3.normalize().multiplyScalar(speed);
+          camera.position.add(tempVec3);
+          needsInvalidate = true;
+        }
+
+        syncToStore();
+      }
+    }
+
+    if (needsInvalidate) {
+      invalidate();
     }
   });
 
-  // Handle OrbitControls change event
-  const handleChange = useCallback(() => {
-    if (!isAnimating) {
-      invalidate();
-    }
-  }, [invalidate]);
-
-  return (
-    <OrbitControls
-      ref={controlsRef}
-      enableDamping
-      dampingFactor={0.05}
-      minDistance={5}
-      maxDistance={200}
-      minPolarAngle={0.1}
-      maxPolarAngle={Math.PI - 0.1}
-      enablePan
-      panSpeed={0.8}
-      rotateSpeed={0.5}
-      zoomSpeed={1.2}
-      mouseButtons={{
-        LEFT: THREE.MOUSE.ROTATE,
-        MIDDLE: THREE.MOUSE.DOLLY,
-        RIGHT: THREE.MOUSE.PAN,
-      }}
-      touches={{
-        ONE: THREE.TOUCH.ROTATE,
-        TWO: THREE.TOUCH.DOLLY_PAN,
-      }}
-      onChange={handleChange}
-    />
-  );
+  // No DOM element to render - this is a controller component
+  return null;
 }

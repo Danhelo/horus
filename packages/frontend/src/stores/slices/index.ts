@@ -25,3 +25,6 @@ export {
   selectHasHighSeverityConflicts,
 } from './steeringSlice';
 export type { SteeringSlice } from './steeringSlice';
+
+export { createSettingsSlice } from './settingsSlice';
+export type { SettingsSlice } from './settingsSlice';
