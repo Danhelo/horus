@@ -25,6 +25,7 @@ function ChevronIcon({ expanded }: ChevronIconProps) {
       style={{
         transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)',
         transition: 'transform 150ms ease',
+        pointerEvents: 'none',
       }}
     >
       <polyline points="6 9 12 15 18 9" />
@@ -121,6 +122,7 @@ export function DialGroup({
             textTransform: 'uppercase',
             letterSpacing: '0.08em',
             color: 'var(--color-gold)',
+            pointerEvents: 'none',
           }}
         >
           {group.label}

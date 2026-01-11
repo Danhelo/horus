@@ -10,7 +10,8 @@ test.describe('Graph Visualization', () => {
   });
 
   test('renders canvas element', async ({ page }) => {
-    const canvas = page.locator('canvas');
+    // Use .first() since r3f-perf adds a second canvas
+    const canvas = page.locator('canvas').first();
     await expect(canvas).toBeVisible();
   });
 
@@ -35,14 +36,15 @@ test.describe('Graph Visualization', () => {
 
   test('dial groups can be collapsed/expanded', async ({ page }) => {
     // Find Style group button and click to collapse
+    // Use force:true to bypass r3f-perf overlay interception
     const styleButton = page.locator('button:has-text("Style")');
-    await styleButton.click();
+    await styleButton.click({ force: true });
 
     // Wait for animation
     await page.waitForTimeout(300);
 
     // Click again to expand
-    await styleButton.click();
+    await styleButton.click({ force: true });
     await page.waitForTimeout(300);
 
     // Formality should still be visible after expand
@@ -51,16 +53,16 @@ test.describe('Graph Visualization', () => {
   });
 
   test('mixer panel can be closed', async ({ page }) => {
-    // Find and click close button
+    // Find close button and dispatch click event directly to bypass overlay issues
     const closeButton = page.locator('button[aria-label="Close panel"]');
-    await closeButton.click();
+    await closeButton.evaluate((btn) => btn.click());
 
     // Wait for animation
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(500);
 
-    // Mixer title should not be visible
-    const mixerTitle = page.locator('text=Mixer');
-    await expect(mixerTitle).not.toBeVisible();
+    // Mixer panel should not be visible (check for the aside element)
+    const mixerPanel = page.locator('.mixer-panel');
+    await expect(mixerPanel).not.toBeVisible();
   });
 
   test('page loads without console errors', async ({ page }) => {
@@ -87,7 +89,8 @@ test.describe('Graph Visualization', () => {
   });
 
   test('canvas responds to mouse movement', async ({ page }) => {
-    const canvas = page.locator('canvas');
+    // Use .first() since r3f-perf adds a second canvas
+    const canvas = page.locator('canvas').first();
 
     // Get canvas bounding box
     const box = await canvas.boundingBox();
@@ -107,7 +110,8 @@ test.describe('Graph Visualization', () => {
   });
 
   test('canvas responds to click', async ({ page }) => {
-    const canvas = page.locator('canvas');
+    // Use .first() since r3f-perf adds a second canvas
+    const canvas = page.locator('canvas').first();
 
     // Get canvas bounding box
     const box = await canvas.boundingBox();
@@ -139,8 +143,8 @@ test.describe('Data Loading', () => {
     // Wait for data to load
     await page.waitForTimeout(3000);
 
-    // Page should be responsive
-    const canvas = page.locator('canvas');
+    // Page should be responsive - use .first() since r3f-perf adds a second canvas
+    const canvas = page.locator('canvas').first();
     await expect(canvas).toBeVisible();
   });
 
@@ -153,8 +157,8 @@ test.describe('Data Loading', () => {
     await page.goto('/');
     await page.waitForTimeout(2000);
 
-    // Page should still render (maybe with error state)
-    const canvas = page.locator('canvas');
+    // Page should still render (maybe with error state) - use .first() since r3f-perf adds a second canvas
+    const canvas = page.locator('canvas').first();
     await expect(canvas).toBeVisible();
   });
 });
@@ -165,8 +169,8 @@ test.describe('Keyboard Navigation', () => {
     await page.waitForSelector('canvas');
     await page.waitForTimeout(2000);
 
-    // Focus the canvas
-    const canvas = page.locator('canvas');
+    // Focus the canvas - use .first() since r3f-perf adds a second canvas
+    const canvas = page.locator('canvas').first();
     await canvas.click();
   });
 
