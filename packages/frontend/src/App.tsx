@@ -9,9 +9,9 @@ export function App() {
   const isLoading = useAppStore((state) => state.isLoading);
   const loadError = useAppStore((state) => state.loadError);
 
-  // Load filler data on mount
+  // Load computed UMAP position data on mount
   useEffect(() => {
-    loadGraphFromURL('/data/graph-filler-500.json');
+    loadGraphFromURL('/data/layer-12.json');
   }, [loadGraphFromURL]);
 
   return (
