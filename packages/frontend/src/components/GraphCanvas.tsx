@@ -2,7 +2,48 @@ import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Perf } from 'r3f-perf';
 
-import { NodeMesh, EdgeLines, LODController, CameraController, KeyboardController } from './graph';
+import {
+  NodeMesh,
+  EdgeLines,
+  LODController,
+  CameraController,
+  KeyboardController,
+  TrajectoryPath,
+  TrajectoryMarker,
+} from './graph';
+import { useAppStore } from '../stores';
+
+/**
+ * Active trajectory renderer component.
+ * Renders the trajectory path and marker when a trajectory is active.
+ */
+function ActiveTrajectory() {
+  const activeTrajectoryId = useAppStore((state) => state.activeTrajectoryId);
+  const trajectories = useAppStore((state) => state.trajectories);
+  const playbackPosition = useAppStore((state) => state.playbackPosition);
+
+  // Get active trajectory
+  const activeTrajectory = activeTrajectoryId
+    ? trajectories.get(activeTrajectoryId)
+    : null;
+
+  if (!activeTrajectory || activeTrajectory.points.length === 0) {
+    return null;
+  }
+
+  return (
+    <group>
+      <TrajectoryPath
+        trajectory={activeTrajectory}
+        currentPosition={playbackPosition}
+      />
+      <TrajectoryMarker
+        trajectory={activeTrajectory}
+        position={playbackPosition}
+      />
+    </group>
+  );
+}
 
 export function GraphCanvas() {
   return (
@@ -43,6 +84,7 @@ export function GraphCanvas() {
       <Suspense fallback={null}>
         <EdgeLines />
         <NodeMesh />
+        <ActiveTrajectory />
       </Suspense>
     </Canvas>
   );

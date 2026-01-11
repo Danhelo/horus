@@ -35,14 +35,14 @@ HORUS is a creative instrument for navigating and sculpting in **ideaspace**—t
 ## Phase 2: Interactive Explorer
 
 **Goal**: Add dials for steering, enable generation, show trajectories
-**Status**: Not Started
+**Status**: Complete
 
 | Spec | Title | Status | Package |
 |------|-------|--------|---------|
-| [MIX-001](phase-2/MIX-001-dial.md) | Dial Component | Draft | frontend |
-| [MIX-002](phase-2/MIX-002-steering.md) | Steering Vector | Draft | shared |
-| [TRJ-001](phase-2/TRJ-001-trajectory.md) | Trajectory View | Draft | frontend |
-| [GEN-001](phase-2/GEN-001-generation.md) | Steered Generation | Draft | backend |
+| [MIX-001](phase-2/MIX-001-dial.md) | Dial Component | Complete | frontend |
+| [MIX-002](phase-2/MIX-002-steering.md) | Steering Vector | Complete | shared |
+| [TRJ-001](phase-2/TRJ-001-trajectory.md) | Trajectory View | Complete | frontend |
+| [GEN-001](phase-2/GEN-001-generation.md) | Steered Generation | Complete | backend |
 
 ## Phase 3: Dynamic Hierarchy
 

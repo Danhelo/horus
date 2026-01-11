@@ -115,3 +115,104 @@ body,
   background-color: var(--color-gold-dim);
   color: var(--color-text-primary);
 }
+
+/* ---------------------------------------------------------------------------
+   Dial Component Styles
+   --------------------------------------------------------------------------- */
+
+.dial {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  outline: none;
+}
+
+.dial:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.dial--dragging {
+  cursor: grabbing;
+}
+
+.dial--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dial--locked {
+  cursor: not-allowed;
+}
+
+.dial--hovered .dial__knob {
+  filter: drop-shadow(0 0 8px rgba(212, 168, 67, 0.4));
+}
+
+.dial--dragging .dial__knob {
+  filter: drop-shadow(0 0 12px rgba(212, 168, 67, 0.6));
+}
+
+.dial__knob {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 150ms ease-out;
+}
+
+.dial__lock-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 10, 15, 0.6);
+  border-radius: 50%;
+}
+
+.dial__lock-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-gold-dim);
+}
+
+.dial__label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: center;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dial__value {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dial--hovered .dial__value,
+.dial--dragging .dial__value {
+  color: var(--color-gold);
+}
+
+.dial--disabled .dial__label,
+.dial--disabled .dial__value {
+  color: var(--color-text-muted);
+}

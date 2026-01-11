@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { ZodError } from 'zod';
@@ -8,6 +8,15 @@ import {
   errorHandler,
   notFoundHandler,
 } from '../middleware/error-handler';
+
+// Type for error response JSON
+interface ErrorResponse {
+  error: {
+    message: string;
+    code?: string;
+    details?: unknown[];
+  };
+}
 
 describe('Error Handler', () => {
   describe('AppError', () => {
@@ -86,7 +95,7 @@ describe('Error Handler', () => {
       });
 
       const res = await app.request('/test');
-      const json = await res.json();
+      const json = (await res.json()) as ErrorResponse;
 
       expect(res.status).toBe(401);
       expect(json.error.message).toBe('Unauthorized');
@@ -98,7 +107,7 @@ describe('Error Handler', () => {
       });
 
       const res = await app.request('/test');
-      const json = await res.json();
+      const json = (await res.json()) as ErrorResponse;
 
       expect(res.status).toBe(400);
       expect(json.error.message).toBe('Test error');
@@ -131,7 +140,7 @@ describe('Error Handler', () => {
       });
 
       const res = await app.request('/test');
-      const json = await res.json();
+      const json = (await res.json()) as ErrorResponse;
 
       expect(res.status).toBe(400);
       expect(json.error.code).toBe('VALIDATION_ERROR');
@@ -144,7 +153,7 @@ describe('Error Handler', () => {
       });
 
       const res = await app.request('/test');
-      const json = await res.json();
+      const json = (await res.json()) as ErrorResponse;
 
       expect(res.status).toBe(500);
       expect(json.error.message).toBe('Internal server error');
@@ -157,7 +166,7 @@ describe('Error Handler', () => {
       app.notFound(notFoundHandler);
 
       const res = await app.request('/nonexistent');
-      const json = await res.json();
+      const json = (await res.json()) as ErrorResponse;
 
       expect(res.status).toBe(404);
       expect(json.error.message).toBe('Not found');

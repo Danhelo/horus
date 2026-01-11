@@ -3,6 +3,23 @@ import { Hono } from 'hono';
 import { featuresRoutes } from '../routes/features';
 import { neuronpediaService } from '../services/neuronpedia';
 
+// Type for feature response
+interface FeatureResponse {
+  modelId: string;
+  layer: number;
+  index: number;
+  label?: string;
+  description?: string;
+  cached?: boolean;
+  cachedAt?: string;
+  stale?: boolean;
+}
+
+interface SearchResponse {
+  results: FeatureResponse[];
+  count: number;
+}
+
 // Mock the neuronpedia service
 vi.mock('../services/neuronpedia', () => ({
   neuronpediaService: {
@@ -106,7 +123,7 @@ describe('Features Routes', () => {
       vi.mocked(neuronpediaService.getFeature).mockResolvedValue(mockFeature);
 
       const res = await app.request('/api/features/gemma-2-2b/12/1622');
-      const json = await res.json();
+      const json = (await res.json()) as FeatureResponse;
 
       expect(res.status).toBe(200);
       expect(json.cached).toBe(true);
@@ -127,7 +144,7 @@ describe('Features Routes', () => {
       vi.mocked(neuronpediaService.getFeature).mockResolvedValue(mockFeature);
 
       const res = await app.request('/api/features/gemma-2-2b/12/1622');
-      const json = await res.json();
+      const json = (await res.json()) as FeatureResponse;
 
       expect(res.status).toBe(200);
       expect(json.stale).toBe(true);
@@ -150,7 +167,7 @@ describe('Features Routes', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: 'test query', limit: 20 }),
       });
-      const json = await res.json();
+      const json = (await res.json()) as SearchResponse;
 
       expect(res.status).toBe(200);
       expect(json.results).toEqual(mockResults);

@@ -1,11 +1,21 @@
 import { create } from 'zustand';
 import { subscribeWithSelector, devtools } from 'zustand/middleware';
+import { shallow } from 'zustand/shallow';
 import type { StateCreator } from 'zustand';
 
 import type { GraphNode, GraphEdge, GraphData } from '@horus/shared';
 
 import { createGraphLoadingSlice } from './slices/graphLoadingSlice';
 import type { GraphLoadingSlice } from './slices/graphLoadingSlice';
+import { createMixerSlice } from './slices/mixerSlice';
+import type { MixerSlice } from './slices/mixerSlice';
+import {
+  createSteeringSlice,
+  createDebouncedRecompute,
+} from './slices/steeringSlice';
+import type { SteeringSlice } from './slices/steeringSlice';
+import { createTrajectorySlice } from './slices/trajectorySlice';
+import type { TrajectorySlice } from './slices/trajectorySlice';
 
 // ---------------------------------------------------------------------------
 // Slice Types
@@ -50,7 +60,15 @@ interface LODSlice {
 }
 
 // Combined store type
-export type AppStore = GraphSlice & UISlice & CameraSlice & LODSlice & ActivationSlice & GraphLoadingSlice;
+export type AppStore = GraphSlice &
+  UISlice &
+  CameraSlice &
+  LODSlice &
+  ActivationSlice &
+  GraphLoadingSlice &
+  MixerSlice &
+  SteeringSlice &
+  TrajectorySlice;
 
 // ---------------------------------------------------------------------------
 // Slice Creators
@@ -135,6 +153,9 @@ export const useAppStore = create<AppStore>()(
         ...createLODSlice(...args),
         ...createActivationSlice(...args),
         ...createGraphLoadingSlice(...args),
+        ...createMixerSlice(...args),
+        ...createSteeringSlice(...args),
+        ...createTrajectorySlice(...args),
       }),
       {
         name: 'AppStore',
@@ -153,4 +174,26 @@ export const useAppStore = create<AppStore>()(
       }
     )
   )
+);
+
+// ---------------------------------------------------------------------------
+// Automatic Steering Recomputation
+// ---------------------------------------------------------------------------
+
+// Create debounced recompute function
+const debouncedRecompute = createDebouncedRecompute(() => {
+  useAppStore.getState().recompute();
+});
+
+// Subscribe to dial changes and trigger steering recomputation
+// Using shallow comparison to detect actual changes to the dials map
+useAppStore.subscribe(
+  (state) => state.dials,
+  () => {
+    // Mark as stale immediately
+    useAppStore.getState().markStale();
+    // Debounced recompute
+    debouncedRecompute();
+  },
+  { equalityFn: shallow }
 );

@@ -92,18 +92,20 @@ export const useLargeDataStore = create<LargeDataStore>()(
         }
       }
 
-      const edgeCount = validEdges.length;
-      const edgePositions = new Float32Array(edgeCount * 6); // 2 points * 3 coords
-      const edgeColors = new Float32Array(edgeCount * 6);    // 2 points * 3 colors
+      // Use separate write index to handle skipped edges correctly
+      let writeIndex = 0;
+      const maxEdges = validEdges.length;
+      const edgePositions = new Float32Array(maxEdges * 6); // 2 points * 3 coords
+      const edgeColors = new Float32Array(maxEdges * 6);    // 2 points * 3 colors
 
-      for (let i = 0; i < edgeCount; i++) {
+      for (let i = 0; i < maxEdges; i++) {
         const edge = validEdges[i];
         const sourceIdx = nodeIndexMap.get(edge.source);
         const targetIdx = nodeIndexMap.get(edge.target);
 
         if (sourceIdx === undefined || targetIdx === undefined) continue;
 
-        const offset = i * 6;
+        const offset = writeIndex * 6;
 
         // Start point (source)
         edgePositions[offset] = positions[sourceIdx * 3];
@@ -120,7 +122,16 @@ export const useLargeDataStore = create<LargeDataStore>()(
         edgeColors[offset] = edgeColors[offset + 3] = intensity;
         edgeColors[offset + 1] = edgeColors[offset + 4] = intensity;
         edgeColors[offset + 2] = edgeColors[offset + 5] = intensity;
+
+        writeIndex++;
       }
+
+      // Use actual written count, not allocated count
+      const edgeCount = writeIndex;
+
+      // Trim arrays to actual size (avoid rendering garbage)
+      const trimmedEdgePositions = edgePositions.slice(0, edgeCount * 6);
+      const trimmedEdgeColors = edgeColors.slice(0, edgeCount * 6);
 
       set({
         positions,
@@ -128,8 +139,8 @@ export const useLargeDataStore = create<LargeDataStore>()(
         scales,
         nodeIndexMap,
         nodeCount,
-        edgePositions,
-        edgeColors,
+        edgePositions: trimmedEdgePositions,
+        edgeColors: trimmedEdgeColors,
         edgeCount,
       });
     },

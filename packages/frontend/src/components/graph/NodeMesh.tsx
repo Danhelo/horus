@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import type { ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -35,45 +35,7 @@ export function NodeMesh() {
   // Get current LOD level
   const lod = useAppStore((state) => state.lod);
 
-  // Create all LOD geometries upfront (memoized to avoid recreating)
-  const geometries = useMemo(
-    () => ({
-      near: new THREE.SphereGeometry(
-        LOD_GEOMETRY_CONFIG.near.radius,
-        LOD_GEOMETRY_CONFIG.near.widthSegments,
-        LOD_GEOMETRY_CONFIG.near.heightSegments
-      ),
-      medium: new THREE.SphereGeometry(
-        LOD_GEOMETRY_CONFIG.medium.radius,
-        LOD_GEOMETRY_CONFIG.medium.widthSegments,
-        LOD_GEOMETRY_CONFIG.medium.heightSegments
-      ),
-      far: new THREE.SphereGeometry(
-        LOD_GEOMETRY_CONFIG.far.radius,
-        LOD_GEOMETRY_CONFIG.far.widthSegments,
-        LOD_GEOMETRY_CONFIG.far.heightSegments
-      ),
-    }),
-    []
-  );
-
-  const material = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.95,
-      }),
-    []
-  );
-
-  // Swap geometry when LOD changes
-  useEffect(() => {
-    if (!meshRef.current) return;
-
-    meshRef.current.geometry = geometries[lod];
-    invalidate();
-  }, [lod, geometries, invalidate]);
+  // Geometry and material are now JSX children - React handles LOD swaps automatically
 
   // Subscribe to position changes without causing re-renders
   useEffect(() => {
@@ -286,11 +248,20 @@ export function NodeMesh() {
   return (
     <instancedMesh
       ref={meshRef}
-      args={[geometries[lod], material, Math.min(nodeCount, MAX_NODE_COUNT)]}
+      args={[undefined, undefined, Math.min(nodeCount, MAX_NODE_COUNT)]}
       frustumCulled={false}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
       onClick={handleClick}
-    />
+    >
+      <sphereGeometry
+        args={[
+          LOD_GEOMETRY_CONFIG[lod].radius,
+          LOD_GEOMETRY_CONFIG[lod].widthSegments,
+          LOD_GEOMETRY_CONFIG[lod].heightSegments,
+        ]}
+      />
+      <meshBasicMaterial vertexColors transparent opacity={0.95} />
+    </instancedMesh>
   );
 }

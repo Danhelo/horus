@@ -66,6 +66,39 @@ export interface SearchResult {
 }
 
 /**
+ * Steering request configuration
+ */
+export interface SteerRequest {
+  prompt: string;
+  features: Array<{
+    modelId: string;
+    layer: string; // source ID format (e.g., "12-gemmascope-res-16k")
+    index: number;
+    strength: number;
+  }>;
+  temperature?: number;
+  n_tokens?: number;
+  freq_penalty?: number;
+  seed?: number;
+  strength_multiplier?: number;
+  steer_method?: 'SIMPLE_ADDITIVE' | 'ORTHOGONAL_DECOMP';
+}
+
+/**
+ * Steering response from Neuronpedia
+ */
+export interface SteerResponse {
+  defaultOutput: {
+    text: string;
+    logprobs: number[];
+  };
+  steeredOutput: {
+    text: string;
+    logprobs: number[];
+  };
+}
+
+/**
  * Feature response with cache metadata
  */
 export interface FeatureResponse extends FeatureData {
@@ -388,6 +421,50 @@ class NeuronpediaService {
     this.searchCache.set(cacheKey, results);
 
     return results;
+  }
+
+  /**
+   * Steer text generation with feature modifications
+   * Note: Neuronpedia's steer API doesn't natively stream,
+   * so this returns the complete response which can be tokenized for streaming
+   */
+  async steer(request: SteerRequest): Promise<SteerResponse> {
+    // Validate feature strengths
+    for (const feature of request.features) {
+      if (Math.abs(feature.strength) > 100) {
+        throw new AppError(
+          'Feature strength too large. Recommended range: -10 to 10.',
+          400,
+          'BAD_REQUEST'
+        );
+      }
+    }
+
+    // Validate prompt length
+    if (request.prompt.length > 4096) {
+      throw new AppError(
+        'Prompt too long. Maximum 4096 characters.',
+        400,
+        'BAD_REQUEST'
+      );
+    }
+
+    const response = await this.fetchFromApi<SteerResponse>('/api/steer', {
+      method: 'POST',
+      body: JSON.stringify({
+        modelId: 'gemma-2-2b',
+        prompt: request.prompt,
+        features: request.features,
+        temperature: request.temperature ?? 0.7,
+        n_tokens: request.n_tokens ?? 100,
+        freq_penalty: request.freq_penalty ?? 1.0,
+        seed: request.seed,
+        strength_multiplier: request.strength_multiplier ?? 1.0,
+        steer_method: request.steer_method ?? 'SIMPLE_ADDITIVE',
+      }),
+    });
+
+    return response;
   }
 
   /**

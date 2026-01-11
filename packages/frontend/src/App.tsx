@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { GraphCanvas } from './components/GraphCanvas';
 import { ActivationPanel } from './components/panels';
+import { MixerPanel } from './components/mixer';
 import { useAppStore } from './stores';
 
 export function App() {
@@ -26,6 +27,7 @@ export function App() {
         </div>
       )}
       <GraphCanvas />
+      <MixerPanel position="left" />
       <ActivationPanel />
     </div>
   );
