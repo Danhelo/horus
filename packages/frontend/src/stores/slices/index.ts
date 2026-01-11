@@ -26,5 +26,8 @@ export {
 } from './steeringSlice';
 export type { SteeringSlice } from './steeringSlice';
 
+export { createModelSlice } from './modelSlice';
+export type { ModelSlice, ModelInfo } from './modelSlice';
+
 export { createSettingsSlice } from './settingsSlice';
 export type { SettingsSlice } from './settingsSlice';

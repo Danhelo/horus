@@ -16,6 +16,8 @@ import {
 import type { SteeringSlice } from './slices/steeringSlice';
 import { createTrajectorySlice } from './slices/trajectorySlice';
 import type { TrajectorySlice } from './slices/trajectorySlice';
+import { createModelSlice } from './slices/modelSlice';
+import type { ModelSlice } from './slices/modelSlice';
 import { createSettingsSlice } from './slices/settingsSlice';
 import type { SettingsSlice } from './slices/settingsSlice';
 
@@ -71,6 +73,7 @@ export type AppStore = GraphSlice &
   MixerSlice &
   SteeringSlice &
   TrajectorySlice &
+  ModelSlice &
   SettingsSlice;
 
 // ---------------------------------------------------------------------------
@@ -159,6 +162,7 @@ export const useAppStore = create<AppStore>()(
         ...createMixerSlice(...args),
         ...createSteeringSlice(...args),
         ...createTrajectorySlice(...args),
+        ...createModelSlice(...args),
         ...createSettingsSlice(...args),
       }),
       {

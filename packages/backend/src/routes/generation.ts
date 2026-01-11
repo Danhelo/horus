@@ -2,14 +2,11 @@ import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import {
-  neuronpediaService,
-  GEMMA_CONFIG,
-  type SteerRequest,
-} from '../services/neuronpedia';
+import { neuronpediaService, type SteerRequest } from '../services/neuronpedia';
 import { tokenize, sleep, getStreamingDelay } from '../utils/tokenizer';
 import { createMiddleware } from 'hono/factory';
 import { AppError } from '../middleware/error-handler';
+import { DEFAULT_MODEL_ID, getModelConfig, isValidFeatureIndex } from '@horus/shared';
 
 /**
  * Generation-specific rate limiter (10 requests per minute)
@@ -95,7 +92,7 @@ const generationRateLimit = createMiddleware(async (c, next) => {
  */
 const SteeringFeatureSchema = z.object({
   source: z.string().min(1), // e.g., "12-gemmascope-res-16k"
-  index: z.number().int().min(0).max(GEMMA_CONFIG.featuresPerLayer - 1),
+  index: z.number().int().min(0), // Max validated dynamically based on model
   strength: z.number().min(-100).max(100), // Reasonable bounds
 });
 
@@ -104,7 +101,7 @@ const SteeringFeatureSchema = z.object({
  */
 const SteeringVectorSchema = z.object({
   features: z.array(SteeringFeatureSchema).max(20), // Limit number of features
-  modelId: z.string().default('gemma-2-2b'),
+  modelId: z.string().default(DEFAULT_MODEL_ID),
 });
 
 /**
@@ -161,12 +158,25 @@ const generationRoutes = new Hono()
     zValidator('json', GenerationRequestSchema),
     async (c) => {
       const request = c.req.valid('json');
+      const modelId = request.steeringVector.modelId;
+
+      // Validate feature indices before processing
+      for (const feature of request.steeringVector.features) {
+        if (!isValidFeatureIndex(modelId, feature.index)) {
+          const config = getModelConfig(modelId);
+          throw new AppError(
+            `Invalid feature index ${feature.index} for model ${modelId}. Valid range: 0-${config.featuresPerLayer - 1}`,
+            400,
+            'BAD_REQUEST'
+          );
+        }
+      }
 
       // Transform steering vector to Neuronpedia format
       const steerFeatures: SteerRequest['features'] = request.steeringVector.features
         .filter((f) => f.strength !== 0) // Skip zero-strength features
         .map((f) => ({
-          modelId: request.steeringVector.modelId,
+          modelId: modelId,
           layer: f.source,
           index: f.index,
           strength: f.strength,

@@ -23,9 +23,12 @@ describe('Generation Routes', () => {
     vi.clearAllMocks();
     // Reset module cache to get fresh rate limiter state
     vi.resetModules();
-    // Re-import with fresh module
+    // Re-import with fresh modules after reset
     const { generationRoutes } = await import('../routes/generation');
-    app = new Hono().route('/api/generation', generationRoutes);
+    const { errorHandler } = await import('../middleware/error-handler');
+    app = new Hono()
+      .route('/api/generation', generationRoutes)
+      .onError(errorHandler);
   });
 
   describe('GET /api/generation/status', () => {

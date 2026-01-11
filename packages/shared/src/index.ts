@@ -1,5 +1,6 @@
 export * from './graph';
 export * from './mixer';
+export * from './models';
 // Re-export steering without the re-exported mixer types to avoid duplicate exports
 export {
   // Types
