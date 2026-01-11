@@ -6,8 +6,7 @@ import { useAppStore, useLargeDataStore } from '../../stores';
 
 // Pre-allocated vectors to avoid GC pressure
 const tempVec3 = new THREE.Vector3();
-const startPos = new THREE.Vector3();
-const endPos = new THREE.Vector3();
+const tempVec3_2 = new THREE.Vector3();
 const euler = new THREE.Euler(0, 0, 0, 'YXZ');
 const PI_2 = Math.PI / 2;
 
@@ -33,6 +32,18 @@ const moveState = {
   shift: false,
   ctrl: false,
 };
+
+// Drag state for trackpad/mouse navigation
+const dragState = {
+  active: false,
+  lastX: 0,
+  lastY: 0,
+  button: -1,
+};
+
+// Cached graph bounds
+let cachedBounds: THREE.Box3 | null = null;
+let cachedBoundsNodeCount = 0;
 
 // Easing function: ease-out cubic
 function easeOutCubic(t: number): number {
@@ -88,11 +99,63 @@ function saveCameraToStorage(state: CameraState): void {
 }
 
 /**
+ * Compute bounding box from node positions
+ */
+function computeGraphBounds(positions: Float32Array | null): THREE.Box3 {
+  if (!positions || positions.length === 0) {
+    return new THREE.Box3(
+      new THREE.Vector3(-10, -10, -10),
+      new THREE.Vector3(10, 10, 10)
+    );
+  }
+
+  const box = new THREE.Box3();
+  const nodeCount = positions.length / 3;
+
+  for (let i = 0; i < nodeCount; i++) {
+    tempVec3.set(
+      positions[i * 3],
+      positions[i * 3 + 1],
+      positions[i * 3 + 2]
+    );
+    box.expandByPoint(tempVec3);
+  }
+
+  return box;
+}
+
+/**
+ * Calculate optimal camera position to frame the graph
+ */
+function computeOptimalCameraPosition(bounds: THREE.Box3): {
+  position: THREE.Vector3;
+  target: THREE.Vector3;
+} {
+  const center = bounds.getCenter(new THREE.Vector3());
+  const size = bounds.getSize(new THREE.Vector3());
+  const maxExtent = Math.max(size.x, size.y, size.z);
+
+  // Camera distance based on extent (with minimum)
+  const distance = Math.max(maxExtent * 2, 5);
+
+  // Position camera above and back from center
+  const position = new THREE.Vector3(
+    center.x,
+    center.y + distance * 0.3,
+    center.z + distance
+  );
+
+  return { position, target: center };
+}
+
+/**
  * FPS-style camera controller with:
+ * - Dynamic spawn position based on graph bounds
  * - Click to lock pointer (FPS mode)
  * - Mouse look (pitch/yaw) when locked
+ * - Drag to orbit when not locked (trackpad friendly)
  * - WASD movement, Q/E for up/down
- * - Scroll wheel for base speed
+ * - Scroll wheel for zoom
  * - Shift=sprint (3x), Ctrl=slow (0.3x)
  * - Smooth animated transitions (flyTo)
  * - LocalStorage persistence
@@ -100,13 +163,16 @@ function saveCameraToStorage(state: CameraState): void {
 export function CameraController() {
   const { camera, gl, invalidate } = useThree();
   const initializedRef = useRef(false);
+  const hasFramedGraphRef = useRef(false);
   const canvasRef = useRef(gl.domElement);
 
   // Get settings from store
   const isPointerLocked = useAppStore((state) => state.isPointerLocked);
   const setPointerLocked = useAppStore((state) => state.setPointerLocked);
   const movementSpeed = useAppStore((state) => state.movementSpeed);
-  const setMovementSpeed = useAppStore((state) => state.setMovementSpeed);
+
+  // Subscribe to node count to detect when graph loads
+  const nodeCount = useLargeDataStore((state) => state.nodeCount);
 
   // Debounced sync to store (100ms)
   const syncToStore = useMemo(
@@ -129,7 +195,7 @@ export function CameraController() {
     [camera]
   );
 
-  // Initialize camera from stored state on mount
+  // Initialize camera on mount
   useEffect(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
@@ -137,15 +203,15 @@ export function CameraController() {
     // Load settings from storage
     useAppStore.getState().loadSettingsFromStorage();
 
-    // Load camera position and orientation
+    // Start with a temporary position (will be updated when graph loads)
     const stored = loadCameraFromStorage();
     if (stored) {
       camera.position.set(...stored.position);
       yaw = stored.yaw;
       pitch = stored.pitch;
     } else {
-      // Default position looking at origin
-      camera.position.set(0, 0, 50);
+      // Temporary default until graph loads
+      camera.position.set(0, 5, 15);
       yaw = 0;
       pitch = 0;
     }
@@ -156,6 +222,50 @@ export function CameraController() {
 
     invalidate();
   }, [camera, invalidate]);
+
+  // Frame graph when data loads
+  useEffect(() => {
+    if (nodeCount === 0 || hasFramedGraphRef.current) return;
+
+    const { positions } = useLargeDataStore.getState();
+    if (!positions || positions.length === 0) return;
+
+    // Compute bounds and optimal position
+    cachedBounds = computeGraphBounds(positions);
+    cachedBoundsNodeCount = nodeCount;
+    const { position, target } = computeOptimalCameraPosition(cachedBounds);
+
+    // Check if we have a stored position that's reasonable
+    const stored = loadCameraFromStorage();
+    if (stored) {
+      // Verify stored position is within reasonable range of graph
+      const storedPos = new THREE.Vector3(...stored.position);
+      const center = cachedBounds.getCenter(new THREE.Vector3());
+      const size = cachedBounds.getSize(new THREE.Vector3());
+      const maxExtent = Math.max(size.x, size.y, size.z);
+
+      // If stored position is within 10x the graph extent, use it
+      if (storedPos.distanceTo(center) < maxExtent * 10) {
+        hasFramedGraphRef.current = true;
+        return;
+      }
+    }
+
+    // Set camera to frame the graph
+    camera.position.copy(position);
+
+    // Calculate yaw/pitch to look at target
+    tempVec3.copy(target).sub(position).normalize();
+    yaw = Math.atan2(-tempVec3.x, -tempVec3.z);
+    pitch = Math.asin(tempVec3.y);
+
+    euler.set(pitch, yaw, 0, 'YXZ');
+    camera.quaternion.setFromEuler(euler);
+
+    hasFramedGraphRef.current = true;
+    syncToStore();
+    invalidate();
+  }, [nodeCount, camera, invalidate, syncToStore]);
 
   // Pointer lock event handlers
   const handlePointerLockChange = useCallback(() => {
@@ -169,7 +279,7 @@ export function CameraController() {
     setPointerLocked(false);
   }, [setPointerLocked]);
 
-  // Mouse move handler for FPS look
+  // Mouse move handler for FPS look (when pointer locked)
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
       if (!useAppStore.getState().isPointerLocked) return;
@@ -195,22 +305,78 @@ export function CameraController() {
     [camera, invalidate]
   );
 
-  // Canvas click to lock pointer
-  const handleCanvasClick = useCallback(() => {
+  // Pointer down - start drag or request pointer lock
+  const handlePointerDown = useCallback((event: PointerEvent) => {
+    const isLocked = useAppStore.getState().isPointerLocked;
+
+    if (event.button === 0 && !isLocked) {
+      // Left click - start drag for orbit
+      dragState.active = true;
+      dragState.lastX = event.clientX;
+      dragState.lastY = event.clientY;
+      dragState.button = event.button;
+    }
+  }, []);
+
+  // Pointer move - handle drag for orbit (when not pointer locked)
+  const handlePointerMove = useCallback(
+    (event: PointerEvent) => {
+      const isLocked = useAppStore.getState().isPointerLocked;
+      if (isLocked) return; // FPS mode handles this via mousemove
+
+      if (dragState.active) {
+        const dx = event.clientX - dragState.lastX;
+        const dy = event.clientY - dragState.lastY;
+
+        // Orbit sensitivity
+        const sensitivity = 0.005;
+
+        yaw -= dx * sensitivity;
+        pitch -= dy * sensitivity;
+        pitch = Math.max(-PI_2, Math.min(PI_2, pitch));
+
+        euler.set(pitch, yaw, 0, 'YXZ');
+        camera.quaternion.setFromEuler(euler);
+
+        dragState.lastX = event.clientX;
+        dragState.lastY = event.clientY;
+
+        invalidate();
+        syncToStore();
+      }
+    },
+    [camera, invalidate, syncToStore]
+  );
+
+  // Pointer up - end drag
+  const handlePointerUp = useCallback(() => {
+    dragState.active = false;
+  }, []);
+
+  // Double-click to enter FPS mode
+  const handleDoubleClick = useCallback(() => {
     if (!useAppStore.getState().isPointerLocked) {
       canvasRef.current.requestPointerLock();
     }
   }, []);
 
-  // Scroll wheel for speed adjustment
+  // Scroll wheel for zoom
   const handleWheel = useCallback(
     (event: WheelEvent) => {
       event.preventDefault();
-      const delta = event.deltaY > 0 ? -5 : 5;
-      const currentSpeed = useAppStore.getState().movementSpeed;
-      setMovementSpeed(currentSpeed + delta);
+
+      // Zoom: move camera forward/backward along view direction
+      // Normalize delta for different input devices (mouse vs trackpad)
+      const delta = event.deltaY;
+      const zoomSpeed = event.deltaMode === 1 ? 0.5 : 0.01; // Line vs pixel mode
+
+      const direction = camera.getWorldDirection(tempVec3);
+      camera.position.addScaledVector(direction, -delta * zoomSpeed);
+
+      invalidate();
+      syncToStore();
     },
-    [setMovementSpeed]
+    [camera, invalidate, syncToStore]
   );
 
   // Key handlers
@@ -265,7 +431,7 @@ export function CameraController() {
       case 'KeyR':
       case 'Home':
         event.preventDefault();
-        // Reset camera
+        // Reset camera to frame graph
         const store = useAppStore.getState() as unknown as Record<string, unknown>;
         if (typeof store.resetCamera === 'function') {
           (store.resetCamera as () => void)();
@@ -322,6 +488,7 @@ export function CameraController() {
     moveState.down = false;
     moveState.shift = false;
     moveState.ctrl = false;
+    dragState.active = false;
   }, []);
 
   // Set up event listeners
@@ -331,7 +498,11 @@ export function CameraController() {
     document.addEventListener('pointerlockchange', handlePointerLockChange);
     document.addEventListener('pointerlockerror', handlePointerLockError);
     document.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('click', handleCanvasClick);
+    canvas.addEventListener('pointerdown', handlePointerDown);
+    canvas.addEventListener('pointermove', handlePointerMove);
+    canvas.addEventListener('pointerup', handlePointerUp);
+    canvas.addEventListener('pointerleave', handlePointerUp);
+    canvas.addEventListener('dblclick', handleDoubleClick);
     canvas.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
@@ -341,7 +512,11 @@ export function CameraController() {
       document.removeEventListener('pointerlockchange', handlePointerLockChange);
       document.removeEventListener('pointerlockerror', handlePointerLockError);
       document.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('click', handleCanvasClick);
+      canvas.removeEventListener('pointerdown', handlePointerDown);
+      canvas.removeEventListener('pointermove', handlePointerMove);
+      canvas.removeEventListener('pointerup', handlePointerUp);
+      canvas.removeEventListener('pointerleave', handlePointerUp);
+      canvas.removeEventListener('dblclick', handleDoubleClick);
       canvas.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
@@ -351,7 +526,10 @@ export function CameraController() {
     handlePointerLockChange,
     handlePointerLockError,
     handleMouseMove,
-    handleCanvasClick,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleDoubleClick,
     handleWheel,
     handleKeyDown,
     handleKeyUp,
@@ -436,11 +614,22 @@ export function CameraController() {
     [flyTo]
   );
 
-  // resetCamera: return to default position
+  // resetCamera: return to optimal position for current graph
   const resetCamera = useCallback(() => {
-    const defaultPosition: [number, number, number] = [0, 20, 50];
-    const defaultTarget: [number, number, number] = [0, 0, 0];
-    flyTo(defaultPosition, defaultTarget);
+    const { positions } = useLargeDataStore.getState();
+
+    // Recompute bounds if needed
+    if (!cachedBounds || cachedBoundsNodeCount !== useLargeDataStore.getState().nodeCount) {
+      cachedBounds = computeGraphBounds(positions);
+      cachedBoundsNodeCount = useLargeDataStore.getState().nodeCount;
+    }
+
+    const { position, target } = computeOptimalCameraPosition(cachedBounds);
+
+    flyTo(
+      position.toArray() as [number, number, number],
+      target.toArray() as [number, number, number]
+    );
   }, [flyTo]);
 
   // Expose camera actions on the store
@@ -519,7 +708,7 @@ export function CameraController() {
         tempVec3.set(0, 0, 0);
 
         // Get camera forward/right vectors
-        const cameraDir = camera.getWorldDirection(new THREE.Vector3());
+        const cameraDir = camera.getWorldDirection(tempVec3_2);
         const cameraRight = new THREE.Vector3()
           .crossVectors(cameraDir, camera.up)
           .normalize();

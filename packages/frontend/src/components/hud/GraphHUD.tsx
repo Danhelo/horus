@@ -223,7 +223,7 @@ export function GraphHUD() {
           textAlign: 'right',
         }}
       >
-        WASD move · Q/E up/down · Scroll speed · Shift sprint
+        Drag orbit · Scroll zoom · Double-click FPS · WASD move · R reset
       </div>
     </div>
   );
