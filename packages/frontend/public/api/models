@@ -1,0 +1,12 @@
+{
+  "models": [
+    {
+      "modelId": "gemma-2-2b",
+      "displayName": "Gemma 2 2B",
+      "numLayers": 26,
+      "featuresPerLayer": 16384,
+      "contextSize": 8192,
+      "isDefault": true
+    }
+  ]
+}
