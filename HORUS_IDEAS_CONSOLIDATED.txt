@@ -1,0 +1,1913 @@
+================================================================================
+HORUS: COMPLETE IDEAS DOCUMENTATION
+================================================================================
+
+================================================================================
+00-CORE-THESIS.md
+================================================================================
+
+# HORUS: Core Thesis
+
+## The Name
+
+**HORUS** — The falcon-headed god of the sky. The Eye that sees all. In Egyptian mythology, the Eye of Horus represents protection, royal power, and good health. But more than that: it represents *seeing what was hidden*.
+
+We build HORUS to give humans the Eye—to see the soul of ideas, to witness the hidden structure of thought as it moves through a language model's mind.
+
+---
+
+## The One-Liner
+
+**"Paste any text. See its soul."**
+
+---
+
+## What We Believe
+
+### 1. The prompt box is a bottleneck
+
+The dominant interface for AI is a text box. You type words. The model interprets them. You hope it understood. This indirection—language as the only bridge between human intent and model behavior—is lossy, opaque, and limiting.
+
+Prompting is like driving a car by describing where you want to go in prose, hoping the GPS understands. What if you could just *point*?
+
+### 2. Features are the true primitives
+
+Inside language models, there are no words. There are *features*—patterns of activation that represent concepts, relationships, tones, structures. These features are what the model actually "thinks" in. Language is just the I/O layer.
+
+Sparse autoencoders (SAEs) let us extract these features. Anthropic's circuit tracing lets us see how they connect. Neuronpedia makes them accessible via API. The infrastructure exists to work at this level.
+
+**Features are the native language of models. It's time to speak it.**
+
+### 3. Tools are combinatorial explosions
+
+A great tool is not a single capability. It's a *space of possibilities*—a set of primitives that combine in ways the designer didn't anticipate. The spreadsheet. The synthesizer. The web browser. Each enables more than it prescribes.
+
+HORUS must be this kind of tool. Not a fixed workflow, but a **possibility space**. The design must be just right: not too prescriptive (limiting), not too overwhelming (paralyzing). The sweet spot where emergence happens.
+
+### 4. The interface should match the substrate
+
+Image models think in spatial patches. Goodfire's Paint with Ember lets you paint directly on those patches. The interface matches the substrate.
+
+Language models think in sequential feature activations. The interface should be a *traversable space* of features—a graph you can navigate, a territory you can explore, paths you can trace and steer.
+
+### 5. Flow dissolves the read/write boundary
+
+The magic isn't in "analyzing text" or "generating text" as separate modes. It's in the *fluid transition* between them. You paste text, see its feature fingerprint light up. You drag a node, steering the model. New text flows. The fingerprint shifts. You respond.
+
+This is not turn-taking. It's a continuous feedback loop. The boundary between observation and creation dissolves. That dissolution *is* the product.
+
+---
+
+## The Feeling We're Designing For
+
+When someone uses HORUS, they should feel:
+
+- **"I made something I couldn't have made before."** — The tool expanded their creative capacity.
+- **"I saw my own ideas in a new way."** — The visualization revealed structure they sensed but couldn't articulate.
+- **"I didn't know I could make an LLM do that."** — The control was finer-grained than prompting allowed.
+
+The emotional residue is *gnosis*—the sense of having glimpsed something true about how minds (artificial or otherwise) process meaning.
+
+---
+
+## Why Now
+
+1. **Goodfire proved the paradigm.** Paint with Ember showed that direct feature manipulation creates a new UX category. They did it for images. No one has done it for text.
+
+2. **Neuronpedia made features accessible.** 50M+ features, searchable. Steering APIs. Circuit tracing integration. The research infrastructure is now a platform.
+
+3. **Circuit tracing revealed the paths.** Anthropic's work shows that features connect into circuits—traceable paths from input to output. The graph isn't just a visualization; it's a map of computation.
+
+4. **Artists are hungry.** The AI art community has absorbed image generation. They're looking for what's next. A new medium. A new instrument.
+
+---
+
+## The Long Game
+
+HORUS v1 is a creative instrument for artists—a way to see and sculpt in ideaspace.
+
+But the substrate we're building is more general:
+
+- **Feature-level apps.** Programs that run on features, not prompts. An app that activates "playfulness" isn't limited to any single prompt phrasing.
+- **Meta-LLM orchestration.** LLMs that call tools that modify other LLMs' features. Compositional AI systems that operate below the language layer.
+- **Multimodal triggers.** Features that respond to sound, gesture, biosignals. The graph as a living interface to cognition.
+
+We start with the Eye. Where it leads, we follow.
+
+---
+
+## The North Star Metric
+
+**Emergence.**
+
+Did people use HORUS in ways we didn't design? Did they discover interactions we didn't anticipate? Did the tool become more than the sum of its features?
+
+If yes, we succeeded. If no, we over-designed or under-designed. Recalibrate.
+
+---
+
+*The eye opens. The hidden becomes visible. Let's build.*
+
+
+================================================================================
+01-THE-PRIMITIVE.md
+================================================================================
+
+# The Primitive: Neural Surgery
+
+## The Question
+
+What is the atomic unit of interaction in HORUS?
+
+Not "click a button." Not "type a prompt." Something more fundamental—the irreducible gesture from which all other interactions compose.
+
+---
+
+## The Answer: Neural Surgery
+
+The primitive is **the specific operation a user performs on the feature graph**.
+
+This is deliberate framing. Not "editing" (too passive). Not "controlling" (too mechanical). *Surgery*—precise, intentional, consequential manipulation of a living system.
+
+Each surgery is:
+- **Targeted** — affects specific features or regions
+- **Graded** — has intensity/magnitude
+- **Reversible** — can be undone, experimented with
+- **Composable** — combines with other surgeries
+
+---
+
+## The Toolkit
+
+Users need a vocabulary of surgical operations. Here's the initial set:
+
+### 1. **ILLUMINATE**
+Highlight a feature or region. See what's active. Pure observation—but observation that changes what you notice next.
+
+*Gesture:* Hover, select, focus
+*Effect:* Visual emphasis, information surfacing
+
+### 2. **AMPLIFY / ATTENUATE**
+Turn a feature up or down. The core steering operation.
+
+*Gesture:* Dial, slider, scroll on selection
+*Effect:* Feature strength changes, generation shifts
+
+### 3. **NAVIGATE**
+Move through the graph. Change your vantage point in ideaspace.
+
+*Gesture:* Pan, zoom, rotate, teleport
+*Effect:* Different features enter/exit view
+
+### 4. **ZOOM (Semantic)**
+Change abstraction level. Zoom in = more granular features. Zoom out = higher-level concepts.
+
+*Gesture:* Scroll, pinch
+*Effect:* Hierarchy expands/collapses, detail level shifts
+
+### 5. **PIN**
+Lock a feature's value. It stays constant while you manipulate others.
+
+*Gesture:* Click to pin, click again to release
+*Effect:* Constraint on steering—explore variations with one thing held constant
+
+### 6. **TRACE**
+Follow a path through feature space. See the trajectory of a text or a generation.
+
+*Gesture:* Scrub timeline, animate path
+*Effect:* Temporal structure revealed
+
+### 7. **BLEND**
+Interpolate between two states. Morph from one feature configuration to another.
+
+*Gesture:* Drag between two points, slider between two snapshots
+*Effect:* Smooth transition, intermediate states generated
+
+### 8. **SNAPSHOT**
+Save the current state. A point in the space you can return to or compare against.
+
+*Gesture:* Save button, named bookmark
+*Effect:* State preserved for later
+
+### 9. **DIFF**
+Compare two states. What features differ? By how much?
+
+*Gesture:* Select two snapshots, enter diff view
+*Effect:* Divergence visualized
+
+### 10. **QUERY** (Advanced)
+Ask the LLM to find or construct a region of ideaspace.
+
+*Gesture:* Natural language input
+*Effect:* Graph navigates to semantic target, relevant features highlighted
+
+---
+
+## Composability
+
+The power is in combination:
+
+- **ILLUMINATE + AMPLIFY** = "What happens if I boost what's already active?"
+- **PIN + NAVIGATE** = "Hold creativity constant, explore different topics"
+- **TRACE + DIFF** = "How did this text's journey differ from that one's?"
+- **QUERY + ZOOM** = "Take me to 'melancholy', then show me its constituents"
+
+This is the combinatorial explosion. N primitives → N² combinations → emergent interactions we didn't design.
+
+---
+
+## What We Don't Know Yet
+
+### How constrained should combinations be?
+- **Open:** Any primitive composes with any other. Maximum emergence, risk of chaos.
+- **Constrained:** Certain combinations are privileged or guided. Cleaner, but less discovery.
+- **Hybrid:** A "grammar" that suggests valid compositions without forbidding others.
+
+### How do we surface composability?
+- Explicit UI showing "you can combine these"?
+- Emergent discovery through play?
+- Tutorials/examples that demonstrate combinations?
+
+### How does this extend?
+- Can users define new primitives?
+- Can primitives be shared as "tools" others can use?
+- Are there "macros"—saved sequences of operations?
+
+---
+
+## The Meta Question
+
+Eventually, the primitive layer itself becomes programmable:
+
+- **Feature-level apps:** A "tone adjuster" app is just ILLUMINATE + AMPLIFY on tone-related features, packaged with a nice UI.
+- **LLM-assisted surgery:** "Make this more playful" → the system translates intent into a sequence of operations.
+- **Cross-model surgery:** Operations that affect one model's features trigger changes in another's.
+
+The surgical toolkit is the foundation. What gets built on it is unbounded.
+
+---
+
+*The hand moves. The graph shifts. The text transforms. Neural surgery as creative act.*
+
+
+================================================================================
+02-THE-GRAPH.md
+================================================================================
+
+# The Graph: Ideaspace as Territory
+
+## The Core Metaphor
+
+HORUS presents ideaspace as **navigable territory**—a 3D hypergraph where:
+- **Nodes** are concepts (SAE features)
+- **Edges** are relationships (co-activation, semantic similarity)
+- **Position** encodes meaning (UMAP projection)
+- **Hierarchy** encodes abstraction (zoom reveals sub-concepts)
+
+You don't query ideaspace. You *travel* through it.
+
+---
+
+## Structure
+
+### Nodes: Features as Concepts
+
+Each node represents a feature extracted by a Sparse Autoencoder. Features are the "things the model knows"—concepts, tones, structures, patterns that activate in response to specific inputs.
+
+Node properties:
+- **Position:** 3D coordinates from UMAP projection of feature embeddings
+- **Size:** Could encode importance, frequency, or current activation level
+- **Color:** Encodes category, activation intensity, or user-defined meaning
+- **Label:** Auto-generated explanation (from Neuronpedia) or user annotation
+
+### Edges: Relationships
+
+What do connections mean? Multiple interpretations, possibly layered:
+
+1. **Co-activation:** Features that frequently fire together
+2. **Semantic similarity:** Features with similar explanations/embeddings
+3. **Causal influence:** From circuit tracing—feature A contributes to feature B
+4. **User-defined:** Manually drawn connections for personal ontology
+
+Edge properties:
+- **Weight:** Strength of relationship
+- **Direction:** For causal edges, shows flow of influence
+- **Visibility:** Can be filtered by type or strength
+
+### Hierarchy: Fractal Zoom
+
+The critical innovation: **nodes contain nodes**.
+
+Zoom into "sadness" and you find: melancholy, grief, disappointment, longing, ennui. Zoom into "melancholy" and you find more specific features. Zoom out and "sadness" clusters with other emotions into "affect."
+
+This hierarchy is **not pre-computed**. It's generated on-demand via:
+1. **Clustering algorithms** on feature embeddings
+2. **LLM-assisted grouping** based on semantic queries
+3. **User perspective** feeding back into the structure
+
+The grouping is always **perspectival**—there's no single "true" hierarchy. HORUS asks: "How should I organize this for *you*, given *your* current intent?"
+
+---
+
+## Navigation
+
+### Movement Modes
+
+**Orbit:** Rotate around a focal point. Good for examining a cluster from different angles.
+
+**Fly:** Move freely through the space. WASD + mouse or touch gestures.
+
+**Teleport:** Click a node or region to jump there instantly.
+
+**Semantic jump:** Natural language query → system navigates to relevant region. "Take me to concepts about uncertainty."
+
+### Zoom Semantics
+
+Zoom is not just camera distance. It's **abstraction level**.
+
+- **Zoom out:** Individual features collapse into clusters. You see the forest, not the trees.
+- **Zoom in:** Clusters expand into constituent features. Details emerge.
+
+This requires dynamic LOD (level of detail) rendering:
+- Far: Show cluster centroids with aggregate labels
+- Near: Show individual features
+- Very near: Show feature details, activation history, explanations
+
+### Semantic Axes
+
+The UMAP projection is arbitrary—rotate it and meaning is preserved. But users need orientation.
+
+Solution: **Define semantic axes** that give the space interpretable structure.
+
+Options:
+1. **Discovered axes:** PCA or similar on features, labeled by what varies along them
+2. **User-defined axes:** "I want the x-axis to be concrete↔abstract"
+3. **Query-defined axes:** "Organize by emotional valence on one axis, formality on another"
+
+The axes don't change the underlying graph—they change the *projection* you're viewing.
+
+---
+
+## Topology: Static vs. Dynamic
+
+### Static Backbone
+
+Some structure should persist:
+- The UMAP projection of all features (canonical layout)
+- The similarity/co-activation edges
+- The basic clustering at each zoom level
+
+This gives users a *consistent territory* they can learn.
+
+### Dynamic Overlays
+
+But the graph should also respond to context:
+- **Activation highlighting:** Which features are active *right now* for the current text
+- **Query filtering:** Show only features relevant to a semantic query
+- **Steering effects:** Visualize how current steering settings affect the space
+
+The hybrid: **stable backbone + dynamic highlighting**. The territory is consistent; what's illuminated depends on what you're doing.
+
+---
+
+## Open Questions
+
+### How big is the graph?
+Gemma-2-2B SAEs have ~16k-65k features per layer. Multiple layers = hundreds of thousands of features. Can we render this? Do we show all layers at once or let users switch?
+
+### Which edges matter?
+Co-activation edges could be dense (many features co-occur). Do we threshold? Show only top-k connections per node? Let users filter?
+
+### How do we handle multiple layers?
+SAE features are extracted per-layer. Early layers = low-level features. Later layers = abstract features. Do we:
+- Show one layer at a time (user selects)
+- Stack layers visually (3D depth = layer)
+- Merge across layers (single unified space)
+
+### How does the LLM-assisted hierarchy work?
+When you zoom in and request "show me the sub-concepts of melancholy," what happens?
+- Does the system query an LLM with feature descriptions?
+- Does it use embedding similarity?
+- How do we cache/reuse these groupings?
+
+---
+
+## The Territory as Interface
+
+The graph is not a visualization of data. It's the **interface itself**.
+
+- You don't use the graph to understand the model, then do something else. The graph IS where you work.
+- Navigation IS exploration IS creation.
+- The territory is the tool.
+
+This is the paradigm shift from dashboards to instruments.
+
+---
+
+*Ideaspace stretches before you. Constellations of meaning. Paths between concepts. Where will you go?*
+
+
+================================================================================
+03-FLOW.md
+================================================================================
+
+# Flow: The Dissolution of Boundaries
+
+## The Central Claim
+
+**The magic of HORUS is not in reading or writing. It's in the seamless flow between them.**
+
+Most AI tools have modes:
+- *Analysis mode:* Paste text, get insights
+- *Generation mode:* Give prompt, get output
+
+HORUS has no modes. There is only **flow**—a continuous loop where observation becomes intervention becomes observation.
+
+---
+
+## What Flow Feels Like
+
+You paste a paragraph. The graph illuminates—features that encode this text glow gold. You see its shape in ideaspace.
+
+Something catches your eye. A cluster near your text that you didn't expect. You zoom in. Oh—the model sees a connection to "nostalgia" you didn't consciously intend.
+
+You're curious. You drag the nostalgia node closer, amplifying it. The text on the side panel subtly shifts. A word changes. The tone deepens.
+
+You release. Now you want to see where this goes. You don't type a new prompt. You just... lean into the direction. Nudge another feature. Watch the text evolve.
+
+At some point you realize: you're not analyzing anymore. You're not generating anymore. You're *sculpting*. The text and the graph are one thing, and you're shaping it.
+
+**That's flow.**
+
+---
+
+## No Read/Write Boundary
+
+### Traditional Paradigm
+
+```
+[Input Text] → [Analysis] → [Insight]
+                    ↓
+              [New Prompt] → [Generation] → [Output]
+```
+
+Discrete steps. Mode switches. Friction at each transition.
+
+### HORUS Paradigm
+
+```
+[Text ↔ Graph] ← continuous bidirectional sync → [Text ↔ Graph]
+       ↑                                                 ↓
+       └───────────── User Intervention ─────────────────┘
+```
+
+The text and graph are two views of the same thing. Change one, the other updates. There's no "submit" button. There's just... the state, and how you're shaping it.
+
+---
+
+## Real-Time Steering
+
+Flow requires **low latency**. If you turn a dial and wait 2 seconds for the text to update, the spell breaks. You're back to "send command, wait for response."
+
+Targets:
+- **< 100ms** for graph highlighting updates
+- **< 300ms** for text generation to begin streaming
+- **< 500ms** for steering adjustments to be perceptible
+
+This is technically hard. Strategies:
+- Use smaller, faster models (Gemma-2-2B)
+- Speculative generation (start generating before user "confirms")
+- Partial updates (update what you can immediately, refine async)
+- WebGPU for client-side SAE projection
+
+The point: **latency is a design constraint**, not an implementation detail. Flow lives or dies on responsiveness.
+
+---
+
+## The Feedback Loop
+
+Flow creates a feedback loop:
+
+1. **Observe:** See the current state (text + graph)
+2. **Intervene:** Make a surgical operation
+3. **Perceive:** See the state change
+4. **React:** Your next intervention is informed by what you just saw
+
+This is how instruments work. A musician doesn't plan each note in isolation—they respond to what they just heard. The sound informs the next gesture.
+
+HORUS should feel like playing an instrument, not operating a machine.
+
+---
+
+## Entry Points
+
+Where does flow begin? Multiple valid entries:
+
+### 1. **Start with text**
+Paste existing text. Graph illuminates. You enter flow through observation, then start steering.
+
+### 2. **Start with prompt**
+Type a brief prompt. Model generates. Graph illuminates. You refine through steering rather than reprompting.
+
+### 3. **Start with graph**
+Navigate to a region of ideaspace. Pin some features. Generate text that embodies them. Refine from there.
+
+### 4. **Start with nothing**
+Random or default position. Just start exploring. See what emerges.
+
+All roads lead to flow. The entry point is a preference, not a mode.
+
+---
+
+## Sustaining Flow
+
+Flow is fragile. Things that break it:
+
+- **Long waits.** Any delay > 1s pulls you out.
+- **Mode switches.** Having to click "generate" or "analyze" buttons.
+- **Context loss.** Losing track of where you are in the graph.
+- **Overwhelming options.** Too many controls compete for attention.
+
+Things that sustain it:
+
+- **Continuous feedback.** Every action has immediate visual response.
+- **Spatial consistency.** The graph layout stays stable; only highlights change.
+- **Progressive disclosure.** Advanced tools available but not in your face.
+- **Momentum.** The system has "inertia"—smooth transitions, not jarring jumps.
+
+---
+
+## Flow State Indicators
+
+How do we know if users are in flow?
+
+Behavioral signals:
+- Rapid succession of small adjustments (not long pauses)
+- Navigation and steering interleaved (not sequential)
+- Session length (flow extends sessions)
+- Low use of "undo" (confident forward motion)
+
+We should instrument for these. Flow is the metric.
+
+---
+
+## The Philosophy
+
+Flow is not a feature. It's the product.
+
+If HORUS has flow, it works. If it doesn't, no amount of features will save it.
+
+Everything else—the graph, the primitives, the aesthetics—exists in service of flow. They're either enabling it or they're in the way.
+
+Design question for every decision: **Does this help flow or hinder it?**
+
+---
+
+*The boundary dissolves. You are not using the tool. You are thinking with it. That's the goal.*
+
+
+================================================================================
+04-TEMPORAL.md
+================================================================================
+
+# Temporal: Text as Trajectory
+
+## The Insight
+
+A piece of text is not a static object. It's a **journey through ideaspace**.
+
+Each token activates features. As you read (or as the model generates), you trace a path through the feature graph. "Melancholy" lights up, then "memory", then "distance", then "return."
+
+Text is a trajectory. HORUS should show you the path.
+
+---
+
+## The Trajectory View
+
+### What It Shows
+
+A text of N tokens creates N activation snapshots. Each snapshot is a point in feature space. Connected, they form a path.
+
+Visualizations:
+1. **Animated trail:** Watch features light up sequentially as you "play" the text
+2. **Static path:** A glowing line through the graph showing the route taken
+3. **Heatmap overlay:** Nodes colored by how often they were visited
+4. **Velocity field:** Arrows showing the "direction" of text at each point
+
+### Scrubbing
+
+Like a video timeline. Drag a scrubber across the text, watch the graph highlight position by position.
+
+Or: click a node in the graph, highlight the moments in the text that activated it.
+
+Bidirectional linking between text position and graph position.
+
+---
+
+## The Spectrogram
+
+Inspired by audio spectrograms: time on one axis, features on another, intensity as color.
+
+```
+        Feature 1  ██░░░░██████░░░░░░
+        Feature 2  ░░████░░░░░░██████
+        Feature 3  ██████████░░░░░░░░
+                   ─────────────────────→ Token position
+```
+
+This is a different view than the 3D graph—a flattened, analytical view. Useful for:
+- Seeing which features dominate at which points
+- Comparing two texts' spectrographic signatures
+- Identifying repetitive patterns (features that cycle)
+
+### Spectrogram + Graph Integration
+
+The spectrogram could be an overlay or a separate panel. When you hover on a spectrogram cell, the corresponding node highlights in the graph. When you select a region of the spectrogram, you're selecting a subspace of features to steer.
+
+---
+
+## Generation as Movement
+
+When the model generates text, you're watching it *move* through ideaspace in real-time.
+
+The "cursor" traces a path as tokens emerge. You see the model's trajectory as it writes.
+
+This creates opportunities:
+- **Anticipation:** See where the model is heading before the words appear
+- **Intervention:** If you don't like the direction, steer before it commits
+- **Understanding:** "Oh, it went through 'formal' on its way to this conclusion"
+
+### The Generation Frontier
+
+At any moment during generation, there's a "frontier"—the current position plus the probable next positions (based on logits/sampling).
+
+Could we visualize this? A cloud of likely next-steps, narrowing as the model commits? This might be too noisy, but worth exploring.
+
+---
+
+## Comparing Trajectories
+
+Two texts about the same topic take different paths. What can we learn?
+
+### Overlay View
+Render both trajectories on the same graph. Color-coded. See where they diverge, where they converge.
+
+### Alignment View
+Attempt to align trajectories (like sequence alignment in bioinformatics). Where do they match? Where do they differ?
+
+### Delta View
+For each token position, show the difference vector between the two texts' activations. "At this point, Text A went toward 'technical' while Text B went toward 'poetic'."
+
+---
+
+## Temporal Steering
+
+Steering doesn't have to be global. You could steer **at a specific time point**.
+
+"For the first half of this text, boost 'concrete'. For the second half, boost 'abstract'."
+
+This creates narrative arcs through feature space:
+- Start grounded, end transcendent
+- Start formal, gradually warm
+- Start dense, end sparse
+
+The text becomes a **composed trajectory**—you're not just shaping what features are present, but when they appear.
+
+---
+
+## The Text-Graph Duality
+
+Every text has a trajectory (text → graph).
+Every trajectory implies texts (graph → text).
+
+In the limit:
+- You could *draw* a trajectory on the graph and ask: "What text would take this path?"
+- You could *sketch* a spectrogram pattern and generate text that matches it.
+
+This inverts the usual direction. Instead of writing text and seeing its shape, you draw the shape and the text follows.
+
+---
+
+## Open Questions
+
+### How do we aggregate across layers?
+Features exist at each layer. A token's "activation" is really a stack of activations across layers. Do we:
+- Show one layer's trajectory at a time?
+- Composite across layers somehow?
+- Let users toggle layers?
+
+### How do we handle attention?
+SAE features capture MLP activations, but attention is also part of the trajectory. Do we incorporate attention patterns? This might be a v2 concern.
+
+### What's the right granularity?
+Token-level might be too fine for some purposes. Sentence-level? Paragraph-level? User-adjustable?
+
+### Does real-time trajectory visualization distract or enlighten?
+Watching the path trace as you type might be mesmerizing or overwhelming. Need to test.
+
+---
+
+## The Temporal Primitive
+
+Time is not a secondary dimension in HORUS. It's fundamental.
+
+Ideas unfold. Meaning develops. The path matters as much as the destination.
+
+HORUS should make the temporal structure of thought visible—and steerable.
+
+---
+
+*Watch the thought move. See where it's been. Guide where it goes.*
+
+
+================================================================================
+05-MIXING.md
+================================================================================
+
+# Mixing: Dials, Traces, and Perspectival Grouping
+
+## The Mixer as View
+
+The mixer panel is not separate from the graph. It's a **different view of the same structure**.
+
+Each dial corresponds to a trace through the graph—a subset of features grouped into a manipulable concept. When you turn a dial:
+1. The trace highlights in the graph
+2. The features along that trace amplify/attenuate
+3. The text regenerates reflecting the change
+
+Dial → trace → features → text. All connected.
+
+---
+
+## Anatomy of a Dial
+
+### What a dial represents
+
+A dial is a **weighted sum of features**—like Goodfire's "factors" from NMF clustering. It represents a higher-level concept that's more intuitive to manipulate than individual features.
+
+Examples:
+- "Formality" = 0.3×feature_2341 + 0.2×feature_892 + ...
+- "Concreteness" = 0.4×feature_1029 + 0.25×feature_3421 + ...
+
+The weights can come from:
+- Automatic clustering (NMF, k-means on feature embeddings)
+- LLM-assisted semantic grouping
+- User-defined combinations
+
+### Dial properties
+
+- **Name/Label:** What concept this dial represents
+- **Value:** Current strength (-1 to 1, or 0 to 1)
+- **Trace:** The subgraph of features this dial affects (visualized on hover)
+- **Polarity:** Some dials are bipolar (formal↔casual), others unipolar (more/less technical)
+
+---
+
+## Traces in the Graph
+
+When you hover or activate a dial, its trace illuminates:
+
+```
+    [concept_A]──────[concept_B]
+         │                │
+    [feat_1] [feat_2]  [feat_3]
+         │                │
+    [subfeat_a]       [subfeat_b]
+```
+
+The trace shows **which nodes are affected** by this dial and **how strongly**. Edge thickness or node glow indicates weight.
+
+This teaches users what the dial "means"—not through documentation, but through visualization.
+
+---
+
+## Perspectival Grouping
+
+Here's the key insight: **there is no single correct grouping of features into dials.**
+
+"Sadness" could be one dial. Or it could be decomposed into "melancholy", "grief", "disappointment." Or those could be further decomposed. Or "sadness" could be grouped with other emotions into "affect."
+
+The grouping depends on:
+1. **User's current intent:** Are they working at the emotional level or the specific-emotion level?
+2. **Context of the text:** Different texts make different groupings useful
+3. **Personal ontology:** Different users think about concepts differently
+
+### LLM-Assisted Grouping
+
+HORUS uses the LLM's recursive theory-of-mind to infer useful groupings:
+
+**System:** "The user is working on a melancholic poem and just boosted 'nostalgia'. What groupings of features would be most useful to offer them next?"
+
+**LLM:** "Given their focus, offer dials for 'temporal distance' (features about the past), 'sensory memory' (features about vivid recollection), and 'bittersweet' (features combining positive and negative affect)."
+
+The dials that appear are **dynamic**—they change based on what you're doing.
+
+### User Override
+
+Users should also be able to:
+- Create custom dials by selecting features
+- Save dial configurations for reuse
+- Share dial sets with others ("Here's my emotion dial pack")
+
+---
+
+## Multi-Dial Interaction
+
+What happens when you turn multiple dials?
+
+### Additive
+Effects sum. Boost "formal" + boost "technical" = very formal and technical.
+
+### Interactive
+Some combinations are non-linear. "Playful" + "technical" might activate features neither dial alone would touch—something like "clever technical humor."
+
+### Conflicting
+Some dials fight. "Verbose" + "concise" might average to neutral, or might create tension/instability.
+
+We need to visualize these interactions:
+- Show overlap/conflict in traces
+- Indicate when dial combinations are synergistic or antagonistic
+- Maybe: suggest dial combinations that work well together
+
+---
+
+## The Mixing Workflow
+
+### 1. Start with defaults
+System offers a standard set of dials: formality, abstractness, emotional valence, complexity, etc.
+
+### 2. Explore through mixing
+Turn dials, see what changes. Build intuition for what each dial does in this context.
+
+### 3. Request new dials
+"I want a dial for 'cosmic scale'." System finds/creates a feature grouping that matches.
+
+### 4. Refine and save
+Adjust the dial definition (add/remove features). Save for future use.
+
+### 5. Share and discover
+Browse dials others have created. Import interesting ones.
+
+---
+
+## Advanced: Dial Automation
+
+Beyond manual mixing, dials could be automated:
+
+### Conditional dials
+"If the text mentions a person, boost 'empathy'."
+
+### Temporal dials
+"Start with high 'tension', gradually decrease."
+
+### Reactive dials
+"Mirror the user's input formality level."
+
+These become **feature-level programs**—not prompts, not fine-tuning, but dynamic steering rules.
+
+---
+
+## The Mixing Board Aesthetic
+
+The mixer should feel like a **recording studio mixing board** or a **synthesizer control panel**:
+
+- Physical metaphor: dials, faders, buttons
+- Grouped into logical sections
+- Visual feedback (VU meters, glow intensity)
+- Satisfying interaction (smooth drag, subtle haptics if possible)
+
+This is where the Egyptian aesthetic meets functional design. Gold-accented dials. Hieroglyphic labels. But fundamentally: an instrument.
+
+---
+
+## Open Questions
+
+### How many dials?
+Too few = limited expression. Too many = overwhelming. 8-12 visible at once, with ability to swap/customize?
+
+### How do we name auto-generated dials?
+Feature groups need labels. LLM-generated? User-assigned? Both?
+
+### How do we handle dial "resolution"?
+A dial could be very broad ("emotion") or very narrow ("specific type of wistfulness"). How do we let users zoom in/out on dial granularity?
+
+### What's the dial ↔ graph relationship during navigation?
+As you navigate to different parts of the graph, do the available dials change? Or are dials persistent and navigation-independent?
+
+---
+
+*Turn the dial. Watch the trace glow. Feel the text shift. This is direct manipulation of meaning.*
+
+
+================================================================================
+06-DIFF-MERGE.md
+================================================================================
+
+# Diff/Merge: Comparing and Blending Ideaspaces
+
+## The Concept
+
+Every text has a feature fingerprint—a pattern of activations across ideaspace.
+
+What if you could **compare** two fingerprints? See where they overlap, where they diverge?
+
+What if you could **merge** them? Create something that lives in the space between two ideas?
+
+---
+
+## Diff: Seeing Divergence
+
+### What gets compared?
+
+1. **Two texts:** "How does my draft compare to this reference?"
+2. **Two versions:** "How did my text change after this edit?"
+3. **Two generations:** "Why did these two outputs from the same prompt differ?"
+4. **Two mixes:** "What's the difference between my dial settings and yours?"
+
+### Visualization: The Dual Graph
+
+Render the same graph twice, side by side or overlaid:
+- **Side by side:** Two graphs, same layout, different highlights
+- **Overlay:** One graph, two colors (red vs blue), showing both fingerprints
+
+Divergence is visible as:
+- Nodes lit in one but not the other
+- Intensity differences in shared nodes
+- Path differences in trajectory view
+
+### Visualization: The Delta Map
+
+Instead of showing both fingerprints, show the **difference**:
+- Nodes colored by: (Fingerprint A activation) - (Fingerprint B activation)
+- Blue = A stronger here, Red = B stronger here, White = equal
+- This immediately highlights what's distinctive about each
+
+### Quantitative Diff
+
+Beyond visualization:
+- **Similarity score:** Cosine similarity of overall fingerprints
+- **Top divergent features:** "These 10 features differ most"
+- **Semantic summary:** LLM-generated description of the difference ("Text A is more formal and abstract; Text B is more concrete and emotional")
+
+---
+
+## Merge: Blending Ideaspaces
+
+### The Operation
+
+Given two feature fingerprints, create a blend:
+- **Linear interpolation:** 50% A + 50% B
+- **Weighted blend:** 70% A + 30% B (user-controlled slider)
+- **Selective merge:** Take features X, Y, Z from A; features P, Q, R from B
+
+Then generate text from the merged fingerprint.
+
+### What Merge Creates
+
+This is different from "rewrite text A in the style of text B" (a prompt-based task).
+
+Merge operates at the **feature level**:
+- It's more precise (specific features, not vibes)
+- It's more predictable (you can see what's being combined)
+- It can create combinations that prompts can't easily express
+
+Example: Merge a technical paper's fingerprint with a poem's fingerprint. The result isn't "a poem about the paper's topic"—it's something weirder. Text that activates both technical-precision features AND lyrical-imagery features simultaneously. A novel hybrid.
+
+### The Merge Slider
+
+UI element: a slider between two endpoints (A and B).
+
+As you drag from A toward B:
+- The graph highlights shift continuously
+- The text regenerates reflecting the blend
+- You can stop anywhere along the spectrum
+
+This is **continuous exploration** of the space between two ideas.
+
+---
+
+## Applications
+
+### Style Transfer (Feature-Level)
+
+Traditional style transfer: "Rewrite this in Shakespeare's style."
+
+Feature-level style transfer: Take the content features from text A, the style features from text B, merge.
+
+More controllable because you can see and adjust exactly which features are being transplanted.
+
+### Idea Synthesis
+
+You have two essays with different perspectives on a topic. Merge them to generate a synthesis that incorporates both viewpoints at the feature level—not just summarizing, but creating something that *thinks in both ways simultaneously*.
+
+### Version Comparison
+
+Track how a document evolves over edits. Each version has a fingerprint. Diff shows what changed. Merge could create intermediate versions or "what if" alternatives.
+
+### Collaborative Blending
+
+Alice and Bob each create a mix (dial settings). Merge their mixes. The result reflects both their perspectives—a collaborative creation neither could have made alone.
+
+---
+
+## Merge Conflicts
+
+Sometimes features conflict:
+- Text A activates "formal"; Text B activates "casual"
+- Linear blend might produce incoherence
+
+Handling strategies:
+1. **Average and accept instability:** Let the blend be weird. Sometimes that's the point.
+2. **Conflict detection:** Warn users when blending antagonistic features
+3. **Resolution UI:** Show conflicting features, let user decide (keep A, keep B, compromise)
+
+---
+
+## The Merge Trajectory
+
+An advanced view: instead of a single merge point, define a **path** from A to B.
+
+Generate text at multiple points along the path. See how the output evolves as you transition from one ideaspace position to another.
+
+This could create:
+- A "morph" video of text transforming
+- A narrative arc from one concept to another
+- A gradient exploration of the space between ideas
+
+---
+
+## Diff/Merge as Versioning
+
+This suggests a feature: **ideaspace version control**.
+
+- Every significant state (text + dial settings + graph position) is a commit
+- Diff between commits to see what changed
+- Merge branches of exploration
+- Branch from any point to try alternatives
+
+Git for ideaspace.
+
+---
+
+## Open Questions
+
+### How do we handle texts of different lengths?
+Merging a tweet's fingerprint with an essay's fingerprint—do we normalize? Aggregate differently?
+
+### What's the granularity of merge?
+Global (whole fingerprint) vs local (specific features) vs temporal (merge at certain positions in the trajectory)?
+
+### Can you merge more than two?
+Three-way merge? N-way blend? UI complexity increases, but could enable interesting combinations.
+
+### What does "conflict" really mean?
+Some feature combinations that seem conflicting might actually be interesting. How do we distinguish productive tension from incoherence?
+
+---
+
+*Two ideas. Two fingerprints. One space between them. What lives there? Let's find out.*
+
+
+================================================================================
+07-AESTHETICS.md
+================================================================================
+
+# Aesthetics: Egyptian Gnosis Meets Cosmic Dark Mode
+
+## The Vibe
+
+HORUS should feel like:
+- Looking through a god's eye at the structure of thought
+- An ancient temple housing futuristic technology
+- A planetarium where the stars are ideas
+- An instrument for seeing the invisible
+
+Not like:
+- A dashboard
+- A data visualization tool
+- A chat interface with graphs bolted on
+- Figma or any existing design system
+
+---
+
+## The Name's Resonance
+
+**HORUS** brings specific associations:
+- The Eye of Horus: protection, insight, the ability to see what's hidden
+- Egyptian mythology: ancient wisdom, cosmic scale, the afterlife as a journey
+- The falcon: sharp vision, flight, hunting with precision
+- Hieroglyphics: meaning encoded in symbols, not just words
+
+These should inform every visual decision.
+
+---
+
+## Color Palette
+
+### Base: Cosmic Dark
+- **Primary background:** Deep space black (#0a0a0f) or very dark blue-black (#0d0d1a)
+- **Secondary background:** Slightly lighter for panels (#121218)
+- **Tertiary:** Subtle navy for hover states (#1a1a2e)
+
+The void. Ideaspace stretches infinitely. The darkness makes the light meaningful.
+
+### Accent: Sacred Gold
+- **Primary accent:** Rich gold (#d4af37) for active elements
+- **Bright accent:** Light gold (#ffd700) for high activation
+- **Warm accent:** Amber (#ffbf00) for medium activation
+- **Soft accent:** Pale gold (#f0e68c) for low activation
+
+Gold is the color of illumination, divinity, insight. Activations glow gold.
+
+### Signal Colors
+- **Highlight A:** Electric blue (#00bfff) for one fingerprint in diff
+- **Highlight B:** Coral/rose (#ff6b6b) for the other
+- **Warning:** Soft orange (#ffa500) for conflicts
+- **Success:** Teal (#20b2aa) for completion states
+
+### The Gradient
+Activation intensity as a gold gradient:
+```
+Low ─────────────────────────────────────── High
+#2a2a1a → #5c4d1a → #8b7355 → #d4af37 → #ffd700
+```
+
+---
+
+## Typography
+
+### Headings: Something with presence
+- Consider fonts with Egyptian or geometric influence
+- Possibilities: Cinzel, Trajan, Playfair Display, or custom
+- All caps for major headings, proper case for body
+
+### Body: Clean and readable
+- Monospace for code/technical elements (JetBrains Mono, Fira Code)
+- Sans-serif for UI text (Inter, with careful weight choices)
+- Good x-height, clear at small sizes
+
+### Feature Labels
+- Slightly smaller, possibly all-caps
+- Could have a "hieroglyphic" quality—dense with meaning
+- Consider truncation with expand-on-hover
+
+---
+
+## The Graph Aesthetic
+
+### Nodes
+- **Shape:** Circular, but with possible geometric variation (hexagons, diamonds) for different feature types
+- **Glow:** Active nodes emit a soft gold halo
+- **Pulse:** Subtle breathing animation on hover/selection
+- **Size:** Encodes importance or activation level
+
+### Edges
+- **Style:** Thin lines, slightly curved (organic feel)
+- **Color:** Faint by default, brighten on relevance
+- **Animation:** Subtle flow along edges when tracing paths
+
+### The Void
+- The negative space is important
+- Stars/particles in the background? Very subtle, almost subliminal
+- The graph floats in cosmic space
+
+---
+
+## Motion Design
+
+### The Breath
+Everything subtly pulses. Not hyperactive—gentle, like breathing.
+- Nodes: very slow scale oscillation (1% over 3 seconds)
+- Glow: intensity fluctuation
+- Background: imperceptible particle drift
+
+### Transitions
+- Navigation: smooth camera movements, not instant jumps
+- Zoom: continuous, with semantic LOD transitions
+- Dial changes: gradual propagation of effect through graph
+
+### Momentum
+The space has "physics."
+- Drag and release: graph continues drifting, slows down
+- Zoom: has momentum, overshoots slightly, settles
+- This creates tangibility
+
+---
+
+## Panel Design
+
+### The Mixer Panel
+- Knobs/dials with gold accents
+- Subtle hieroglyphic patterns in backgrounds
+- VU-meter style activity indicators
+- Feels like a sacred instrument panel
+
+### The Text Panel
+- Clean, readable, minimal distraction
+- Text highlights link to graph highlights
+- Cursor or selection state visible
+- Subtle gold underline on active text
+
+### The Spectrogram
+- Time flows left to right
+- Features stack vertically
+- Intensity as gold brightness
+- Grid lines very subtle, almost invisible
+
+---
+
+## Iconography
+
+### The Eye
+The Eye of Horus as a recurring motif:
+- Logo
+- Loading indicator (eye opening)
+- Insight/reveal actions
+
+### Hieroglyphic Hints
+Not literal hieroglyphics, but geometric symbols that evoke them:
+- Feature categories have symbolic icons
+- Toolbar uses simplified glyphs
+- Not overdone—subtle references
+
+### Action Icons
+- Navigate: falcon/wing
+- Illuminate: eye opening
+- Amplify: ankh or rising sun
+- Trace: path/footsteps
+- Snapshot: cartouche (royal enclosure)
+
+---
+
+## Sound Design (If Any)
+
+Should HORUS make sound? Optional, but if yes:
+
+- **Activation:** Soft chime, like a singing bowl
+- **Navigation:** Subtle whoosh, spatial audio
+- **Generation:** Flowing tone, like wind
+- **Error/conflict:** Low harmonic dissonance
+
+The soundscape of an ancient temple that holds cosmic technology.
+
+---
+
+## The Feel
+
+When you use HORUS, you should feel:
+- **Awe:** This is profound technology
+- **Clarity:** Despite complexity, you can see
+- **Agency:** You are in control
+- **Discovery:** There's always more to find
+- **Craft:** You are wielding an instrument
+
+Not:
+- Overwhelmed
+- Clinical
+- Confused
+- Generic
+
+---
+
+## Mood Board References
+
+- Blade Runner 2049 interfaces (but warmer)
+- Dune's visual language (ancient + futuristic)
+- Arrival's alien writing (meaning in shape)
+- Egyptian tomb art (gold on dark)
+- Planetarium software (cosmic navigation)
+- High-end audio equipment (precise, tactile)
+
+---
+
+## Implementation Notes
+
+### Performance
+Dark mode is easier on GPUs. Glows/blurs need optimization.
+
+### Accessibility
+- Gold on dark = high contrast, good
+- Need to support reduced motion preference
+- Color shouldn't be the only signal (shape, pattern too)
+
+### Consistency
+Create a design token system early:
+- Color variables
+- Spacing scale
+- Animation durations
+- Shadow/glow parameters
+
+---
+
+*The eye opens on darkness. Gold traces illuminate the void. You see what was hidden. This is HORUS.*
+
+
+================================================================================
+08-VIRALITY.md
+================================================================================
+
+# Virality: Thought Fingerprints and the Shareable Soul
+
+## The Question
+
+What makes someone screenshot HORUS and share it? What makes someone send a link and say "you have to try this"?
+
+Virality isn't a feature you add. It emerges from creating something people *want* to share. We need to understand what that thing is.
+
+---
+
+## The Hook
+
+**"Paste any text. See its soul."**
+
+This works because:
+1. **Low barrier:** Just paste something. No learning curve.
+2. **Immediate payoff:** You see something you've never seen before.
+3. **Personal relevance:** It's YOUR text, YOUR ideas, made visible.
+4. **Shareability baked in:** The result is inherently visual and novel.
+
+The first 10 seconds must deliver wonder. Everything else follows from that.
+
+---
+
+## The Shareable Artifacts
+
+### 1. The Fingerprint
+
+A static image or animation showing the feature activation pattern of a text.
+
+"Here's what my essay looks like in ideaspace."
+"Here's the fingerprint of my favorite poem."
+"Here's what 'stream of consciousness' looks like vs 'analytical writing'."
+
+This is personal, unique, and impossible to create any other way.
+
+### 2. The Trajectory
+
+An animated GIF or video showing ideas lighting up as text unfolds.
+
+"Watch my story traverse ideaspace."
+"Here's the path my thoughts took."
+
+Motion captures attention. The trajectory is mesmerizing in a way static images aren't.
+
+### 3. The Diff
+
+Side-by-side comparison of two texts' fingerprints.
+
+"Here's how Shakespeare vs. Hemingway light up the same graph."
+"Here's how my draft changed after editing."
+"Here's how two political speeches differ at the feature level."
+
+Comparison is inherently interesting. It creates conversation.
+
+### 4. The Mix
+
+A saved dial configuration that others can apply.
+
+"Here's my 'cosmic horror' mix. Apply it to anything."
+"I made a dial that makes text more 'dreamlike'."
+
+Mixes are recipes people can try. They create community and remixing culture.
+
+### 5. The Morph
+
+Animated blend between two texts/states.
+
+"Watch this formal letter morph into a love poem."
+"See the transition from fear to hope in ideaspace."
+
+Transformation is compelling. The morph video is highly shareable.
+
+---
+
+## The Social Loop
+
+### Discovery
+Someone sees a HORUS fingerprint/trajectory shared somewhere (Twitter, Discord, etc.).
+
+"What is that? That's beautiful. How was it made?"
+
+### Try
+They click through, paste their own text. 10 seconds later, they see their ideas visualized.
+
+"Oh wow. I've never seen this before."
+
+### Create
+They explore. Try different texts. Adjust dials. Find something they like.
+
+"This is interesting. I want to save this."
+
+### Share
+They export their creation and share it with their own network.
+
+"You have to try this. Here's what my favorite book looks like."
+
+### Repeat
+Their friends see it. The loop continues.
+
+---
+
+## Designing for Shareability
+
+### One-Click Export
+- Screenshot current graph with watermark/branding
+- GIF export for trajectories
+- Video export for morphs
+- Native share buttons (Twitter, Discord, etc.)
+
+### Beautiful by Default
+The output should be beautiful without tweaking. The aesthetic itself is the hook.
+
+### Branding in the Artifact
+Every export should subtly include:
+- HORUS logo/eye
+- URL
+- Not intrusive, but present
+
+### Embeddable
+Consider: Can fingerprints be embedded in webpages? Notion? Twitter cards?
+
+---
+
+## Community Features
+
+### Gallery
+Public gallery of interesting fingerprints/trajectories. Browse what others have created.
+
+Curated sections:
+- Famous texts (literature, speeches, lyrics)
+- User submissions
+- Comparisons
+- Unusual discoveries
+
+### Profiles
+Users can have profiles with their saved mixes, fingerprints, explorations.
+
+"Follow @alice to see her ideaspace explorations."
+
+### Remix
+Take someone else's fingerprint or mix and build on it.
+
+Attribution preserved. Remixing encouraged.
+
+### Challenges
+Weekly prompts: "Visualize your favorite song lyric." "Find the most 'melancholic' text."
+
+Community engagement drivers.
+
+---
+
+## The Viral Moment
+
+What's the tweet that goes viral?
+
+**Option A: The Comparison**
+"I visualized every Beatles song in HORUS. Here's how their sound evolved from 1963-1970 in ideaspace."
+[Image grid showing fingerprint evolution]
+
+**Option B: The Reveal**
+"I pasted my therapy journal entries into HORUS. I could literally see my mental state change over months."
+[Trajectory animation]
+
+**Option C: The Celebrity**
+"Ran Shakespeare and ChatGPT through HORUS. The difference is... visible."
+[Side-by-side diff]
+
+**Option D: The Meta**
+"HORUS can see the feature structure of its own output. I asked it to generate something maximally 'joyful' then visualized the result."
+[Recursive demonstration]
+
+---
+
+## Friction Points to Remove
+
+- Account required to try? → No. Try first, account to save.
+- Export requires payment? → Basic exports free, high-res/video premium.
+- Sharing requires copy-paste? → Native share buttons, direct links.
+- Mobile? → At least view exports on mobile, even if creation is desktop.
+
+---
+
+## What We're NOT Building
+
+- A social network. We're a tool. Social features support the core, don't replace it.
+- Follower counts, likes, engagement metrics front and center. These can exist but shouldn't dominate.
+- Endless scroll feed. Curation > volume.
+
+The virality serves the tool. Not the other way around.
+
+---
+
+## Success Metrics
+
+- **Share rate:** What % of users export/share something?
+- **Referral conversion:** What % of people who click a shared link try the tool?
+- **Time to share:** How long from first visit to first share?
+- **Share reach:** How many views do shared artifacts get?
+
+---
+
+## The Core Insight
+
+HORUS makes invisible structure visible. That visibility is inherently shareable because:
+
+1. It's personal (YOUR ideas)
+2. It's novel (never seen before)
+3. It's beautiful (the aesthetic carries it)
+4. It invites conversation ("what do you see in yours?")
+
+We're not manufacturing virality. We're building a tool that creates shareable artifacts as a natural output. The virality is emergent.
+
+---
+
+*Every text has a soul. HORUS makes it visible. And visible things want to be seen.*
+
+
+================================================================================
+09-TECHNICAL.md
+================================================================================
+
+# Technical Foundation: Building HORUS
+
+## The Stack Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Frontend (React)                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐  │
+│  │  Three.js   │  │   Mixer     │  │   Text Panel    │  │
+│  │  3D Graph   │  │   Panel     │  │   + Spectrogram │  │
+│  └─────────────┘  └─────────────┘  └─────────────────┘  │
+├─────────────────────────────────────────────────────────┤
+│                    State Management                      │
+│      (Graph state, dial values, text, activations)      │
+├─────────────────────────────────────────────────────────┤
+│                      API Layer                           │
+├──────────────────────┬──────────────────────────────────┤
+│   Neuronpedia API    │       LLM Inference API          │
+│  - Feature lookup    │    - Text generation             │
+│  - SAE projection    │    - Steering                    │
+│  - Circuit graphs    │    - Semantic queries            │
+│  - UMAP coordinates  │                                  │
+└──────────────────────┴──────────────────────────────────┘
+```
+
+---
+
+## Core Dependencies
+
+### Neuronpedia
+The backbone. Provides:
+- **SAE feature data:** 50M+ features across multiple models
+- **Activation API:** Run text through model, get feature activations
+- **Steering API:** Clamp/boost features, generate steered output
+- **UMAP embeddings:** Pre-computed 2D/3D projections of feature space
+- **Circuit tracing:** Attribution graphs showing feature connections
+
+Neuronpedia is open source and has a public API. We can self-host for performance if needed.
+
+### Target Model: Gemma-2-2B-it
+Why Gemma-2-2B:
+- Best SAE coverage on Neuronpedia
+- Small enough for reasonable latency
+- Instruction-tuned for good generation
+- Open weights, can self-host
+
+Fallback: Llama-3.2-1B (even smaller, if latency is critical)
+
+---
+
+## Technical Challenges
+
+### 1. Real-Time Activation Projection
+
+**The problem:** Every text change needs to:
+1. Run inference through the model
+2. Extract activations at target layer(s)
+3. Project through SAE encoder
+4. Update graph visualization
+
+This is expensive. Naive implementation = seconds of latency.
+
+**Solutions:**
+- **Debounce:** Don't recompute on every keystroke. Wait for pause.
+- **Incremental:** Only recompute for changed tokens (if model supports KV caching)
+- **Approximate:** Use smaller proxy model for fast feedback, full model for final
+- **Client-side SAE:** WebGPU to run SAE projection in browser (ambitious)
+- **Streaming:** Start showing partial results before full computation
+
+**Target:** < 300ms from text change to graph update visible.
+
+### 2. Graph Rendering at Scale
+
+**The problem:** Tens of thousands of nodes + edges. Can't render all of them.
+
+**Solutions:**
+- **Frustum culling:** Only render what's in view
+- **LOD (Level of Detail):** Far nodes = simple shapes, near nodes = full detail
+- **Clustering:** At zoom-out levels, show cluster centroids not individual nodes
+- **WebGPU instancing:** Batch-render similar nodes
+- **Progressive loading:** Load detail as user navigates
+
+**Target:** Smooth 60fps navigation with 50k+ nodes in the data structure.
+
+### 3. Real-Time Steering
+
+**The problem:** Steering requires inference with modified activations. This is as expensive as generation.
+
+**Solutions:**
+- **Speculative execution:** Pre-compute likely steering outcomes
+- **Quantized models:** Use INT4/INT8 quantization for faster inference
+- **Streaming generation:** Show tokens as they generate, don't wait for full completion
+- **Smaller steering model:** Use smaller model for steering exploration, larger for final output
+
+**Target:** < 500ms from dial change to text starting to update.
+
+### 4. Dynamic Hierarchy Generation
+
+**The problem:** When user zooms into a node, we need to compute/retrieve sub-features. This can't all be pre-computed.
+
+**Solutions:**
+- **Caching:** Once computed, cache hierarchy results
+- **LLM-assisted grouping:** Fast LLM call to suggest groupings
+- **Pre-compute common zooms:** Top-level hierarchy can be pre-computed
+- **Lazy loading:** Fetch sub-hierarchy only when user zooms to that level
+
+**Target:** < 200ms to expand a node's children.
+
+---
+
+## Data Architecture
+
+### Feature Data (Static, Pre-loaded)
+```javascript
+{
+  features: [
+    {
+      id: "gemma-2-2b-layer12-feat3421",
+      position: [x, y, z],  // UMAP coordinates
+      label: "nostalgic memory recall",
+      category: "emotion",
+      layer: 12
+    },
+    // ... 50k+ features
+  ],
+  edges: [
+    { source: "feat3421", target: "feat892", weight: 0.73, type: "coactivation" },
+    // ... millions of edges (filtered/thresholded)
+  ]
+}
+```
+
+### Session State (Dynamic)
+```javascript
+{
+  text: "The current text being worked on...",
+  activations: {
+    "feat3421": 0.85,
+    "feat892": 0.32,
+    // sparse: only active features
+  },
+  dials: {
+    "formality": { value: 0.6, features: [...] },
+    "abstractness": { value: -0.2, features: [...] }
+  },
+  camera: { position: [x, y, z], target: [x, y, z], zoom: 1.5 },
+  snapshots: [ /* saved states */ ],
+  trajectory: [ /* token-by-token activations */ ]
+}
+```
+
+### Derived State
+```javascript
+{
+  activeNodes: Set([...]),  // nodes to highlight
+  visibleNodes: Set([...]), // nodes in view (frustum culled)
+  clusterMembership: Map(), // which cluster each node belongs to at current zoom
+  dialTraces: Map()         // which nodes each dial affects
+}
+```
+
+---
+
+## API Design
+
+### Neuronpedia Calls
+
+**Get activations for text:**
+```
+POST /api/activations
+{ model: "gemma-2-2b", text: "...", layers: [12, 13, 14] }
+→ { activations: { layer12: { feat_id: strength, ... }, ... } }
+```
+
+**Generate with steering:**
+```
+POST /api/generate
+{
+  model: "gemma-2-2b-it",
+  prompt: "...",
+  steering: { feat3421: +0.5, feat892: -0.3 },
+  max_tokens: 100
+}
+→ { text: "...", activations: [...] }  // streaming
+```
+
+**Get feature info:**
+```
+GET /api/features/{feature_id}
+→ { label, description, top_activations, related_features, ... }
+```
+
+### Internal API (if we add a backend)
+
+**Save session:**
+```
+POST /api/sessions
+{ user_id, state }
+→ { session_id }
+```
+
+**Share artifact:**
+```
+POST /api/artifacts
+{ type: "fingerprint" | "trajectory" | "diff", data, visibility: "public" | "unlisted" }
+→ { artifact_id, share_url }
+```
+
+---
+
+## Frontend Architecture
+
+### Three.js / React Three Fiber
+The 3D graph is the core UI.
+
+Components:
+- `<GraphCanvas />` - main Three.js canvas
+- `<NodeMesh />` - instanced mesh for all nodes
+- `<EdgeLines />` - line geometry for edges
+- `<GlowEffects />` - post-processing for activation glow
+- `<CameraController />` - orbit, fly, zoom controls
+
+### Mixer Panel
+React components, could use a UI library (Radix, shadcn).
+
+Components:
+- `<Dial />` - individual dial with drag interaction
+- `<DialGroup />` - collection of related dials
+- `<MixerPanel />` - full mixer UI
+
+### Text Panel
+- `<TextEditor />` - contenteditable or textarea with highlighting
+- `<Spectrogram />` - canvas-based spectrogram view
+- `<Timeline />` - scrubber for trajectory
+
+### State Management
+Zustand or Jotai for lightweight reactive state. Need to handle:
+- Frequent updates (activations changing on keystroke)
+- Computed derivations (visible nodes, dial traces)
+- Undo/redo history (snapshots)
+
+---
+
+## Performance Budget
+
+| Operation | Target Latency |
+|-----------|----------------|
+| Graph render (60fps) | < 16ms |
+| Text → activation | < 300ms |
+| Dial → text update | < 500ms |
+| Zoom → hierarchy load | < 200ms |
+| Navigation | < 16ms (no network) |
+| Export fingerprint | < 1s |
+| Export trajectory GIF | < 5s |
+
+---
+
+## Phased Build
+
+### Phase 1: Static Viewer
+- Load pre-computed graph
+- Basic navigation (orbit, zoom)
+- Paste text, show activation highlights
+- No steering, no generation
+
+### Phase 2: Interactive Explorer
+- Dial controls (pre-defined dials)
+- Steering via Neuronpedia API
+- Text generation with steering
+- Spectrogram view
+
+### Phase 3: Dynamic Hierarchy
+- LLM-assisted zoom/hierarchy
+- Semantic queries ("take me to...")
+- Custom dial creation
+
+### Phase 4: Social Features
+- Save/share artifacts
+- Gallery
+- Profiles
+
+---
+
+## Risks & Mitigations
+
+| Risk | Mitigation |
+|------|------------|
+| Neuronpedia API rate limits | Self-host Neuronpedia, cache aggressively |
+| Latency kills flow | Aggressive optimization, speculative execution, manage expectations |
+| Graph too complex to navigate | Strong defaults, guided onboarding, presets |
+| Feature labels are meaningless | Curate high-quality labels, let users contribute |
+| WebGL compatibility issues | Fallback 2D view, progressive enhancement |
+
+---
+
+## Open Technical Questions
+
+1. **Multi-layer visualization:** How do we show features from multiple layers? Tabs? 3D depth? Merged space?
+
+2. **Attention vs. SAE features:** SAEs capture MLP activations. Should we also visualize attention patterns?
+
+3. **Local vs. cloud inference:** Can we do meaningful steering with client-side compute? Or always need server?
+
+4. **Mobile experience:** Is there a meaningful mobile experience? Or desktop-only?
+
+5. **Collaboration:** Real-time multi-user sessions? Complex but interesting.
+
+---
+
+*The infrastructure is ready. Neuronpedia + open models + WebGL. We just need to build the instrument.*
+
+
+================================================================================
+================================================================================
+DESIGN MOCKUPS PROMPT
+================================================================================
+
+You are a world-class UI/UX designer tasked with creating wireframe mockups and interface specifications for HORUS, a frontier creative instrument for navigating and sculpting in ideaspace.
+
+Based on the complete ideas documentation provided above, create the following design deliverables:
+
+1. **Main Application Layout Wireframe**
+   - Show the core 3D graph visualization area (left side, ~70% of viewport)
+   - Show the mixer panel with dials (right side, ~30% of viewport)
+   - Show any top navigation/header elements
+   - Show status indicators and metadata displays
+
+2. **The 3D Graph Visualization**
+   - Describe the visual hierarchy of nodes (size, color gradients based on activation)
+   - Edge rendering strategy (opacity, weight, color by connection type)
+   - Camera controls overlay/indicators
+   - How activation "glow" is represented (gold gradient from low to high)
+
+3. **Mixer Panel Specification**
+   - Dial component design (physical metaphor, interaction targets)
+   - How many dials visible at once, scroll/customization mechanism
+   - How traces are shown in the graph when hovering/dragging dials
+   - Group organization and labeling
+
+4. **Text Panel Mockup**
+   - Text input/output area layout
+   - Spectrogram visualization below text (time axis, feature axis, intensity as color)
+   - How text highlights correlate with graph highlights
+   - Scrubber/timeline controls for trajectory playback
+
+5. **Aesthetic Implementation Details**
+   - Color codes for all UI elements (using the exact hex values from aesthetics doc)
+   - Typography hierarchy and font choices
+   - Spacing/padding system
+   - Animation/transition specifications (duration, easing, when triggered)
+   - Glow effects and shadow specifications
+
+6. **Interaction States Mockup**
+   - Idle state (default appearance)
+   - Hover state (on nodes, edges, dials)
+   - Active/selected state (highlighted features, active dials)
+   - Generation in progress (animated trajectory, streaming text)
+   - Comparison mode (diff visualization)
+
+7. **Onboarding Flow**
+   - First-time user experience
+   - Suggested entry points (paste text, start with prompt, explore graph, etc.)
+   - Guided introduction to primitives (illuminate, amplify, navigate, etc.)
+
+8. **Mobile/Responsive Considerations**
+   - How does the layout adapt to smaller screens?
+   - Which features are desktop-only?
+   - Touch interaction considerations
+
+Create these mockups in a clear, detailed format that could serve as specifications for a front-end development team. Use ASCII art, ASCII diagrams, and text descriptions where visual tools aren't available. Be specific about:
+
+- Pixel dimensions and aspect ratios
+- Color values (hex codes from the aesthetics doc)
+- Typography (font family, size, weight, color)
+- Spacing and alignment
+- Interactive states and transitions
+- Visual hierarchy and information density
+
+The design should embody the HORUS aesthetic: Egyptian gnosis meets cosmic dark mode. Ancient temple meets futuristic instrument. Precise, intentional, beautiful.
+
+End the deliverables with a brief "Design Philosophy" section summarizing the key principles that guided these mockups.
+
+================================================================================
