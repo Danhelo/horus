@@ -84,12 +84,14 @@ function NodeLabel({
   distance,
   activation,
   distanceThreshold,
+  fontSizeMultiplier,
 }: {
   position: [number, number, number];
   label: string;
   distance: number;
   activation: number;
   distanceThreshold: number;
+  fontSizeMultiplier: number;
 }) {
   // Smart truncation based on distance
   const displayText = distance < distanceThreshold
@@ -111,7 +113,7 @@ function NodeLabel({
   return (
     <Billboard position={position} follow lockX={false} lockY={false} lockZ={false}>
       <Text
-        fontSize={0.8 * scale}
+        fontSize={0.8 * scale * fontSizeMultiplier}
         color={color}
         anchorX="center"
         anchorY="bottom"
@@ -140,6 +142,7 @@ export function NodeLabels() {
   const labelDistanceThreshold = useAppStore(
     (state) => state.labelDistanceThreshold
   );
+  const labelFontSize = useAppStore((state) => state.labelFontSize);
 
   // Get graph data
   const nodes = useAppStore((state) => state.nodes);
@@ -195,6 +198,7 @@ export function NodeLabels() {
           distance={labelData.distance}
           activation={labelData.activation}
           distanceThreshold={labelDistanceThreshold}
+          fontSizeMultiplier={labelFontSize}
         />
       ))}
     </group>

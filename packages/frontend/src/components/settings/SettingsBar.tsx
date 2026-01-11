@@ -12,6 +12,7 @@ function Slider({
   step = 1,
   onChange,
   unit = '',
+  labelWidth = 60,
 }: {
   label: string;
   value: number;
@@ -20,10 +21,11 @@ function Slider({
   step?: number;
   onChange: (value: number) => void;
   unit?: string;
+  labelWidth?: number;
 }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span style={{ fontSize: 11, color: '#9a9aaa', minWidth: 60 }}>{label}</span>
+      <span style={{ fontSize: 11, color: '#9a9aaa', minWidth: labelWidth }}>{label}</span>
       <input
         type="range"
         min={min}
@@ -103,7 +105,7 @@ function Toggle({
 }
 
 /**
- * SettingsBar component - persistent bottom bar with view settings.
+ * SettingsBar component - collapsible bottom bar with view settings.
  */
 export function SettingsBar() {
   // Get settings from store
@@ -113,6 +115,14 @@ export function SettingsBar() {
   const setLabelCount = useAppStore((state) => state.setLabelCount);
   const showLabels = useAppStore((state) => state.showLabels);
   const setShowLabels = useAppStore((state) => state.setShowLabels);
+  const labelFontSize = useAppStore((state) => state.labelFontSize);
+  const setLabelFontSize = useAppStore((state) => state.setLabelFontSize);
+  const edgeFadeStart = useAppStore((state) => state.edgeFadeStart);
+  const setEdgeFadeStart = useAppStore((state) => state.setEdgeFadeStart);
+  const edgeFadeEnd = useAppStore((state) => state.edgeFadeEnd);
+  const setEdgeFadeEnd = useAppStore((state) => state.setEdgeFadeEnd);
+  const isCollapsed = useAppStore((state) => state.settingsBarCollapsed);
+  const setCollapsed = useAppStore((state) => state.setSettingsBarCollapsed);
 
   // Edge settings from large data store
   const showEdges = useLargeDataStore((state) => state.edgesVisible);
@@ -139,6 +149,25 @@ export function SettingsBar() {
     [setShowEdges]
   );
 
+  const handleFontSizeChange = useCallback(
+    (value: number) => setLabelFontSize(value),
+    [setLabelFontSize]
+  );
+
+  const handleEdgeFadeStartChange = useCallback(
+    (value: number) => setEdgeFadeStart(value),
+    [setEdgeFadeStart]
+  );
+
+  const handleEdgeFadeEndChange = useCallback(
+    (value: number) => setEdgeFadeEnd(value),
+    [setEdgeFadeEnd]
+  );
+
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed(!isCollapsed);
+  }, [isCollapsed, setCollapsed]);
+
   return (
     <div
       style={{
@@ -155,15 +184,49 @@ export function SettingsBar() {
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           backdropFilter: 'blur(8px)',
           borderTop: '1px solid #2a2a35',
+          overflow: 'hidden',
+          transition: 'max-height 200ms ease-out',
+          maxHeight: isCollapsed ? 32 : 200,
         }}
       >
+        {/* Collapse toggle button */}
+        <button
+          onClick={toggleCollapsed}
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 16,
+            background: 'transparent',
+            border: 'none',
+            color: '#9a9aaa',
+            cursor: 'pointer',
+            padding: '4px 8px',
+            fontSize: 12,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            transition: 'color 150ms ease',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-gold)')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = '#9a9aaa')}
+        >
+          <span style={{ transform: isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 200ms ease' }}>
+            ▼
+          </span>
+          {isCollapsed ? 'Settings' : ''}
+        </button>
+
         <div
           style={{
-            maxWidth: 800,
+            maxWidth: 1200,
             margin: '0 auto',
             padding: '8px 16px',
+            opacity: isCollapsed ? 0 : 1,
+            transition: 'opacity 150ms ease',
+            pointerEvents: isCollapsed ? 'none' : 'auto',
           }}
         >
+          {/* Row 1: Camera & Labels */}
           <div
             style={{
               display: 'flex',
@@ -171,6 +234,7 @@ export function SettingsBar() {
               justifyContent: 'center',
               gap: 24,
               flexWrap: 'wrap',
+              marginBottom: 8,
             }}
           >
             {/* Movement Speed */}
@@ -197,21 +261,65 @@ export function SettingsBar() {
               onChange={handleLabelCountChange}
             />
 
+            {/* Label Font Size */}
+            <Slider
+              label="Text"
+              value={labelFontSize}
+              min={0.5}
+              max={2}
+              step={0.1}
+              onChange={handleFontSizeChange}
+              unit="x"
+            />
+
             {/* Show Labels Toggle */}
             <Toggle
               label="Show"
               checked={showLabels}
               onChange={handleShowLabelsChange}
             />
+          </div>
 
-            {/* Divider */}
-            <div style={{ height: 16, width: 1, backgroundColor: '#3a3a45' }} />
-
+          {/* Row 2: Edges */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 24,
+              flexWrap: 'wrap',
+            }}
+          >
             {/* Show Edges Toggle */}
             <Toggle
               label="Edges"
               checked={showEdges}
               onChange={handleShowEdgesChange}
+            />
+
+            {/* Divider */}
+            <div style={{ height: 16, width: 1, backgroundColor: '#3a3a45' }} />
+
+            {/* Edge Fade Start */}
+            <Slider
+              label="Fade Start"
+              value={edgeFadeStart}
+              min={20}
+              max={80}
+              step={5}
+              onChange={handleEdgeFadeStartChange}
+              labelWidth={70}
+            />
+
+            {/* Edge Fade End */}
+            <Slider
+              label="Fade End"
+              value={edgeFadeEnd}
+              min={50}
+              max={150}
+              step={5}
+              onChange={handleEdgeFadeEndChange}
+              labelWidth={70}
             />
           </div>
         </div>

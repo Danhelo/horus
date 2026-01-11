@@ -5,15 +5,26 @@ import { useAppStore, useLargeDataStore } from '../../stores';
 // Update interval for region detection (ms)
 const UPDATE_INTERVAL = 500;
 
+// Base search radius at distance 0
+const BASE_SEARCH_RADIUS = 30;
+
+interface ConceptWithCount {
+  word: string;
+  count: number;
+}
+
 interface RegionInfo {
   nearbyLabels: string[];
-  dominantConcepts: string[];
+  dominantConcepts: ConceptWithCount[];
+  nearbyCount: number;
+  searchRadius: number;
+  density: number; // features per unit volume
 }
 
 /**
- * Extract common words/concepts from a list of labels
+ * Extract common words/concepts from a list of labels with counts
  */
-function extractDominantConcepts(labels: string[], maxConcepts: number = 3): string[] {
+function extractDominantConcepts(labels: string[], maxConcepts: number = 3): ConceptWithCount[] {
   const wordFreq = new Map<string, number>();
   const stopWords = new Set([
     'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
@@ -37,13 +48,31 @@ function extractDominantConcepts(labels: string[], maxConcepts: number = 3): str
     }
   }
 
-  // Sort by frequency and take top N
+  // Sort by frequency and take top N, returning with counts
   const sorted = Array.from(wordFreq.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, maxConcepts)
-    .map(([word]) => word);
+    .map(([word, count]) => ({ word, count }));
 
   return sorted;
+}
+
+/**
+ * Compute adaptive search radius based on camera distance from origin
+ * Closer = smaller radius (local context), farther = larger radius (regional context)
+ */
+function computeSearchRadius(cameraDistance: number): number {
+  // Scale from BASE_SEARCH_RADIUS at distance 0 to ~2x at distance 100+
+  return BASE_SEARCH_RADIUS * (1 + cameraDistance / 100);
+}
+
+/**
+ * Compute feature density (features per unit volume)
+ */
+function computeDensity(nearbyCount: number, searchRadius: number): number {
+  // Volume of sphere = (4/3) * π * r³
+  const volume = (4 / 3) * Math.PI * Math.pow(searchRadius, 3);
+  return nearbyCount / volume;
 }
 
 /**
@@ -53,6 +82,9 @@ export function RegionContext() {
   const [regionInfo, setRegionInfo] = useState<RegionInfo>({
     nearbyLabels: [],
     dominantConcepts: [],
+    nearbyCount: 0,
+    searchRadius: BASE_SEARCH_RADIUS,
+    density: 0,
   });
   const lastUpdateRef = useRef<number>(0);
 
@@ -94,12 +126,21 @@ export function RegionContext() {
       lastUpdateRef.current = now;
 
       if (labeledNodes.length === 0) {
-        setRegionInfo({ nearbyLabels: [], dominantConcepts: [] });
+        setRegionInfo({
+          nearbyLabels: [],
+          dominantConcepts: [],
+          nearbyCount: 0,
+          searchRadius: BASE_SEARCH_RADIUS,
+          density: 0,
+        });
         return;
       }
 
       const cameraPos = new THREE.Vector3(...position);
-      const searchRadius = 30; // Units to search for context
+      const cameraDistance = cameraPos.length();
+
+      // Adaptive search radius based on camera distance
+      const searchRadius = computeSearchRadius(cameraDistance);
 
       // Find nearby labeled nodes
       const nearby = labeledNodes
@@ -109,14 +150,18 @@ export function RegionContext() {
         }))
         .filter((node) => node.distance < searchRadius)
         .sort((a, b) => a.distance - b.distance)
-        .slice(0, 20); // Top 20 nearest
+        .slice(0, 30); // Top 30 nearest for concept extraction
 
       const nearbyLabels = nearby.map((n) => n.label);
       const dominantConcepts = extractDominantConcepts(nearbyLabels);
+      const density = computeDensity(nearby.length, searchRadius);
 
       setRegionInfo({
         nearbyLabels: nearbyLabels.slice(0, 5), // Show first 5
         dominantConcepts,
+        nearbyCount: nearby.length,
+        searchRadius,
+        density,
       });
     };
 
@@ -137,9 +182,33 @@ export function RegionContext() {
     );
   }
 
+  // Format density for display (scientific notation for small numbers)
+  const densityDisplay = regionInfo.density > 0.001
+    ? regionInfo.density.toFixed(3)
+    : regionInfo.density.toExponential(1);
+
   return (
     <div>
-      {/* Dominant concepts */}
+      {/* Region stats bar */}
+      <div style={{
+        display: 'flex',
+        gap: 12,
+        marginBottom: 8,
+        fontSize: 10,
+        color: '#6b6b7b',
+      }}>
+        <span title="Labeled features in search radius">
+          <span style={{ color: 'var(--color-gold-dim)' }}>{regionInfo.nearbyCount}</span> nearby
+        </span>
+        <span title="Feature density (features per cubic unit)">
+          ρ = <span style={{ color: 'var(--color-gold-dim)' }}>{densityDisplay}</span>
+        </span>
+        <span title="Adaptive search radius">
+          r = <span style={{ color: 'var(--color-gold-dim)' }}>{regionInfo.searchRadius.toFixed(0)}</span>
+        </span>
+      </div>
+
+      {/* Dominant concepts with counts */}
       {regionInfo.dominantConcepts.length > 0 && (
         <div style={{ marginBottom: 8 }}>
           <div style={{ color: '#6b6b7b', fontSize: 10, marginBottom: 4 }}>Dominant Concepts</div>
@@ -153,9 +222,20 @@ export function RegionContext() {
                   color: 'var(--color-gold-dim)',
                   fontSize: 11,
                   borderRadius: 3,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
                 }}
+                title={`"${concept.word}" appears in ${concept.count} nearby features`}
               >
-                {concept}
+                {concept.word}
+                <span style={{
+                  fontSize: 9,
+                  opacity: 0.7,
+                  fontFamily: 'var(--font-mono)',
+                }}>
+                  ({concept.count})
+                </span>
               </span>
             ))}
           </div>
