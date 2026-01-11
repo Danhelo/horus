@@ -7,14 +7,25 @@ import {
   createNeuronpediaError,
 } from '../middleware/error-handler';
 import type { FeatureData } from '../db/schema/features';
+import {
+  getModelConfig,
+  getSourceId,
+  isModelSupported,
+  getSupportedModelIds,
+  isValidLayer,
+  isValidFeatureIndex,
+  DEFAULT_MODEL_ID,
+  type ModelConfig,
+} from '@horus/shared';
 
 /**
- * Gemma-2-2B model configuration
+ * @deprecated Use getModelConfig() from @horus/shared instead
+ * Kept for backward compatibility during migration
  */
 export const GEMMA_CONFIG = {
   modelId: 'gemma-2-2b',
   layers: 26, // 0-25
-  getSourceId: (layer: number) => `${layer}-gemmascope-res-16k`,
+  getSourceId: (layer: number) => getSourceId('gemma-2-2b', layer),
   featuresPerLayer: 16384,
   contextSize: 1024,
 };
@@ -70,6 +81,7 @@ export interface SearchResult {
  */
 export interface SteerRequest {
   prompt: string;
+  modelId?: string; // Target model ID (defaults to DEFAULT_MODEL_ID)
   features: Array<{
     modelId: string;
     layer: string; // source ID format (e.g., "12-gemmascope-res-16k")
@@ -264,7 +276,8 @@ class NeuronpediaService {
     layer: number,
     index: number
   ): Promise<FeatureData> {
-    const sourceId = GEMMA_CONFIG.getSourceId(layer);
+    // Use shared getSourceId for dynamic model support
+    const sourceId = getSourceId(model, layer);
     const feature = await this.fetchFromApi<FeatureData>(
       `/api/feature/${model}/${sourceId}/${index}`
     );
@@ -327,9 +340,18 @@ class NeuronpediaService {
    */
   async getActivations(
     text: string,
-    model: string = 'gemma-2-2b',
+    model: string = DEFAULT_MODEL_ID,
     layers?: number[]
   ): Promise<ActivationResponse> {
+    // Validate model
+    if (!isModelSupported(model)) {
+      throw new AppError(
+        `Unsupported model: ${model}. Supported models: ${getSupportedModelIds().join(', ')}`,
+        400,
+        'BAD_REQUEST'
+      );
+    }
+
     // Validate text length
     if (text.length > 4096) {
       throw new AppError(
@@ -339,11 +361,26 @@ class NeuronpediaService {
       );
     }
 
-    // Use all layers if not specified
-    const targetLayers = layers || Array.from({ length: 26 }, (_, i) => i);
+    // Get model config for layer count
+    const modelConfig = getModelConfig(model);
 
-    // Build source IDs for requested layers
-    const sources = targetLayers.map((layer) => GEMMA_CONFIG.getSourceId(layer));
+    // Use all layers if not specified
+    const targetLayers =
+      layers || Array.from({ length: modelConfig.numLayers }, (_, i) => i);
+
+    // Validate requested layers
+    for (const layer of targetLayers) {
+      if (!isValidLayer(model, layer)) {
+        throw new AppError(
+          `Invalid layer ${layer} for model ${model}. Valid range: 0-${modelConfig.numLayers - 1}`,
+          400,
+          'BAD_REQUEST'
+        );
+      }
+    }
+
+    // Build source IDs for requested layers using shared function
+    const sources = targetLayers.map((layer) => getSourceId(model, layer));
 
     const response = await this.fetchFromApi<{
       tokens: string[];
@@ -379,8 +416,16 @@ class NeuronpediaService {
   async searchFeatures(
     query: string,
     limit: number = 20,
-    model: string = 'gemma-2-2b'
+    model: string = DEFAULT_MODEL_ID
   ): Promise<SearchResult[]> {
+    // Validate model
+    if (!isModelSupported(model)) {
+      throw new AppError(
+        `Unsupported model: ${model}. Supported models: ${getSupportedModelIds().join(', ')}`,
+        400,
+        'BAD_REQUEST'
+      );
+    }
     const cacheKey = `search:${model}:${query}:${limit}`;
 
     // Check search cache
@@ -429,6 +474,18 @@ class NeuronpediaService {
    * so this returns the complete response which can be tokenized for streaming
    */
   async steer(request: SteerRequest): Promise<SteerResponse> {
+    // Use provided model or default
+    const modelId = request.modelId ?? DEFAULT_MODEL_ID;
+
+    // Validate model
+    if (!isModelSupported(modelId)) {
+      throw new AppError(
+        `Unsupported model: ${modelId}. Supported models: ${getSupportedModelIds().join(', ')}`,
+        400,
+        'BAD_REQUEST'
+      );
+    }
+
     // Validate feature strengths
     for (const feature of request.features) {
       if (Math.abs(feature.strength) > 100) {
@@ -452,7 +509,7 @@ class NeuronpediaService {
     const response = await this.fetchFromApi<SteerResponse>('/api/steer', {
       method: 'POST',
       body: JSON.stringify({
-        modelId: 'gemma-2-2b',
+        modelId,
         prompt: request.prompt,
         features: request.features,
         temperature: request.temperature ?? 0.7,

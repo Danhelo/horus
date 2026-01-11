@@ -1,7 +1,12 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { featuresRoutes, activationsRoutes, generationRoutes } from './routes';
+import {
+  featuresRoutes,
+  activationsRoutes,
+  generationRoutes,
+  modelsRoutes,
+} from './routes';
 import { errorHandler, notFoundHandler } from './middleware/error-handler';
 import { generalRateLimit } from './middleware/rate-limit';
 
@@ -34,6 +39,7 @@ const app = new Hono()
     });
   })
   // API routes
+  .route('/api/models', modelsRoutes)
   .route('/api/features', featuresRoutes)
   .route('/api/activations', activationsRoutes)
   .route('/api/generation', generationRoutes)
