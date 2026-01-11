@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "modelId": "gemma-2-2b",
+    "layers": [12],
+    "version": "0.1.0-filler",
+    "note": "FILLER DATA - Replace with real UMAP positions from SAE decoder vectors. See specs/UMAP-001-feature-positions.md"
+  },
+  "nodes": [
+    {"id": "gemma-2-2b:12:0", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 0}, "position": [0.0, 0.0, 0.0], "label": "label/labels", "category": "syntax"},
+    {"id": "gemma-2-2b:12:1", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 1}, "position": [1.2, 0.3, -0.5], "label": "circular shapes", "category": "visual"},
+    {"id": "gemma-2-2b:12:2", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 2}, "position": [-0.8, 1.1, 0.2], "label": "memory/recall", "category": "cognition"},
+    {"id": "gemma-2-2b:12:3", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 3}, "position": [2.1, -0.4, 1.3], "label": "formal tone", "category": "style"},
+    {"id": "gemma-2-2b:12:4", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 4}, "position": [-1.5, -1.2, 0.8], "label": "technical terms", "category": "domain"},
+    {"id": "gemma-2-2b:12:5", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 5}, "position": [0.5, 2.0, -1.1], "label": "emotion/feeling", "category": "affect"},
+    {"id": "gemma-2-2b:12:6", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 6}, "position": [-2.2, 0.5, -0.3], "label": "numbers/quantity", "category": "math"},
+    {"id": "gemma-2-2b:12:7", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 7}, "position": [1.8, 1.5, 0.9], "label": "proper nouns", "category": "entity"},
+    {"id": "gemma-2-2b:12:8", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 8}, "position": [-0.3, -2.1, 1.5], "label": "negation", "category": "syntax"},
+    {"id": "gemma-2-2b:12:9", "featureId": {"modelId": "gemma-2-2b", "layer": 12, "index": 9}, "position": [2.5, 0.8, -0.7], "label": "causation", "category": "logic"}
+  ],
+  "edges": [
+    {"id": "e0", "source": "gemma-2-2b:12:0", "target": "gemma-2-2b:12:7", "weight": 0.374, "type": "coactivation"},
+    {"id": "e1", "source": "gemma-2-2b:12:2", "target": "gemma-2-2b:12:5", "weight": 0.521, "type": "coactivation"},
+    {"id": "e2", "source": "gemma-2-2b:12:3", "target": "gemma-2-2b:12:4", "weight": 0.312, "type": "coactivation"},
+    {"id": "e3", "source": "gemma-2-2b:12:6", "target": "gemma-2-2b:12:9", "weight": 0.445, "type": "coactivation"},
+    {"id": "e4", "source": "gemma-2-2b:12:1", "target": "gemma-2-2b:12:2", "weight": 0.289, "type": "coactivation"},
+    {"id": "e5", "source": "gemma-2-2b:12:5", "target": "gemma-2-2b:12:8", "weight": 0.367, "type": "coactivation"},
+    {"id": "e6", "source": "gemma-2-2b:12:0", "target": "gemma-2-2b:12:3", "weight": 0.295, "type": "coactivation"},
+    {"id": "e7", "source": "gemma-2-2b:12:4", "target": "gemma-2-2b:12:6", "weight": 0.412, "type": "coactivation"},
+    {"id": "e8", "source": "gemma-2-2b:12:7", "target": "gemma-2-2b:12:9", "weight": 0.334, "type": "coactivation"},
+    {"id": "e9", "source": "gemma-2-2b:12:1", "target": "gemma-2-2b:12:8", "weight": 0.256, "type": "coactivation"}
+  ]
+}

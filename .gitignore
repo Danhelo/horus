@@ -12,6 +12,7 @@ build/
 
 # Local data
 data/
+!packages/frontend/public/data/
 *.db
 *.sqlite
 *.sqlite3
