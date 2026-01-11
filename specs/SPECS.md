@@ -18,7 +18,7 @@ HORUS is a creative instrument for navigating and sculpting in **ideaspace**—t
 ## Phase 1: Static Viewer
 
 **Goal**: Load a feature graph, navigate it, display activations
-**Status**: In Progress
+**Status**: In Progress (UMAP pipeline blocking)
 
 | Spec | Title | Status | Package |
 |------|-------|--------|---------|
@@ -28,6 +28,9 @@ HORUS is a creative instrument for navigating and sculpting in **ideaspace**—t
 | [GRAPH-004](phase-1/GRAPH-004-camera.md) | Camera Controls | Complete | frontend |
 | [ACT-001](phase-1/ACT-001-display.md) | Activation Display | Complete | frontend |
 | [API-001](phase-1/API-001-neuronpedia.md) | Neuronpedia Client | Complete | backend |
+| [UMAP-001](phase-1/UMAP-001-feature-positions.md) | **Feature Positions** | **Draft (BLOCKER)** | backend + Python |
+
+> **CRITICAL**: UMAP-001 is blocking Phase 2. Currently using filler data at `packages/frontend/public/data/graph-filler-500.json`. Real positions require computing UMAP from SAE decoder vectors.
 
 ## Phase 2: Interactive Explorer
 

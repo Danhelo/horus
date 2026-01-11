@@ -4,14 +4,17 @@ node_modules/
 
 # Build outputs
 dist/
+build/
 .next/
 .nuxt/
 .output/
+*.tsbuildinfo
 
 # Local data
 data/
 *.db
 *.sqlite
+*.sqlite3
 
 # Environment
 .env
@@ -24,20 +27,51 @@ data/
 .idea/
 *.swp
 *.swo
+*.sublime-*
 
 # OS
 .DS_Store
 Thumbs.db
+*.DS_Store
 
 # Logs
 *.log
 npm-debug.log*
 pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Test
 coverage/
 .nyc_output/
+*.lcov
+.vitest/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.turbo/
+.turbo/
+
+# TypeScript
+*.tsbuildinfo
 
 # Misc
 *.tgz
-.turbo/
+*.tar.gz
+*.zip
+
+# Drizzle
+drizzle/meta/
+
+# Vite
+*.local
+
+# Debug
+debug.log
+
+# Optional: local development overrides
+.claude/settings.local.json
