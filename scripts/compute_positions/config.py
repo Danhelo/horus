@@ -5,8 +5,15 @@ Model configurations, UMAP parameters, and API settings.
 """
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 import os
+
+from dotenv import load_dotenv
+
+# Load .env file from the same directory as this config
+_config_dir = Path(__file__).parent
+load_dotenv(_config_dir / ".env")
 
 
 # =============================================================================
@@ -129,15 +136,22 @@ class NeuronpediaConfig:
     top_k_labels: int = 1000      # How many features to fetch labels for
 
     def __post_init__(self):
-        # Try to get API key from environment if not provided
+        # Load API key from environment if not provided
         if self.api_key is None:
             self.api_key = os.environ.get("NEURONPEDIA_API_KEY")
 
+    def validate(self) -> None:
+        """Validate config, raise if API key is missing."""
+        if not self.api_key:
+            raise ValueError(
+                "NEURONPEDIA_API_KEY is required.\n"
+                "Set it in scripts/compute_positions/.env or as an environment variable.\n"
+                "Get your API key from https://www.neuronpedia.org/api-doc"
+            )
 
-# Default API key (from user input)
-DEFAULT_NEURONPEDIA_CONFIG = NeuronpediaConfig(
-    api_key="sk-np-kmAMMWifzhzcij0WQEXMAIr4036aLJzMyey2hzcGYtA0"
-)
+
+# Default config - API key loaded from NEURONPEDIA_API_KEY environment variable
+DEFAULT_NEURONPEDIA_CONFIG = NeuronpediaConfig()
 
 
 # =============================================================================
