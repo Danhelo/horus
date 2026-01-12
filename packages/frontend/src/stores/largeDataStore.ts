@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
 import type { GraphData } from '@horus/shared';
+import { COLORS } from '../components/graph/colors';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -20,6 +21,10 @@ interface LargeDataStore {
 
   // Map node IDs to array indices
   nodeIndexMap: Map<string, number>;
+
+  // Map edge keys to edge indices (for vicinity pulse animation)
+  // Key format: "source|target" (sorted alphabetically)
+  edgeIndexMap: Map<string, number>;
 
   // Node count for InstancedMesh
   nodeCount: number;
@@ -41,6 +46,11 @@ interface LargeDataStore {
 // Store
 // ---------------------------------------------------------------------------
 
+// Helper to create canonical edge key (sorted to handle bidirectional)
+export function makeEdgeKey(source: string, target: string): string {
+  return source < target ? `${source}|${target}` : `${target}|${source}`;
+}
+
 export const useLargeDataStore = create<LargeDataStore>()(
   subscribeWithSelector((set, get) => ({
     positions: null,
@@ -50,6 +60,7 @@ export const useLargeDataStore = create<LargeDataStore>()(
     edgeColors: null,
     edgeCount: 0,
     nodeIndexMap: new Map(),
+    edgeIndexMap: new Map(),
     nodeCount: 0,
     edgeWeightThreshold: 0.1,
     edgesVisible: true,
@@ -71,10 +82,10 @@ export const useLargeDataStore = create<LargeDataStore>()(
         positions[index * 3 + 1] = node.position[1];
         positions[index * 3 + 2] = node.position[2];
 
-        // Default color: inactive (dark gray-blue)
-        colors[index * 3] = 0.16; // R
-        colors[index * 3 + 1] = 0.16; // G
-        colors[index * 3 + 2] = 0.23; // B
+        // Default color: inactive (from centralized color palette)
+        colors[index * 3] = COLORS.inactive.r;
+        colors[index * 3 + 1] = COLORS.inactive.g;
+        colors[index * 3 + 2] = COLORS.inactive.b;
 
         // Default scale
         scales[index] = 1.0;
@@ -96,7 +107,8 @@ export const useLargeDataStore = create<LargeDataStore>()(
       let writeIndex = 0;
       const maxEdges = validEdges.length;
       const edgePositions = new Float32Array(maxEdges * 6); // 2 points * 3 coords
-      const edgeColors = new Float32Array(maxEdges * 6); // 2 points * 3 colors
+      const edgeColors = new Float32Array(maxEdges * 6);    // 2 points * 3 colors
+      const edgeIndexMap = new Map<string, number>();
 
       for (let i = 0; i < maxEdges; i++) {
         const edge = validEdges[i];
@@ -123,6 +135,9 @@ export const useLargeDataStore = create<LargeDataStore>()(
         edgeColors[offset + 1] = edgeColors[offset + 4] = intensity;
         edgeColors[offset + 2] = edgeColors[offset + 5] = intensity;
 
+        // Store edge index for vicinity pulse animation
+        edgeIndexMap.set(makeEdgeKey(edge.source, edge.target), writeIndex);
+
         writeIndex++;
       }
 
@@ -138,6 +153,7 @@ export const useLargeDataStore = create<LargeDataStore>()(
         colors,
         scales,
         nodeIndexMap,
+        edgeIndexMap,
         nodeCount,
         edgePositions: trimmedEdgePositions,
         edgeColors: trimmedEdgeColors,
@@ -170,6 +186,7 @@ export const useLargeDataStore = create<LargeDataStore>()(
         edgePositions: null,
         edgeColors: null,
         nodeIndexMap: new Map(),
+        edgeIndexMap: new Map(),
         nodeCount: 0,
         edgeCount: 0,
       });
