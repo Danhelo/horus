@@ -1,12 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import {
-  featuresRoutes,
-  activationsRoutes,
-  generationRoutes,
-  modelsRoutes,
-} from './routes';
+import { featuresRoutes, activationsRoutes, generationRoutes, modelsRoutes } from './routes';
 import { errorHandler, notFoundHandler } from './middleware/error-handler';
 import { generalRateLimit } from './middleware/rate-limit';
 

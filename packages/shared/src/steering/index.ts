@@ -16,10 +16,7 @@ export type {
 export { DEFAULT_STEERING_CONFIG, CONFLICT_THRESHOLDS } from './types';
 
 // Utilities
-export {
-  nodeIdToNeuronpediaSource,
-  steeringVectorToRequest,
-} from './types';
+export { nodeIdToNeuronpediaSource, steeringVectorToRequest } from './types';
 
 // Type guards
 export {

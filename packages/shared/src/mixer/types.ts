@@ -99,9 +99,7 @@ export function parseDialId(id: string): { groupId: string; name: string } | nul
  * Get the min/max values for a dial based on its polarity
  */
 export function getDialRange(polarity: DialPolarity): { min: number; max: number } {
-  return polarity === 'bipolar'
-    ? { min: -1, max: 1 }
-    : { min: 0, max: 1 };
+  return polarity === 'bipolar' ? { min: -1, max: 1 } : { min: 0, max: 1 };
 }
 
 /**

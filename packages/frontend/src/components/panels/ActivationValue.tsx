@@ -52,7 +52,8 @@ export function ActivationValue({ nodeId }: ActivationValueProps) {
             style={{
               width: `${percentage}%`,
               height: '100%',
-              background: 'linear-gradient(90deg, var(--color-gold-dim) 0%, var(--color-gold) 50%, var(--color-gold-bright) 100%)',
+              background:
+                'linear-gradient(90deg, var(--color-gold-dim) 0%, var(--color-gold) 50%, var(--color-gold-bright) 100%)',
               borderRadius: 4,
               transition: 'width 200ms ease-out',
             }}

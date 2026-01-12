@@ -1,9 +1,4 @@
-import type {
-  TrajectoryPoint,
-  Trajectory,
-  TrajectoryMetadata,
-  PlaybackState,
-} from './types';
+import type { TrajectoryPoint, Trajectory, TrajectoryMetadata, PlaybackState } from './types';
 import { isPosition } from '../graph';
 
 const VALID_PLAYBACK_STATES: PlaybackState[] = ['idle', 'playing', 'paused', 'seeking'];
@@ -23,7 +18,11 @@ export function isTrajectoryPoint(value: unknown): value is TrajectoryPoint {
   const obj = value as Record<string, unknown>;
 
   // Validate required fields
-  if (typeof obj.tokenIndex !== 'number' || !Number.isInteger(obj.tokenIndex) || obj.tokenIndex < 0) {
+  if (
+    typeof obj.tokenIndex !== 'number' ||
+    !Number.isInteger(obj.tokenIndex) ||
+    obj.tokenIndex < 0
+  ) {
     return false;
   }
 
@@ -112,7 +111,11 @@ export function isSerializedTrajectoryPoint(
   if (typeof value !== 'object' || value === null) return false;
   const obj = value as Record<string, unknown>;
 
-  if (typeof obj.tokenIndex !== 'number' || !Number.isInteger(obj.tokenIndex) || obj.tokenIndex < 0) {
+  if (
+    typeof obj.tokenIndex !== 'number' ||
+    !Number.isInteger(obj.tokenIndex) ||
+    obj.tokenIndex < 0
+  ) {
     return false;
   }
 

@@ -2,7 +2,7 @@
 
 ## The Name
 
-**HORUS** — The falcon-headed god of the sky. The Eye that sees all. In Egyptian mythology, the Eye of Horus represents protection, royal power, and good health. But more than that: it represents *seeing what was hidden*.
+**HORUS** — The falcon-headed god of the sky. The Eye that sees all. In Egyptian mythology, the Eye of Horus represents protection, royal power, and good health. But more than that: it represents _seeing what was hidden_.
 
 We build HORUS to give humans the Eye—to see the soul of ideas, to witness the hidden structure of thought as it moves through a language model's mind.
 
@@ -20,11 +20,11 @@ We build HORUS to give humans the Eye—to see the soul of ideas, to witness the
 
 The dominant interface for AI is a text box. You type words. The model interprets them. You hope it understood. This indirection—language as the only bridge between human intent and model behavior—is lossy, opaque, and limiting.
 
-Prompting is like driving a car by describing where you want to go in prose, hoping the GPS understands. What if you could just *point*?
+Prompting is like driving a car by describing where you want to go in prose, hoping the GPS understands. What if you could just _point_?
 
 ### 2. Features are the true primitives
 
-Inside language models, there are no words. There are *features*—patterns of activation that represent concepts, relationships, tones, structures. These features are what the model actually "thinks" in. Language is just the I/O layer.
+Inside language models, there are no words. There are _features_—patterns of activation that represent concepts, relationships, tones, structures. These features are what the model actually "thinks" in. Language is just the I/O layer.
 
 Sparse autoencoders (SAEs) let us extract these features. Anthropic's circuit tracing lets us see how they connect. Neuronpedia makes them accessible via API. The infrastructure exists to work at this level.
 
@@ -32,7 +32,7 @@ Sparse autoencoders (SAEs) let us extract these features. Anthropic's circuit tr
 
 ### 3. Tools are combinatorial explosions
 
-A great tool is not a single capability. It's a *space of possibilities*—a set of primitives that combine in ways the designer didn't anticipate. The spreadsheet. The synthesizer. The web browser. Each enables more than it prescribes.
+A great tool is not a single capability. It's a _space of possibilities_—a set of primitives that combine in ways the designer didn't anticipate. The spreadsheet. The synthesizer. The web browser. Each enables more than it prescribes.
 
 HORUS must be this kind of tool. Not a fixed workflow, but a **possibility space**. The design must be just right: not too prescriptive (limiting), not too overwhelming (paralyzing). The sweet spot where emergence happens.
 
@@ -40,13 +40,13 @@ HORUS must be this kind of tool. Not a fixed workflow, but a **possibility space
 
 Image models think in spatial patches. Goodfire's Paint with Ember lets you paint directly on those patches. The interface matches the substrate.
 
-Language models think in sequential feature activations. The interface should be a *traversable space* of features—a graph you can navigate, a territory you can explore, paths you can trace and steer.
+Language models think in sequential feature activations. The interface should be a _traversable space_ of features—a graph you can navigate, a territory you can explore, paths you can trace and steer.
 
 ### 5. Flow dissolves the read/write boundary
 
-The magic isn't in "analyzing text" or "generating text" as separate modes. It's in the *fluid transition* between them. You paste text, see its feature fingerprint light up. You drag a node, steering the model. New text flows. The fingerprint shifts. You respond.
+The magic isn't in "analyzing text" or "generating text" as separate modes. It's in the _fluid transition_ between them. You paste text, see its feature fingerprint light up. You drag a node, steering the model. New text flows. The fingerprint shifts. You respond.
 
-This is not turn-taking. It's a continuous feedback loop. The boundary between observation and creation dissolves. That dissolution *is* the product.
+This is not turn-taking. It's a continuous feedback loop. The boundary between observation and creation dissolves. That dissolution _is_ the product.
 
 ---
 
@@ -58,7 +58,7 @@ When someone uses HORUS, they should feel:
 - **"I saw my own ideas in a new way."** — The visualization revealed structure they sensed but couldn't articulate.
 - **"I didn't know I could make an LLM do that."** — The control was finer-grained than prompting allowed.
 
-The emotional residue is *gnosis*—the sense of having glimpsed something true about how minds (artificial or otherwise) process meaning.
+The emotional residue is _gnosis_—the sense of having glimpsed something true about how minds (artificial or otherwise) process meaning.
 
 ---
 
@@ -98,4 +98,4 @@ If yes, we succeeded. If no, we over-designed or under-designed. Recalibrate.
 
 ---
 
-*The eye opens. The hidden becomes visible. Let's build.*
+_The eye opens. The hidden becomes visible. Let's build._

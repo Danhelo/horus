@@ -9,10 +9,7 @@ import {
   isErrorEvent,
   DEFAULT_GENERATION_OPTIONS,
 } from '../../generation/types';
-import type {
-  GenerationError,
-  StreamingGenerationEvent,
-} from '../../generation/types';
+import type { GenerationError, StreamingGenerationEvent } from '../../generation/types';
 import type { SteeringVector } from '../../steering/types';
 
 describe('DEFAULT_GENERATION_OPTIONS', () => {

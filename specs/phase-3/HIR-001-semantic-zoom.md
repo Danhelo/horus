@@ -1,11 +1,11 @@
 # HIR-001: Semantic Zoom
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | HIR-001 |
-| **Phase** | 3 - Dynamic Hierarchy |
-| **Status** | Draft |
-| **Package** | `@horus/frontend` |
+| Field       | Value                 |
+| ----------- | --------------------- |
+| **Spec ID** | HIR-001               |
+| **Phase**   | 3 - Dynamic Hierarchy |
+| **Status**  | Draft                 |
+| **Package** | `@horus/frontend`     |
 
 ## Summary
 
@@ -18,14 +18,14 @@ Implement semantic zoom - the ability to explore feature hierarchies by zooming 
 ```typescript
 interface HierarchyNode {
   id: string;
-  level: number;                   // 0 = root, higher = more specific
+  level: number; // 0 = root, higher = more specific
   label: string;
-  children: string[];              // Child node IDs
-  parent: string | null;           // Parent node ID
-  features: string[];              // Leaf feature IDs (only at lowest level)
+  children: string[]; // Child node IDs
+  parent: string | null; // Parent node ID
+  features: string[]; // Leaf feature IDs (only at lowest level)
   centroid: [number, number, number]; // Position in graph space
-  radius: number;                  // Bounding sphere radius
-  memberCount: number;             // Number of leaf features contained
+  radius: number; // Bounding sphere radius
+  memberCount: number; // Number of leaf features contained
 }
 
 interface HierarchyLevel {
@@ -42,6 +42,7 @@ interface GraphHierarchy {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Hierarchy supports arbitrary depth levels
 - [ ] Each level has complete coverage (all features in exactly one node)
 - [ ] Efficient lookup from feature to containing cluster
@@ -53,9 +54,9 @@ Map camera distance to hierarchy level.
 
 ```typescript
 interface ZoomConfig {
-  levelDistances: number[];        // Distance thresholds per level
-  transitionDuration: number;      // Animation duration (ms)
-  hysteresis: number;              // Prevent rapid switching
+  levelDistances: number[]; // Distance thresholds per level
+  transitionDuration: number; // Animation duration (ms)
+  hysteresis: number; // Prevent rapid switching
 }
 
 // Example:
@@ -69,6 +70,7 @@ function getVisibleNodes(hierarchy: GraphHierarchy, level: number): HierarchyNod
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Smooth level transitions as camera zooms
 - [ ] Hysteresis prevents flickering at boundaries
 - [ ] Level changes animate (nodes morph, don't pop)
@@ -80,9 +82,9 @@ Hierarchy is not fully pre-computed. It's generated on-demand as users explore.
 
 ```typescript
 interface HierarchyRequest {
-  parentNode: string;              // Node to expand
-  contextFeatures?: string[];      // Currently active features (for relevance)
-  userIntent?: string;             // Optional natural language context
+  parentNode: string; // Node to expand
+  contextFeatures?: string[]; // Currently active features (for relevance)
+  userIntent?: string; // Optional natural language context
 }
 
 interface HierarchyResponse {
@@ -109,6 +111,7 @@ async function expandNode(request: HierarchyRequest): Promise<HierarchyResponse>
    - Invalidate cache periodically or on user action
 
 **Acceptance Criteria:**
+
 - [ ] Expand node generates children on demand
 - [ ] Clustering fallback works offline
 - [ ] LLM grouping produces human-readable labels
@@ -119,12 +122,14 @@ async function expandNode(request: HierarchyRequest): Promise<HierarchyResponse>
 When zoom level changes, nodes should smoothly morph.
 
 **Zoom Out (expanding to cluster):**
+
 1. Individual feature nodes begin moving toward cluster centroid
 2. Nodes fade out as they merge
 3. Cluster node fades in at centroid
 4. Cluster inherits combined glow from activated features
 
 **Zoom In (cluster to features):**
+
 1. Cluster node pulses
 2. Child nodes emerge from cluster centroid
 3. Children spread to their positions
@@ -132,13 +137,14 @@ When zoom level changes, nodes should smoothly morph.
 
 ```typescript
 interface TransitionConfig {
-  duration: number;                // Default: 400ms
+  duration: number; // Default: 400ms
   easing: 'easeInOut' | 'spring';
-  staggerDelay: number;            // Delay between children (for sequential reveal)
+  staggerDelay: number; // Delay between children (for sequential reveal)
 }
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Transitions are smooth, not jarring
 - [ ] No visual "pop" when switching levels
 - [ ] Activated features maintain glow through transition
@@ -149,12 +155,14 @@ interface TransitionConfig {
 Clusters behave like enhanced nodes.
 
 **Display:**
+
 - Cluster label visible (larger font than feature labels)
 - Size indicates member count
 - Glow indicates aggregate activation level
 - Optional: show mini-preview of contained features
 
 **Interaction:**
+
 - Click: expand cluster (zoom to next level)
 - Hover: show contained feature count and top labels
 - Select: select all contained features
@@ -163,13 +171,14 @@ Clusters behave like enhanced nodes.
 ```typescript
 interface ClusterProps {
   node: HierarchyNode;
-  aggregateActivation: number;     // Sum/max of contained activations
+  aggregateActivation: number; // Sum/max of contained activations
   onExpand: () => void;
   onSelect: () => void;
 }
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Clusters show member count and activation
 - [ ] Click expands cluster with animation
 - [ ] Hover tooltip shows preview of contents
@@ -184,6 +193,7 @@ Ideaspace > Emotions > Negative Affect > Melancholy
 ```
 
 **Behavior:**
+
 - Click any breadcrumb level to zoom out
 - Current level highlighted
 - Breadcrumb updates as you navigate
@@ -191,12 +201,13 @@ Ideaspace > Emotions > Negative Affect > Melancholy
 
 ```typescript
 interface BreadcrumbProps {
-  path: HierarchyNode[];           // From root to current
+  path: HierarchyNode[]; // From root to current
   onNavigate: (level: number) => void;
 }
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Breadcrumb shows current hierarchy path
 - [ ] Click to navigate up
 - [ ] Updates in real-time during zoom
@@ -209,9 +220,9 @@ Different users/contexts may need different groupings.
 ```typescript
 interface HierarchyPerspective {
   id: string;
-  name: string;                    // "Emotional", "Technical", "Narrative"
+  name: string; // "Emotional", "Technical", "Narrative"
   description: string;
-  rootPrompt: string;              // LLM prompt for generating hierarchy
+  rootPrompt: string; // LLM prompt for generating hierarchy
 }
 
 // Example perspectives:
@@ -222,6 +233,7 @@ interface HierarchyPerspective {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Multiple perspectives available
 - [ ] Switch perspective regenerates hierarchy
 - [ ] Custom perspective creation via LLM
@@ -237,10 +249,11 @@ interface HierarchyPerspective {
 - LLM calls: debounce and batch when possible
 
 **Hierarchy Generation Algorithm (Clustering):**
+
 ```typescript
 function generateLevel(parentNode: HierarchyNode, k: number): HierarchyNode[] {
   const features = getContainedFeatures(parentNode);
-  const embeddings = features.map(f => getEmbedding(f));
+  const embeddings = features.map((f) => getEmbedding(f));
   const clusters = kMeans(embeddings, k);
 
   return clusters.map((cluster, i) => ({
@@ -273,6 +286,6 @@ function generateLevel(parentNode: HierarchyNode, k: number): HierarchyNode[] {
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

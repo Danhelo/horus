@@ -93,11 +93,7 @@ const featuresRoutes = new Hono()
     ),
     async (c) => {
       const { query, limit, model } = c.req.valid('json');
-      const results = await neuronpediaService.searchFeatures(
-        query,
-        limit,
-        model
-      );
+      const results = await neuronpediaService.searchFeatures(query, limit, model);
       return c.json({ results, count: results.length });
     }
   )

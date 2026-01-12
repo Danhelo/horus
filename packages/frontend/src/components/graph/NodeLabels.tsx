@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { Text, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
@@ -52,11 +52,7 @@ function computeNearestLabels(
     if (idx === undefined) continue;
 
     // Get position
-    tempVec3.set(
-      positions[idx * 3],
-      positions[idx * 3 + 1],
-      positions[idx * 3 + 2]
-    );
+    tempVec3.set(positions[idx * 3], positions[idx * 3 + 1], positions[idx * 3 + 2]);
 
     const distance = cameraPos.distanceTo(tempVec3);
     const activation = activations.get(nodeId) ?? 0;
@@ -94,9 +90,7 @@ function NodeLabel({
   fontSizeMultiplier: number;
 }) {
   // Smart truncation based on distance
-  const displayText = distance < distanceThreshold
-    ? label
-    : truncateLabel(label, 3);
+  const displayText = distance < distanceThreshold ? label : truncateLabel(label, 3);
 
   // Color: gray to gold based on activation
   // Base: #888888 (r=0.53, g=0.53, b=0.53)
@@ -139,9 +133,7 @@ export function NodeLabels() {
   // Get settings from store
   const showLabels = useAppStore((state) => state.showLabels);
   const labelCount = useAppStore((state) => state.labelCount);
-  const labelDistanceThreshold = useAppStore(
-    (state) => state.labelDistanceThreshold
-  );
+  const labelDistanceThreshold = useAppStore((state) => state.labelDistanceThreshold);
   const labelFontSize = useAppStore((state) => state.labelFontSize);
 
   // Get graph data

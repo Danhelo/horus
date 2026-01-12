@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+.turbo/
+
+# Generated files
+drizzle/
+*.min.js
+
+# Package manager
+pnpm-lock.yaml
+
+# IDE
+.idea/
+.vscode/
+
+# Data files
+*.json
+!package.json
+!tsconfig.json
+!.prettierrc

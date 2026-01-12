@@ -1,6 +1,5 @@
 import type { StateCreator } from 'zustand';
 import { DEFAULT_MODEL_ID } from '@horus/shared';
-import type { ModelConfig } from '@horus/shared';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -75,12 +74,7 @@ const persisted = loadPersistedSelection();
 
 // Note: Using 'any' for AppStore type here to avoid circular dependency
 // The actual type is inferred when combined in appStore.ts
-export const createModelSlice: StateCreator<
-  ModelSlice,
-  [],
-  [],
-  ModelSlice
-> = (set, get) => ({
+export const createModelSlice: StateCreator<ModelSlice, [], [], ModelSlice> = (set, get) => ({
   // Initial state from localStorage or defaults
   selectedModel: persisted?.modelId ?? DEFAULT_MODEL_ID,
   selectedLayer: persisted?.layer ?? 12,
@@ -123,9 +117,7 @@ export const createModelSlice: StateCreator<
 
       // Validate current selection against available models
       const { selectedModel, selectedLayer } = get();
-      const currentModel = data.models.find(
-        (m: ModelInfo) => m.modelId === selectedModel
-      );
+      const currentModel = data.models.find((m: ModelInfo) => m.modelId === selectedModel);
 
       if (!currentModel) {
         // Selected model not available, reset to default

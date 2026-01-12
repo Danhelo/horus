@@ -119,20 +119,9 @@ export function DialArc({
   const bgColor = 'var(--color-border)';
 
   return (
-    <svg
-      width={size}
-      height={size}
-      className="dial-arc"
-      style={{ overflow: 'visible' }}
-    >
+    <svg width={size} height={size} className="dial-arc" style={{ overflow: 'visible' }}>
       {/* Background track */}
-      <path
-        d={bgPath}
-        fill="none"
-        stroke={bgColor}
-        strokeWidth={3}
-        strokeLinecap="round"
-      />
+      <path d={bgPath} fill="none" stroke={bgColor} strokeWidth={3} strokeLinecap="round" />
 
       {/* Value indicator arc */}
       {valuePath && (

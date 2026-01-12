@@ -1,10 +1,10 @@
 # GRAPH-002: Graph Loader
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | GRAPH-002 |
-| **Phase** | 1 - Static Viewer |
-| **Status** | Complete |
+| Field       | Value             |
+| ----------- | ----------------- |
+| **Spec ID** | GRAPH-002         |
+| **Phase**   | 1 - Static Viewer |
+| **Status**  | Complete          |
 | **Package** | `@horus/frontend` |
 
 ## Summary
@@ -42,6 +42,7 @@ interface GraphJSONSchema {
 ```
 
 **Acceptance Criteria:**
+
 - [x] `loadGraphFromJSON(json: GraphJSONSchema): GraphData` function implemented
 - [x] Validates JSON schema with Zod before parsing
 - [x] Throws descriptive errors for invalid data
@@ -64,11 +65,16 @@ function convertToGraphData(json: GraphJSONSchema): GraphData {
     edges.set(edge.id, edge);
   }
 
-  return { nodes, edges, metadata: { ...json.metadata, nodeCount: nodes.size, edgeCount: edges.size } };
+  return {
+    nodes,
+    edges,
+    metadata: { ...json.metadata, nodeCount: nodes.size, edgeCount: edges.size },
+  };
 }
 ```
 
 **Acceptance Criteria:**
+
 - [x] Converts node array to `Map<string, GraphNode>`
 - [x] Converts edge array to `Map<string, GraphEdge>`
 - [x] Populates metadata with computed nodeCount and edgeCount
@@ -93,7 +99,7 @@ function convertToGPUFormat(data: GraphData): GraphPositionData {
     positions[i * 3 + 1] = node.position[1];
     positions[i * 3 + 2] = node.position[2];
     // Default colors (will be updated by activation display)
-    colors[i * 3] = 0.3;     // R
+    colors[i * 3] = 0.3; // R
     colors[i * 3 + 1] = 0.3; // G
     colors[i * 3 + 2] = 0.4; // B
     scales[i] = 1.0;
@@ -105,11 +111,12 @@ function convertToGPUFormat(data: GraphData): GraphPositionData {
 ```
 
 **Acceptance Criteria:**
-- [x] Creates `Float32Array` for positions (count * 3) *(via largeDataStore.loadPositionData)*
-- [x] Creates `Float32Array` for colors (count * 3) *(via largeDataStore.loadPositionData)*
-- [x] Creates `Float32Array` for scales (count) *(via largeDataStore.loadPositionData)*
-- [x] Builds `nodeIndexMap` for id -> array index lookup *(via largeDataStore.loadPositionData)*
-- [x] Performance: converts 50k nodes in < 150ms *(benchmark test added - ~80-100ms JSON→GraphData, ~5ms GPU conversion)*
+
+- [x] Creates `Float32Array` for positions (count _ 3) _(via largeDataStore.loadPositionData)\*
+- [x] Creates `Float32Array` for colors (count _ 3) _(via largeDataStore.loadPositionData)\*
+- [x] Creates `Float32Array` for scales (count) _(via largeDataStore.loadPositionData)_
+- [x] Builds `nodeIndexMap` for id -> array index lookup _(via largeDataStore.loadPositionData)_
+- [x] Performance: converts 50k nodes in < 150ms _(benchmark test added - ~80-100ms JSON→GraphData, ~5ms GPU conversion)_
 
 ### REQ-4: Chunked Loading for Large Files
 
@@ -125,10 +132,11 @@ async function loadLargeGraph(url: string): Promise<GraphData> {
 ```
 
 **Acceptance Criteria:**
-- [x] Files > 5MB are processed without blocking UI *(streaming fetch with ReadableStream)*
-- [x] Loading progress is reportable (0-100%) *(loadGraphWithProgress with ProgressCallback)*
-- [x] Can cancel in-flight loads *(AbortController pattern in graphLoadingSlice)*
-- [x] Memory usage stays reasonable during load *(chunked reading)*
+
+- [x] Files > 5MB are processed without blocking UI _(streaming fetch with ReadableStream)_
+- [x] Loading progress is reportable (0-100%) _(loadGraphWithProgress with ProgressCallback)_
+- [x] Can cancel in-flight loads _(AbortController pattern in graphLoadingSlice)_
+- [x] Memory usage stays reasonable during load _(chunked reading)_
 
 ### REQ-5: Loading State Management
 
@@ -137,7 +145,7 @@ Integrate with Zustand store for loading state.
 ```typescript
 interface GraphLoadingState {
   isLoading: boolean;
-  progress: number;  // 0-100
+  progress: number; // 0-100
   error: string | null;
   loadGraph: (source: string | GraphJSONSchema) => Promise<void>;
   cancelLoad: () => void;
@@ -145,10 +153,11 @@ interface GraphLoadingState {
 ```
 
 **Acceptance Criteria:**
+
 - [x] `isLoading` reflects current load state
 - [x] `progress` updates during chunked loading
 - [x] `error` captures and exposes load failures
-- [x] `loadGraph` accepts URL string or pre-parsed JSON *(loadGraphFromURL, loadGraphFromJSON)*
+- [x] `loadGraph` accepts URL string or pre-parsed JSON _(loadGraphFromURL, loadGraphFromJSON)_
 - [x] `cancelLoad` aborts in-progress loads cleanly
 
 ### REQ-6: Error Handling
@@ -156,11 +165,12 @@ interface GraphLoadingState {
 Graceful handling of various failure modes.
 
 **Acceptance Criteria:**
-- [x] Network errors produce user-friendly messages *(GraphLoadError with NETWORK code)*
-- [x] Invalid JSON produces schema validation errors *(Zod validation with formatValidationErrors)*
-- [x] Missing required fields are reported with field path *(Zod error path formatting)*
-- [x] Partial data (some valid nodes) can optionally be loaded *(invalid edges skipped with warning)*
-- [x] Error state clears on retry *(clearError action in slice)*
+
+- [x] Network errors produce user-friendly messages _(GraphLoadError with NETWORK code)_
+- [x] Invalid JSON produces schema validation errors _(Zod validation with formatValidationErrors)_
+- [x] Missing required fields are reported with field path _(Zod error path formatting)_
+- [x] Partial data (some valid nodes) can optionally be loaded _(invalid edges skipped with warning)_
+- [x] Error state clears on retry _(clearError action in slice)_
 
 ## Technical Notes
 
@@ -195,8 +205,8 @@ packages/frontend/src/
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
-| 2025-01-10 | Initial draft |
+| Date       | Changes                                                                |
+| ---------- | ---------------------------------------------------------------------- |
+| 2025-01-10 | Initial draft                                                          |
 | 2025-01-10 | Implementation complete - loaders module and graphLoadingSlice created |
-| 2025-01-10 | Performance benchmarks added - all criteria complete |
+| 2025-01-10 | Performance benchmarks added - all criteria complete                   |

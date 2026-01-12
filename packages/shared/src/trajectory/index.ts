@@ -1,10 +1,5 @@
 // Types
-export type {
-  TrajectoryPoint,
-  Trajectory,
-  TrajectoryMetadata,
-  PlaybackState,
-} from './types';
+export type { TrajectoryPoint, Trajectory, TrajectoryMetadata, PlaybackState } from './types';
 
 // Utilities
 export { createTrajectoryId } from './types';

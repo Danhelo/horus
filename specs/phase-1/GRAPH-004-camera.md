@@ -1,10 +1,10 @@
 # GRAPH-004: Camera Controls
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | GRAPH-004 |
-| **Phase** | 1 - Static Viewer |
-| **Status** | Complete |
+| Field       | Value             |
+| ----------- | ----------------- |
+| **Spec ID** | GRAPH-004         |
+| **Phase**   | 1 - Static Viewer |
+| **Status**  | Complete          |
 | **Package** | `@horus/frontend` |
 
 ## Summary
@@ -45,6 +45,7 @@ function CameraController() {
 ```
 
 **Acceptance Criteria:**
+
 - [x] OrbitControls from drei integrated into Canvas
 - [x] Damping enabled for smooth deceleration
 - [x] Min/max distance prevents getting too close or too far
@@ -72,21 +73,23 @@ interface CameraSlice {
 ```
 
 **Camera -> Store Sync:**
+
 ```typescript
 function CameraController() {
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
   // Debounced sync to store (avoid excessive updates)
   const syncToStore = useMemo(
-    () => debounce(() => {
-      const controls = controlsRef.current;
-      if (!controls) return;
+    () =>
+      debounce(() => {
+        const controls = controlsRef.current;
+        if (!controls) return;
 
-      useAppStore.getState().setCameraState({
-        position: controls.object.position.toArray() as [number, number, number],
-        target: controls.target.toArray() as [number, number, number],
-      });
-    }, 100),
+        useAppStore.getState().setCameraState({
+          position: controls.object.position.toArray() as [number, number, number],
+          target: controls.target.toArray() as [number, number, number],
+        });
+      }, 100),
     []
   );
 
@@ -97,6 +100,7 @@ function CameraController() {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Camera position syncs to store on movement
 - [x] Camera target (lookAt) syncs to store
 - [x] Sync is debounced (max 10 updates/sec)
@@ -112,11 +116,16 @@ interface CameraActions {
   focusOnNode: (nodeId: string) => void;
   focusOnRegion: (center: [number, number, number], radius: number) => void;
   resetCamera: () => void;
-  flyTo: (position: [number, number, number], target: [number, number, number], duration?: number) => void;
+  flyTo: (
+    position: [number, number, number],
+    target: [number, number, number],
+    duration?: number
+  ) => void;
 }
 ```
 
 **Acceptance Criteria:**
+
 - [x] `focusOnNode(id)` moves camera to view specific node
 - [x] `focusOnRegion(center, radius)` frames a region in view
 - [x] `resetCamera()` returns to default position/orientation
@@ -132,25 +141,29 @@ function useCameraAnimation() {
   const camera = useThree((state) => state.camera);
   const controls = useThree((state) => state.controls);
 
-  const flyTo = useCallback((
-    targetPosition: [number, number, number],
-    targetLookAt: [number, number, number],
-    duration = 1000
-  ) => {
-    // Use GSAP or manual lerp in useFrame
-    const startPos = camera.position.clone();
-    const startTarget = controls.target.clone();
-    const endPos = new THREE.Vector3(...targetPosition);
-    const endTarget = new THREE.Vector3(...targetLookAt);
+  const flyTo = useCallback(
+    (
+      targetPosition: [number, number, number],
+      targetLookAt: [number, number, number],
+      duration = 1000
+    ) => {
+      // Use GSAP or manual lerp in useFrame
+      const startPos = camera.position.clone();
+      const startTarget = controls.target.clone();
+      const endPos = new THREE.Vector3(...targetPosition);
+      const endTarget = new THREE.Vector3(...targetLookAt);
 
-    // Animate over duration using easing
-  }, [camera, controls]);
+      // Animate over duration using easing
+    },
+    [camera, controls]
+  );
 
   return { flyTo };
 }
 ```
 
 **Acceptance Criteria:**
+
 - [x] Transitions use easing (ease-out or cubic)
 - [x] Default duration is ~1 second (configurable)
 - [x] Animation can be interrupted by user input
@@ -171,8 +184,8 @@ function calculateFocusPosition(
   const target = nodePosition;
   const position = [
     nodePosition[0],
-    nodePosition[1] + viewDistance * 0.3,  // Slightly above
-    nodePosition[2] + viewDistance,         // In front
+    nodePosition[1] + viewDistance * 0.3, // Slightly above
+    nodePosition[2] + viewDistance, // In front
   ];
 
   return { position, target };
@@ -180,6 +193,7 @@ function calculateFocusPosition(
 ```
 
 **Acceptance Criteria:**
+
 - [x] Clicking "focus" on a node animates camera to it
 - [x] Node is centered in view after animation
 - [x] Camera distance appropriate to see node detail
@@ -192,18 +206,19 @@ Support keyboard shortcuts for camera movement.
 
 ```typescript
 const KEYBOARD_CONTROLS = {
-  'w': 'moveForward',
-  's': 'moveBackward',
-  'a': 'moveLeft',
-  'd': 'moveRight',
-  'q': 'moveUp',
-  'e': 'moveDown',
-  'r': 'resetCamera',
-  'Home': 'resetCamera',
+  w: 'moveForward',
+  s: 'moveBackward',
+  a: 'moveLeft',
+  d: 'moveRight',
+  q: 'moveUp',
+  e: 'moveDown',
+  r: 'resetCamera',
+  Home: 'resetCamera',
 };
 ```
 
 **Acceptance Criteria:**
+
 - [x] WASD keys for directional movement
 - [x] Q/E for vertical movement
 - [x] R or Home key resets camera
@@ -216,6 +231,7 @@ const KEYBOARD_CONTROLS = {
 Persist camera view across sessions.
 
 **Acceptance Criteria:**
+
 - [x] Camera state saved to localStorage on change (debounced)
 - [x] Camera state restored on page load
 - [x] Can opt to start at default view instead of persisted
@@ -244,8 +260,8 @@ const DEFAULT_CAMERA = {
 const CAMERA_LIMITS = {
   minDistance: 5,
   maxDistance: 200,
-  minPolarAngle: 0.1,  // Prevent looking straight down
-  maxPolarAngle: Math.PI - 0.1,  // Prevent looking straight up
+  minPolarAngle: 0.1, // Prevent looking straight down
+  maxPolarAngle: Math.PI - 0.1, // Prevent looking straight up
 };
 ```
 
@@ -275,6 +291,6 @@ packages/frontend/src/
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

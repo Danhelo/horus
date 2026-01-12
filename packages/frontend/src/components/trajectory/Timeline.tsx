@@ -9,12 +9,7 @@ import { getMaxActivation } from '../../utils';
 
 function PlayIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      stroke="none"
-    >
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
       <polygon points="5 3 19 12 5 21 5 3" />
     </svg>
   );
@@ -22,12 +17,7 @@ function PlayIcon({ className }: { className?: string }) {
 
 function PauseIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      stroke="none"
-    >
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
       <rect x="6" y="4" width="4" height="16" />
       <rect x="14" y="4" width="4" height="16" />
     </svg>
@@ -36,12 +26,7 @@ function PauseIcon({ className }: { className?: string }) {
 
 function StepForwardIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      stroke="none"
-    >
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
       <polygon points="5 4 15 12 5 20 5 4" />
       <rect x="15" y="4" width="4" height="16" />
     </svg>
@@ -50,12 +35,7 @@ function StepForwardIcon({ className }: { className?: string }) {
 
 function StepBackwardIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      stroke="none"
-    >
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
       <rect x="5" y="4" width="4" height="16" />
       <polygon points="19 4 9 12 19 20 19 4" />
     </svg>
@@ -147,9 +127,7 @@ export function Timeline({
       const rect = timelineRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const hoverPosition = x / rect.width;
-      const tokenIndex = Math.floor(
-        hoverPosition * (trajectory.points.length - 1)
-      );
+      const tokenIndex = Math.floor(hoverPosition * (trajectory.points.length - 1));
       setHoveredToken(Math.max(0, Math.min(trajectory.points.length - 1, tokenIndex)));
 
       // If dragging, update position
@@ -209,7 +187,7 @@ export function Timeline({
 
   const currentToken = trajectory.points[currentTokenIndex]?.token ?? '';
   const hoveredTokenText =
-    hoveredToken !== null ? trajectory.points[hoveredToken]?.token ?? '' : '';
+    hoveredToken !== null ? (trajectory.points[hoveredToken]?.token ?? '') : '';
 
   return (
     <div className="timeline-container">
@@ -298,10 +276,7 @@ export function Timeline({
         </svg>
 
         {/* Playhead */}
-        <div
-          className="timeline-playhead"
-          style={{ left: `${position * 100}%` }}
-        />
+        <div className="timeline-playhead" style={{ left: `${position * 100}%` }} />
 
         {/* Hover preview */}
         {hoveredToken !== null && !isDragging && (

@@ -6,12 +6,7 @@
  * high-level dial positions into feature-level interventions.
  */
 
-import type {
-  Dial,
-  SteeringVector,
-  SteeringConfig,
-  SteeringFeature,
-} from '@horus/shared';
+import type { Dial, SteeringVector, SteeringConfig, SteeringFeature } from '@horus/shared';
 import { nodeIdToNeuronpediaSource as parseNodeId } from '@horus/shared';
 
 /**
@@ -103,10 +98,7 @@ export function computeSteeringVector(
       source: f.source,
       index: f.index,
       // Apply strength multiplier and clamp
-      strength: clampStrength(
-        f.strength * config.strengthMultiplier,
-        config.clampRange
-      ),
+      strength: clampStrength(f.strength * config.strengthMultiplier, config.clampRange),
     }));
 
   // Sort by absolute strength (descending) and take top N
@@ -164,10 +156,7 @@ export function mergeSteeringVectors(
     const key = `${f.source}:${f.index}`;
     const existing = featureMap.get(key);
     if (existing) {
-      existing.strength = clampStrength(
-        existing.strength + f.strength,
-        config.clampRange
-      );
+      existing.strength = clampStrength(existing.strength + f.strength, config.clampRange);
     } else {
       featureMap.set(key, { ...f });
     }

@@ -64,12 +64,7 @@ interface UseFeatureDetailsOptions {
  */
 export function useFeatureDetails({ featureId, enabled = true }: UseFeatureDetailsOptions) {
   return useQuery({
-    queryKey: [
-      'feature',
-      featureId?.modelId,
-      featureId?.layer,
-      featureId?.index,
-    ],
+    queryKey: ['feature', featureId?.modelId, featureId?.layer, featureId?.index],
     queryFn: () => fetchFeatureDetails(featureId!),
     enabled: enabled && !!featureId,
     staleTime: 1000 * 60 * 60, // 1 hour - features rarely change

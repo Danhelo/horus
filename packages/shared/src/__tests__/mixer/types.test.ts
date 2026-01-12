@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  createDialId,
-  parseDialId,
-  getDialRange,
-  clampDialValue,
-} from '../../mixer/types';
+import { createDialId, parseDialId, getDialRange, clampDialValue } from '../../mixer/types';
 
 describe('createDialId', () => {
   it('creates correct dial ID format', () => {

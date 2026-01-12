@@ -10,10 +10,7 @@ import { createGraphLoadingSlice } from './slices/graphLoadingSlice';
 import type { GraphLoadingSlice } from './slices/graphLoadingSlice';
 import { createMixerSlice } from './slices/mixerSlice';
 import type { MixerSlice } from './slices/mixerSlice';
-import {
-  createSteeringSlice,
-  createDebouncedRecompute,
-} from './slices/steeringSlice';
+import { createSteeringSlice, createDebouncedRecompute } from './slices/steeringSlice';
 import type { SteeringSlice } from './slices/steeringSlice';
 import { createTrajectorySlice } from './slices/trajectorySlice';
 import type { TrajectorySlice } from './slices/trajectorySlice';

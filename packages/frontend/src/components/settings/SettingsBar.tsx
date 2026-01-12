@@ -51,7 +51,8 @@ function Slider({
           fontFamily: 'var(--font-mono)',
         }}
       >
-        {value}{unit}
+        {value}
+        {unit}
       </span>
     </div>
   );
@@ -233,7 +234,12 @@ export function SettingsBar() {
           onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-gold)')}
           onMouseLeave={(e) => (e.currentTarget.style.color = '#9a9aaa')}
         >
-          <span style={{ transform: isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 200ms ease' }}>
+          <span
+            style={{
+              transform: isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 200ms ease',
+            }}
+          >
             ▼
           </span>
           {isCollapsed ? 'Settings' : ''}
@@ -296,11 +302,7 @@ export function SettingsBar() {
             />
 
             {/* Show Labels Toggle */}
-            <Toggle
-              label="Show"
-              checked={showLabels}
-              onChange={handleShowLabelsChange}
-            />
+            <Toggle label="Show" checked={showLabels} onChange={handleShowLabelsChange} />
           </div>
 
           {/* Row 2: Edges */}
@@ -314,11 +316,7 @@ export function SettingsBar() {
             }}
           >
             {/* Show Edges Toggle */}
-            <Toggle
-              label="Edges"
-              checked={showEdges}
-              onChange={handleShowEdgesChange}
-            />
+            <Toggle label="Edges" checked={showEdges} onChange={handleShowEdgesChange} />
 
             {/* Divider */}
             <div style={{ height: 16, width: 1, backgroundColor: '#3a3a45' }} />

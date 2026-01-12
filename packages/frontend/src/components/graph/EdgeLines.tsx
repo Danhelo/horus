@@ -36,9 +36,9 @@ export function EdgeLines() {
   const edgesVisible = useLargeDataStore((state) => state.edgesVisible);
   const edgeCount = useLargeDataStore((state) => state.edgeCount);
 
-  // Get fade settings from store
-  const edgeFadeStart = useAppStore((state) => state.edgeFadeStart);
-  const edgeFadeEnd = useAppStore((state) => state.edgeFadeEnd);
+  // Get fade settings from store (subscribed for reactivity, accessed via getState in useFrame)
+  const _edgeFadeStart = useAppStore((state) => state.edgeFadeStart);
+  const _edgeFadeEnd = useAppStore((state) => state.edgeFadeEnd);
 
   // Create material once - opacity will be updated in useFrame
   const material = useMemo(
@@ -74,6 +74,7 @@ export function EdgeLines() {
 
     // Only update if changed significantly (avoid unnecessary invalidate)
     if (Math.abs(material.opacity - opacity) > 0.01) {
+      // eslint-disable-next-line react-hooks/immutability -- Three.js material mutation in useFrame is correct R3F pattern
       material.opacity = opacity;
       invalidate();
     }
@@ -115,10 +116,7 @@ export function EdgeLines() {
           (positionAttr.array as Float32Array).set(edgePositions);
           positionAttr.needsUpdate = true;
         } else {
-          geometryRef.current.setAttribute(
-            'position',
-            new THREE.BufferAttribute(edgePositions, 3)
-          );
+          geometryRef.current.setAttribute('position', new THREE.BufferAttribute(edgePositions, 3));
         }
 
         geometryRef.current.computeBoundingSphere();

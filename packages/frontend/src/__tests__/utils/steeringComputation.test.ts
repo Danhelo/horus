@@ -49,9 +49,7 @@ describe('computeSteeringVector', () => {
           id: 'formality',
           value: 0,
           trace: {
-            features: [
-              { nodeId: 'gemma-2-2b:12:1234', weight: 0.5 },
-            ],
+            features: [{ nodeId: 'gemma-2-2b:12:1234', weight: 0.5 }],
           },
         }),
       ],
@@ -102,9 +100,7 @@ describe('computeSteeringVector', () => {
           id: 'formality',
           value: 0.8,
           trace: {
-            features: [
-              { nodeId: 'gemma-2-2b:12:1234', weight: 0.5 },
-            ],
+            features: [{ nodeId: 'gemma-2-2b:12:1234', weight: 0.5 }],
           },
         }),
       ],
@@ -114,9 +110,7 @@ describe('computeSteeringVector', () => {
           id: 'technical',
           value: 0.5,
           trace: {
-            features: [
-              { nodeId: 'gemma-2-2b:12:9999', weight: 0.4 },
-            ],
+            features: [{ nodeId: 'gemma-2-2b:12:9999', weight: 0.4 }],
           },
         }),
       ],
@@ -228,9 +222,7 @@ describe('computeSteeringVector', () => {
           id: 'formality',
           value: 0.5,
           trace: {
-            features: [
-              { nodeId: 'gemma-2-2b:12:1234', weight: 0.4 },
-            ],
+            features: [{ nodeId: 'gemma-2-2b:12:1234', weight: 0.4 }],
           },
         }),
       ],
@@ -253,9 +245,7 @@ describe('computeSteeringVector', () => {
           value: -0.5,
           polarity: 'bipolar',
           trace: {
-            features: [
-              { nodeId: 'gemma-2-2b:12:1234', weight: 0.8 },
-            ],
+            features: [{ nodeId: 'gemma-2-2b:12:1234', weight: 0.8 }],
           },
         }),
       ],
@@ -277,9 +267,7 @@ describe('computeSteeringVector', () => {
           value: 1.0,
           locked: true, // This dial is locked
           trace: {
-            features: [
-              { nodeId: 'gemma-2-2b:12:1234', weight: 0.5 },
-            ],
+            features: [{ nodeId: 'gemma-2-2b:12:1234', weight: 0.5 }],
           },
         }),
       ],
@@ -324,9 +312,7 @@ describe('computeSteeringVector', () => {
           id: 'dial',
           value: 1.0,
           trace: {
-            features: [
-              { nodeId: 'gemma-2-2b:15:9999', weight: 0.5 },
-            ],
+            features: [{ nodeId: 'gemma-2-2b:15:9999', weight: 0.5 }],
           },
         }),
       ],

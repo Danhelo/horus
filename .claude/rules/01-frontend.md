@@ -3,6 +3,7 @@
 ## Critical R3F Rules
 
 **NEVER setState in useFrame** - mutate refs directly:
+
 ```typescript
 // BAD: useFrame(() => setPosition(...)) - 60fps re-renders!
 // GOOD:
@@ -12,6 +13,7 @@ useFrame((_, delta) => {
 ```
 
 **Pre-allocate objects** - never create in useFrame:
+
 ```typescript
 const tempVec = new THREE.Vector3();
 const tempColor = new THREE.Color();
@@ -52,9 +54,16 @@ function NodeMesh({ count = 50000 }) {
 
 ```typescript
 // Separate stores by update frequency
-interface AppStore { currentText: string; dialValues: Record<string,number>; }
-interface LargeDataStore { nodePositions: Float32Array; } // Not in React tree
-interface TransientStore { hoveredNodeId: string | null; } // High-frequency
+interface AppStore {
+  currentText: string;
+  dialValues: Record<string, number>;
+}
+interface LargeDataStore {
+  nodePositions: Float32Array;
+} // Not in React tree
+interface TransientStore {
+  hoveredNodeId: string | null;
+} // High-frequency
 
 // In useFrame - use getState(), never hooks
 useFrame(() => {
@@ -62,7 +71,10 @@ useFrame(() => {
 });
 
 // Selectors with shallow compare
-const { pos, target } = useAppStore(s => ({ pos: s.camera.position, target: s.camera.target }), shallow);
+const { pos, target } = useAppStore(
+  (s) => ({ pos: s.camera.position, target: s.camera.target }),
+  shallow
+);
 ```
 
 ## Graph Loading
@@ -71,11 +83,15 @@ const { pos, target } = useAppStore(s => ({ pos: s.camera.position, target: s.ca
 // Zod validation → Maps → Float32Arrays
 const graphJSONSchema = z.object({
   metadata: z.object({ modelId: z.string(), layers: z.array(z.number()) }),
-  nodes: z.array(z.object({
-    id: z.string(),
-    position: z.tuple([z.number(), z.number(), z.number()]),
-  })),
-  edges: z.array(z.object({ id: z.string(), source: z.string(), target: z.string(), weight: z.number() })),
+  nodes: z.array(
+    z.object({
+      id: z.string(),
+      position: z.tuple([z.number(), z.number(), z.number()]),
+    })
+  ),
+  edges: z.array(
+    z.object({ id: z.string(), source: z.string(), target: z.string(), weight: z.number() })
+  ),
 });
 ```
 
@@ -90,6 +106,7 @@ const graphJSONSchema = z.object({
 ## Trace Visualization
 
 Update colors in useFrame via buffer mutation, not React state:
+
 ```typescript
 useFrame(() => {
   const { activeTraces } = useTraceStore.getState();
@@ -108,6 +125,7 @@ interface TrajectoryPoint {
   position: [number, number, number]; // Weighted centroid of active features
 }
 ```
+
 - Playback: space=play/pause, arrows=step, Home/End=seek
 - Position = weighted centroid of activating features
 

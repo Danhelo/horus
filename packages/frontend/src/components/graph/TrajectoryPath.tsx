@@ -1,5 +1,5 @@
 import { useRef, useMemo, useEffect } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 import type { Trajectory } from '@horus/shared';
@@ -190,9 +190,8 @@ export function MultiTrajectoryPaths({
   syncedPlayback = false,
 }: MultiTrajectoryPathsProps) {
   // Get the first trajectory's position for synced playback
-  const syncedPosition = syncedPlayback && trajectories.length > 0
-    ? positions.get(trajectories[0].id) ?? 0
-    : 0;
+  const syncedPosition =
+    syncedPlayback && trajectories.length > 0 ? (positions.get(trajectories[0].id) ?? 0) : 0;
 
   return (
     <>
@@ -200,9 +199,7 @@ export function MultiTrajectoryPaths({
         <TrajectoryPath
           key={trajectory.id}
           trajectory={trajectory}
-          currentPosition={
-            syncedPlayback ? syncedPosition : (positions.get(trajectory.id) ?? 0)
-          }
+          currentPosition={syncedPlayback ? syncedPosition : (positions.get(trajectory.id) ?? 0)}
           color={TRAJECTORY_COLORS[index % TRAJECTORY_COLORS.length]}
         />
       ))}

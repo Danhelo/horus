@@ -208,10 +208,7 @@ export function getMaxActivation(point: TrajectoryPoint): number {
  * @param n - Number of top activations to return
  * @returns Array of [nodeId, activation] pairs sorted by activation descending
  */
-export function getTopActivations(
-  point: TrajectoryPoint,
-  n: number
-): [string, number][] {
+export function getTopActivations(point: TrajectoryPoint, n: number): [string, number][] {
   const entries = Array.from(point.activations.entries());
   entries.sort((a, b) => b[1] - a[1]);
   return entries.slice(0, n);

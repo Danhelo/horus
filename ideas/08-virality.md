@@ -4,7 +4,7 @@
 
 What makes someone screenshot HORUS and share it? What makes someone send a link and say "you have to try this"?
 
-Virality isn't a feature you add. It emerges from creating something people *want* to share. We need to understand what that thing is.
+Virality isn't a feature you add. It emerges from creating something people _want_ to share. We need to understand what that thing is.
 
 ---
 
@@ -13,6 +13,7 @@ Virality isn't a feature you add. It emerges from creating something people *wan
 **"Paste any text. See its soul."**
 
 This works because:
+
 1. **Low barrier:** Just paste something. No learning curve.
 2. **Immediate payoff:** You see something you've never seen before.
 3. **Personal relevance:** It's YOUR text, YOUR ideas, made visible.
@@ -76,26 +77,31 @@ Transformation is compelling. The morph video is highly shareable.
 ## The Social Loop
 
 ### Discovery
+
 Someone sees a HORUS fingerprint/trajectory shared somewhere (Twitter, Discord, etc.).
 
 "What is that? That's beautiful. How was it made?"
 
 ### Try
+
 They click through, paste their own text. 10 seconds later, they see their ideas visualized.
 
 "Oh wow. I've never seen this before."
 
 ### Create
+
 They explore. Try different texts. Adjust dials. Find something they like.
 
 "This is interesting. I want to save this."
 
 ### Share
+
 They export their creation and share it with their own network.
 
 "You have to try this. Here's what my favorite book looks like."
 
 ### Repeat
+
 Their friends see it. The loop continues.
 
 ---
@@ -103,21 +109,26 @@ Their friends see it. The loop continues.
 ## Designing for Shareability
 
 ### One-Click Export
+
 - Screenshot current graph with watermark/branding
 - GIF export for trajectories
 - Video export for morphs
 - Native share buttons (Twitter, Discord, etc.)
 
 ### Beautiful by Default
+
 The output should be beautiful without tweaking. The aesthetic itself is the hook.
 
 ### Branding in the Artifact
+
 Every export should subtly include:
+
 - HORUS logo/eye
 - URL
 - Not intrusive, but present
 
 ### Embeddable
+
 Consider: Can fingerprints be embedded in webpages? Notion? Twitter cards?
 
 ---
@@ -125,25 +136,30 @@ Consider: Can fingerprints be embedded in webpages? Notion? Twitter cards?
 ## Community Features
 
 ### Gallery
+
 Public gallery of interesting fingerprints/trajectories. Browse what others have created.
 
 Curated sections:
+
 - Famous texts (literature, speeches, lyrics)
 - User submissions
 - Comparisons
 - Unusual discoveries
 
 ### Profiles
+
 Users can have profiles with their saved mixes, fingerprints, explorations.
 
 "Follow @alice to see her ideaspace explorations."
 
 ### Remix
+
 Take someone else's fingerprint or mix and build on it.
 
 Attribution preserved. Remixing encouraged.
 
 ### Challenges
+
 Weekly prompts: "Visualize your favorite song lyric." "Find the most 'melancholic' text."
 
 Community engagement drivers.
@@ -213,4 +229,4 @@ We're not manufacturing virality. We're building a tool that creates shareable a
 
 ---
 
-*Every text has a soul. HORUS makes it visible. And visible things want to be seen.*
+_Every text has a soul. HORUS makes it visible. And visible things want to be seen._

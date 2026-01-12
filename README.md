@@ -4,7 +4,7 @@
 
 **Paste any text. See its soul.**
 
-*A frontier creative instrument for navigating and sculpting in ideaspace—the latent feature space of language models.*
+_A frontier creative instrument for navigating and sculpting in ideaspace—the latent feature space of language models._
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
@@ -21,12 +21,12 @@ Language models don't think in words. They think in **features**—patterns of a
 
 HORUS makes this tangible:
 
-| Component | Description |
-|-----------|-------------|
-| **The Graph** | A 3D hypergraph where nodes are features and position encodes meaning. Navigate ideaspace like territory. |
-| **The Mixer** | Dials that control feature strengths. Turn up "nostalgia." Turn down "formality." Watch text transform. |
-| **The Trajectory** | See text as a path through feature space. Watch ideas light up in sequence. |
-| **The Flow** | No boundary between reading and writing. Observe, intervene, observe. Continuous creative feedback loop. |
+| Component          | Description                                                                                               |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| **The Graph**      | A 3D hypergraph where nodes are features and position encodes meaning. Navigate ideaspace like territory. |
+| **The Mixer**      | Dials that control feature strengths. Turn up "nostalgia." Turn down "formality." Watch text transform.   |
+| **The Trajectory** | See text as a path through feature space. Watch ideas light up in sequence.                               |
+| **The Flow**       | No boundary between reading and writing. Observe, intervene, observe. Continuous creative feedback loop.  |
 
 ---
 
@@ -34,17 +34,17 @@ HORUS makes this tangible:
 
 ### Features Are The True Primitives
 
-Inside language models, there are no words—there are *features*. These are the "things the model knows": concepts, tones, structures, patterns. SAEs let us extract them. Circuit tracing shows how they connect. HORUS lets you work with them directly.
+Inside language models, there are no words—there are _features_. These are the "things the model knows": concepts, tones, structures, patterns. SAEs let us extract them. Circuit tracing shows how they connect. HORUS lets you work with them directly.
 
 **Features are the native language of models. It's time to speak it.**
 
 ### The Interface Matches The Substrate
 
-Image models think in spatial patches. Language models think in sequential feature activations. HORUS provides a *traversable space* of features—a graph you can navigate, a territory you can explore, paths you can trace and steer.
+Image models think in spatial patches. Language models think in sequential feature activations. HORUS provides a _traversable space_ of features—a graph you can navigate, a territory you can explore, paths you can trace and steer.
 
 ### Flow Dissolves The Read/Write Boundary
 
-The magic isn't in "analyzing text" or "generating text" as separate modes. It's in the *fluid transition* between them. Paste text, see its feature fingerprint light up. Drag a node, steering the model. New text flows. The fingerprint shifts.
+The magic isn't in "analyzing text" or "generating text" as separate modes. It's in the _fluid transition_ between them. Paste text, see its feature fingerprint light up. Drag a node, steering the model. New text flows. The fingerprint shifts.
 
 This is not turn-taking. It's a **continuous feedback loop**.
 
@@ -54,17 +54,17 @@ This is not turn-taking. It's a **continuous feedback loop**.
 
 HORUS introduces the concept of **neural surgery**—precise, intentional, consequential manipulation of a living system. The surgical toolkit includes:
 
-| Operation | Gesture | Effect |
-|-----------|---------|--------|
-| **Illuminate** | Hover, select | Visual emphasis, information surfacing |
-| **Amplify/Attenuate** | Dial, slider | Feature strength changes, generation shifts |
-| **Navigate** | Pan, zoom, rotate | Different features enter/exit view |
-| **Zoom (Semantic)** | Scroll, pinch | Hierarchy expands/collapses |
-| **Pin** | Click to lock | Constraint on steering |
-| **Trace** | Scrub timeline | Temporal structure revealed |
-| **Blend** | Drag between states | Smooth transitions, morphing |
-| **Snapshot** | Save button | State preserved for later |
-| **Diff** | Compare snapshots | Divergence visualized |
+| Operation             | Gesture             | Effect                                      |
+| --------------------- | ------------------- | ------------------------------------------- |
+| **Illuminate**        | Hover, select       | Visual emphasis, information surfacing      |
+| **Amplify/Attenuate** | Dial, slider        | Feature strength changes, generation shifts |
+| **Navigate**          | Pan, zoom, rotate   | Different features enter/exit view          |
+| **Zoom (Semantic)**   | Scroll, pinch       | Hierarchy expands/collapses                 |
+| **Pin**               | Click to lock       | Constraint on steering                      |
+| **Trace**             | Scrub timeline      | Temporal structure revealed                 |
+| **Blend**             | Drag between states | Smooth transitions, morphing                |
+| **Snapshot**          | Save button         | State preserved for later                   |
+| **Diff**              | Compare snapshots   | Divergence visualized                       |
 
 The power is in combination: **ILLUMINATE + AMPLIFY** = "What happens if I boost what's already active?"
 
@@ -78,7 +78,7 @@ When someone uses HORUS, they should feel:
 - **"I saw my own ideas in a new way."**
 - **"I didn't know I could make an LLM do that."**
 
-The emotional residue is *gnosis*—the sense of having glimpsed something true about how minds process meaning.
+The emotional residue is _gnosis_—the sense of having glimpsed something true about how minds process meaning.
 
 ---
 
@@ -101,12 +101,12 @@ packages/
 
 ### Performance Targets
 
-| Operation | Target | Maximum |
-|-----------|--------|---------|
-| Graph highlight updates | < 100ms | 200ms |
-| Text generation start | < 300ms | 500ms |
-| Steering adjustment perception | < 500ms | 1s |
-| Graph navigation (50k nodes) | 60fps | 30fps |
+| Operation                      | Target  | Maximum |
+| ------------------------------ | ------- | ------- |
+| Graph highlight updates        | < 100ms | 200ms   |
+| Text generation start          | < 300ms | 500ms   |
+| Steering adjustment perception | < 500ms | 1s      |
+| Graph navigation (50k nodes)   | 60fps   | 30fps   |
 
 ---
 
@@ -151,15 +151,19 @@ DATABASE_URL=./data/app.db
 ## Roadmap
 
 ### Phase 1: Static Viewer
+
 Load graph, navigate, display activations. The canvas where ideaspace becomes visible.
 
 ### Phase 2: Interactive Explorer
+
 Dials, steering, generation. Turn the knobs, watch the text transform.
 
 ### Phase 3: Dynamic Hierarchy
+
 LLM-assisted zoom, semantic queries. Ask the graph to reorganize itself around your intent.
 
 ### Phase 4: Social Features
+
 Save, share, collaborate. Thought fingerprints as shareable artifacts.
 
 ---
@@ -203,9 +207,9 @@ If yes, we succeeded.
 
 <div align="center">
 
-*The eye opens. The hidden becomes visible.*
+_The eye opens. The hidden becomes visible._
 
-*Neural surgery as creative act.*
+_Neural surgery as creative act._
 
 **𓂀**
 

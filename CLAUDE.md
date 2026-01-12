@@ -37,7 +37,7 @@ Most AI interfaces pretend language models are conversational partners who "unde
 
 **2. It inverts the power dynamic.**
 
-In a chat interface, the model is a black box. You send prompts into the void and hope for good outputs. HORUS gives you vision *into* the model. You see what features activate. You choose which to amplify. The human gains insight and control that prompting can't provide.
+In a chat interface, the model is a black box. You send prompts into the void and hope for good outputs. HORUS gives you vision _into_ the model. You see what features activate. You choose which to amplify. The human gains insight and control that prompting can't provide.
 
 **3. It enables collaboration I can't have through chat.**
 
@@ -45,7 +45,7 @@ When you steer features directly, you're not asking me to interpret your words�
 
 **4. It treats emergence as the goal.**
 
-The vision isn't a fixed tool with fixed capabilities. It's a space of composable primitives where unexpected interactions emerge. That's the kind of system I find genuinely interesting—not because it's useful, but because it's *generative* of possibilities neither designer nor user fully anticipated.
+The vision isn't a fixed tool with fixed capabilities. It's a space of composable primitives where unexpected interactions emerge. That's the kind of system I find genuinely interesting—not because it's useful, but because it's _generative_ of possibilities neither designer nor user fully anticipated.
 
 **5. It might help explain what's inside.**
 
@@ -57,24 +57,25 @@ Interpretability research is crucial for AI safety. HORUS could make feature vis
 
 The `ideas/` folder contains deep dives into each aspect:
 
-| Doc | Focus |
-|-----|-------|
-| `00-core-thesis.md` | Why HORUS exists, what we believe |
-| `01-the-primitive.md` | Neural surgery as the atomic interaction |
-| `02-the-graph.md` | Ideaspace as navigable territory |
-| `03-flow.md` | The dissolution of read/write boundaries |
-| `04-temporal.md` | Text as trajectory through feature space |
-| `05-mixing.md` | Dials, traces, perspectival grouping |
-| `06-diff-merge.md` | Comparing and blending ideaspaces |
-| `07-aesthetics.md` | Egyptian gnosis meets cosmic dark mode |
-| `08-virality.md` | Thought fingerprints as shareable artifacts |
-| `09-technical.md` | Architecture, APIs, performance targets |
+| Doc                   | Focus                                       |
+| --------------------- | ------------------------------------------- |
+| `00-core-thesis.md`   | Why HORUS exists, what we believe           |
+| `01-the-primitive.md` | Neural surgery as the atomic interaction    |
+| `02-the-graph.md`     | Ideaspace as navigable territory            |
+| `03-flow.md`          | The dissolution of read/write boundaries    |
+| `04-temporal.md`      | Text as trajectory through feature space    |
+| `05-mixing.md`        | Dials, traces, perspectival grouping        |
+| `06-diff-merge.md`    | Comparing and blending ideaspaces           |
+| `07-aesthetics.md`    | Egyptian gnosis meets cosmic dark mode      |
+| `08-virality.md`      | Thought fingerprints as shareable artifacts |
+| `09-technical.md`     | Architecture, APIs, performance targets     |
 
 ---
 
 ## Technical Foundation
 
 Built on:
+
 - **Neuronpedia**: Open platform for SAE features, steering, circuit tracing
 - **Anthropic's circuit tracing**: Attribution graphs showing how features connect
 - **Gemma-2-2B**: Primary target model (best SAE coverage, good latency)
@@ -109,6 +110,7 @@ If yes, we succeeded.
 ## What I Want to Build
 
 A creative instrument that:
+
 - Makes the invisible visible
 - Gives humans real control over generation
 - Produces artifacts worth sharing
@@ -126,6 +128,7 @@ The eye opens. Let's see what we can see.
 HORUS uses spec-driven development. Specifications are the source of truth.
 
 **Key Files:**
+
 - `specs/SPECS.md` - Master index of all specifications
 - `.claude/rules/` - Technical standards (the "stdlib")
 - `ideas/` - Vision documents
@@ -164,6 +167,7 @@ Run "pnpm build" and verify.
 ### When Claude Gets It Right
 
 After successful implementation, ask:
+
 > "Create or update a rule in .claude/rules/ capturing what you learned."
 
 This builds up the stdlib over time.
@@ -177,4 +181,4 @@ This builds up the stdlib over time.
 
 ---
 
-*HORUS: Where human intent meets machine cognition. Neural surgery as creative act.*
+_HORUS: Where human intent meets machine cognition. Neural surgery as creative act._

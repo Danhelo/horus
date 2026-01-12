@@ -1,11 +1,11 @@
 # API-001: Neuronpedia Client
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | API-001 |
-| **Phase** | 1 - Static Viewer |
-| **Status** | Complete |
-| **Package** | `@horus/backend` |
+| Field       | Value             |
+| ----------- | ----------------- |
+| **Spec ID** | API-001           |
+| **Phase**   | 1 - Static Viewer |
+| **Status**  | Complete          |
+| **Package** | `@horus/backend`  |
 
 ## Summary
 
@@ -18,6 +18,7 @@ Backend service that proxies Neuronpedia API calls, hiding the API key from the 
 The Neuronpedia API key must never be exposed to the frontend.
 
 **Acceptance Criteria:**
+
 - [x] API key stored in server environment only
 - [x] All Neuronpedia calls proxied through backend
 - [x] No API key in client-side code or network requests
@@ -31,6 +32,7 @@ GET /api/features/:model/:layer/:index
 Returns feature details from Neuronpedia with caching.
 
 **Response:**
+
 ```json
 {
   "modelId": "gemma-2-2b",
@@ -46,6 +48,7 @@ Returns feature details from Neuronpedia with caching.
 ```
 
 **Acceptance Criteria:**
+
 - [x] Endpoint returns feature data
 - [x] Response includes cache status
 - [x] 404 for non-existent features
@@ -55,6 +58,7 @@ Returns feature details from Neuronpedia with caching.
 Features are mostly static - cache aggressively.
 
 **Acceptance Criteria:**
+
 - [x] Cache features in SQLite for 24+ hours
 - [x] Return cached data if available
 - [x] Background refresh for stale cache (stale-while-revalidate after 12h)
@@ -70,6 +74,7 @@ POST /api/activations
 Returns which features activate for the given text.
 
 **Acceptance Criteria:**
+
 - [x] Proxies to Neuronpedia `/api/activation/new`
 - [x] Returns top-k activating features per layer
 - [x] Rate limited (20 req/min default)
@@ -82,6 +87,7 @@ POST /api/features/search
 ```
 
 **Acceptance Criteria:**
+
 - [x] Proxies to Neuronpedia `/api/search-all`
 - [x] Returns matching features
 - [x] Results cached briefly (5 min)
@@ -89,6 +95,7 @@ POST /api/features/search
 ### REQ-6: Error Handling
 
 **Acceptance Criteria:**
+
 - [x] 429 from Neuronpedia returns clear error to client
 - [x] 503 (GPUs busy) triggers retry suggestion
 - [x] Network failures return 502
@@ -96,6 +103,7 @@ POST /api/features/search
 ### REQ-7: Rate Limiting
 
 **Acceptance Criteria:**
+
 - [x] Client-facing rate limits (100 req/min general, 20 req/min proxy)
 - [x] Respect Neuronpedia rate limits
 - [x] Return `Retry-After` header on 429
@@ -113,6 +121,6 @@ POST /api/features/search
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

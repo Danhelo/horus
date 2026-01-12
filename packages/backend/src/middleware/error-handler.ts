@@ -31,19 +31,12 @@ export type NeuronpediaErrorCode =
 /**
  * Create an AppError from Neuronpedia response status
  */
-export function createNeuronpediaError(
-  status: number,
-  retryAfter?: number
-): AppError {
+export function createNeuronpediaError(status: number, retryAfter?: number): AppError {
   switch (status) {
     case 400:
       return new AppError('Invalid request to Neuronpedia', 400, 'BAD_REQUEST');
     case 401:
-      return new AppError(
-        'Neuronpedia API key is invalid',
-        500,
-        'UNAUTHORIZED'
-      );
+      return new AppError('Neuronpedia API key is invalid', 500, 'UNAUTHORIZED');
     case 404:
       return new AppError('Feature not found', 404, 'NOT_FOUND');
     case 429:
@@ -62,12 +55,7 @@ export function createNeuronpediaError(
       );
     default:
       if (status >= 500) {
-        return new AppError(
-          'Neuronpedia service error',
-          502,
-          'SERVER_ERROR',
-          retryAfter
-        );
+        return new AppError('Neuronpedia service error', 502, 'SERVER_ERROR', retryAfter);
       }
       return new AppError(`Upstream error: ${status}`, 502, 'SERVER_ERROR');
   }

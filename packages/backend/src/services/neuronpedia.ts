@@ -2,10 +2,7 @@ import { LRUCache } from 'lru-cache';
 import { env } from '../env';
 import { db, schema } from '../db';
 import { eq, and, gt, lt } from 'drizzle-orm';
-import {
-  AppError,
-  createNeuronpediaError,
-} from '../middleware/error-handler';
+import { AppError, createNeuronpediaError } from '../middleware/error-handler';
 import type { FeatureData } from '../db/schema/features';
 import {
   getModelConfig,
@@ -13,9 +10,7 @@ import {
   isModelSupported,
   getSupportedModelIds,
   isValidLayer,
-  isValidFeatureIndex,
   DEFAULT_MODEL_ID,
-  type ModelConfig,
 } from '@horus/shared';
 
 /**
@@ -221,11 +216,7 @@ class NeuronpediaService {
    * Uses multi-level caching: memory -> SQLite -> API
    * Implements stale-while-revalidate: serves stale data immediately while refreshing in background
    */
-  async getFeature(
-    model: string,
-    layer: number,
-    index: number
-  ): Promise<FeatureResponse> {
+  async getFeature(model: string, layer: number, index: number): Promise<FeatureResponse> {
     const cacheKey = `${model}:${layer}:${index}`;
     this.stats.totalRequests++;
 
@@ -240,8 +231,7 @@ class NeuronpediaService {
     const dbCached = await this.getFromDb(cacheKey);
     if (dbCached) {
       // Check if data is stale (older than staleThreshold)
-      const isStale =
-        Date.now() - dbCached.cachedAt.getTime() > CACHE_CONFIG.staleThreshold;
+      const isStale = Date.now() - dbCached.cachedAt.getTime() > CACHE_CONFIG.staleThreshold;
 
       if (isStale) {
         this.stats.dbHitsStale++;
@@ -304,12 +294,7 @@ class NeuronpediaService {
    * Background refresh for stale cache entries
    * Non-blocking - fires and forgets, logs errors
    */
-  private backgroundRefresh(
-    cacheKey: string,
-    model: string,
-    layer: number,
-    index: number
-  ): void {
+  private backgroundRefresh(cacheKey: string, model: string, layer: number, index: number): void {
     // Avoid duplicate refreshes for the same key
     if (this.pendingRefreshes.has(cacheKey)) {
       return;
@@ -354,19 +339,14 @@ class NeuronpediaService {
 
     // Validate text length
     if (text.length > 4096) {
-      throw new AppError(
-        'Text too long. Maximum 4096 characters.',
-        400,
-        'BAD_REQUEST'
-      );
+      throw new AppError('Text too long. Maximum 4096 characters.', 400, 'BAD_REQUEST');
     }
 
     // Get model config for layer count
     const modelConfig = getModelConfig(model);
 
     // Use all layers if not specified
-    const targetLayers =
-      layers || Array.from({ length: modelConfig.numLayers }, (_, i) => i);
+    const targetLayers = layers || Array.from({ length: modelConfig.numLayers }, (_, i) => i);
 
     // Validate requested layers
     for (const layer of targetLayers) {
@@ -499,11 +479,7 @@ class NeuronpediaService {
 
     // Validate prompt length
     if (request.prompt.length > 4096) {
-      throw new AppError(
-        'Prompt too long. Maximum 4096 characters.',
-        400,
-        'BAD_REQUEST'
-      );
+      throw new AppError('Prompt too long. Maximum 4096 characters.', 400, 'BAD_REQUEST');
     }
 
     const response = await this.fetchFromApi<SteerResponse>('/api/steer', {
@@ -527,10 +503,7 @@ class NeuronpediaService {
   /**
    * Fetch from Neuronpedia API with error handling and retries
    */
-  private async fetchFromApi<T>(
-    path: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async fetchFromApi<T>(path: string, options: RequestInit = {}): Promise<T> {
     const maxRetries = 3;
     let lastError: Error | null = null;
 
@@ -558,9 +531,7 @@ class NeuronpediaService {
           if (response.status === 429 || response.status >= 500) {
             if (attempt < maxRetries) {
               const delay = this.getBackoffDelay(attempt, retrySeconds);
-              console.log(
-                `[API] Retry ${attempt}/${maxRetries} after ${delay}ms`
-              );
+              console.log(`[API] Retry ${attempt}/${maxRetries} after ${delay}ms`);
               await this.sleep(delay);
               continue;
             }
@@ -577,9 +548,7 @@ class NeuronpediaService {
         lastError = error as Error;
         if (attempt < maxRetries) {
           const delay = this.getBackoffDelay(attempt);
-          console.log(
-            `[API] Network error, retry ${attempt}/${maxRetries} after ${delay}ms`
-          );
+          console.log(`[API] Network error, retry ${attempt}/${maxRetries} after ${delay}ms`);
           await this.sleep(delay);
         }
       }
@@ -618,9 +587,7 @@ class NeuronpediaService {
     const result = await db
       .select()
       .from(schema.features)
-      .where(
-        and(eq(schema.features.id, id), gt(schema.features.expiresAt, now))
-      )
+      .where(and(eq(schema.features.id, id), gt(schema.features.expiresAt, now)))
       .limit(1);
 
     return result[0] || null;
@@ -665,9 +632,7 @@ class NeuronpediaService {
    */
   async cleanupExpiredCache(): Promise<number> {
     const now = new Date();
-    const result = await db
-      .delete(schema.features)
-      .where(lt(schema.features.expiresAt, now));
+    const result = await db.delete(schema.features).where(lt(schema.features.expiresAt, now));
 
     return result.changes;
   }

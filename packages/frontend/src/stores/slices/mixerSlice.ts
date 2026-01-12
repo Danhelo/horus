@@ -31,12 +31,12 @@ export interface MixerSlice {
 // ---------------------------------------------------------------------------
 
 const TRACE_COLORS = [
-  '#d4af37',  // Gold (primary)
-  '#00bfff',  // Electric blue
-  '#ff6b6b',  // Coral
-  '#20b2aa',  // Teal
-  '#9b59b6',  // Purple
-  '#ffa500',  // Orange
+  '#d4af37', // Gold (primary)
+  '#00bfff', // Electric blue
+  '#ff6b6b', // Coral
+  '#20b2aa', // Teal
+  '#9b59b6', // Purple
+  '#ffa500', // Orange
 ];
 
 function getTraceColor(dialIndex: number): string {
@@ -57,18 +57,66 @@ interface DefaultDialDefinition {
 
 const DEFAULT_DIAL_DEFINITIONS: DefaultDialDefinition[] = [
   // Style group
-  { id: 'formality', label: 'Formality', description: 'Casual to formal', polarity: 'bipolar', groupId: 'style' },
-  { id: 'brevity', label: 'Brevity', description: 'Verbose to concise', polarity: 'bipolar', groupId: 'style' },
-  { id: 'complexity', label: 'Complexity', description: 'Simple to complex', polarity: 'unipolar', groupId: 'style' },
+  {
+    id: 'formality',
+    label: 'Formality',
+    description: 'Casual to formal',
+    polarity: 'bipolar',
+    groupId: 'style',
+  },
+  {
+    id: 'brevity',
+    label: 'Brevity',
+    description: 'Verbose to concise',
+    polarity: 'bipolar',
+    groupId: 'style',
+  },
+  {
+    id: 'complexity',
+    label: 'Complexity',
+    description: 'Simple to complex',
+    polarity: 'unipolar',
+    groupId: 'style',
+  },
 
   // Tone group
-  { id: 'emotional-valence', label: 'Valence', description: 'Negative to positive', polarity: 'bipolar', groupId: 'tone' },
-  { id: 'certainty', label: 'Certainty', description: 'Uncertain to confident', polarity: 'bipolar', groupId: 'tone' },
+  {
+    id: 'emotional-valence',
+    label: 'Valence',
+    description: 'Negative to positive',
+    polarity: 'bipolar',
+    groupId: 'tone',
+  },
+  {
+    id: 'certainty',
+    label: 'Certainty',
+    description: 'Uncertain to confident',
+    polarity: 'bipolar',
+    groupId: 'tone',
+  },
 
   // Content group
-  { id: 'abstractness', label: 'Abstractness', description: 'Concrete to abstract', polarity: 'bipolar', groupId: 'content' },
-  { id: 'creativity', label: 'Creativity', description: 'Conventional to creative', polarity: 'unipolar', groupId: 'content' },
-  { id: 'technical', label: 'Technical', description: 'General to technical', polarity: 'unipolar', groupId: 'content' },
+  {
+    id: 'abstractness',
+    label: 'Abstractness',
+    description: 'Concrete to abstract',
+    polarity: 'bipolar',
+    groupId: 'content',
+  },
+  {
+    id: 'creativity',
+    label: 'Creativity',
+    description: 'Conventional to creative',
+    polarity: 'unipolar',
+    groupId: 'content',
+  },
+  {
+    id: 'technical',
+    label: 'Technical',
+    description: 'General to technical',
+    polarity: 'unipolar',
+    groupId: 'content',
+  },
 ];
 
 const DEFAULT_GROUPS: Array<{ id: string; label: string; description?: string }> = [
@@ -109,12 +157,7 @@ function createDefaultGroup(
 // Slice Creator
 // ---------------------------------------------------------------------------
 
-export const createMixerSlice: StateCreator<
-  MixerSlice,
-  [],
-  [],
-  MixerSlice
-> = (set, get) => ({
+export const createMixerSlice: StateCreator<MixerSlice, [], [], MixerSlice> = (set, get) => ({
   // Initial state
   dials: new Map(),
   groups: new Map(),
@@ -127,9 +170,7 @@ export const createMixerSlice: StateCreator<
     if (!dial || dial.locked) return;
 
     // Clamp value based on polarity
-    const { min, max } = dial.polarity === 'bipolar'
-      ? { min: -1, max: 1 }
-      : { min: 0, max: 1 };
+    const { min, max } = dial.polarity === 'bipolar' ? { min: -1, max: 1 } : { min: 0, max: 1 };
     const clampedValue = Math.max(min, Math.min(max, value));
 
     const newDials = new Map(dials);
@@ -166,12 +207,12 @@ export const createMixerSlice: StateCreator<
     if (!dial) return;
 
     // Get node IDs and weights from dial's trace
-    const nodeIds = new Set(dial.trace.features.map(f => f.nodeId));
-    const weights = new Map(dial.trace.features.map(f => [f.nodeId, f.weight]));
+    const nodeIds = new Set(dial.trace.features.map((f) => f.nodeId));
+    const weights = new Map(dial.trace.features.map((f) => [f.nodeId, f.weight]));
 
     // Get dial index for color
     const dialIndex = Array.from(dials.keys()).indexOf(dialId);
-    const color = dial.trace.color ?? getTraceColor(dialIndex);
+    const _color = dial.trace.color ?? getTraceColor(dialIndex);
 
     const newActiveTraces = new Map(activeTraces);
     newActiveTraces.set(dialId, {
@@ -227,7 +268,7 @@ export const createMixerSlice: StateCreator<
       if (group.dials.includes(dialId)) {
         newGroups.set(groupId, {
           ...group,
-          dials: group.dials.filter(id => id !== dialId),
+          dials: group.dials.filter((id) => id !== dialId),
         });
       }
     }
@@ -282,9 +323,9 @@ export const createMixerSlice: StateCreator<
 
     // Create groups with their dial IDs
     for (const groupDef of DEFAULT_GROUPS) {
-      const dialIds = DEFAULT_DIAL_DEFINITIONS
-        .filter(d => d.groupId === groupDef.id)
-        .map(d => d.id);
+      const dialIds = DEFAULT_DIAL_DEFINITIONS.filter((d) => d.groupId === groupDef.id).map(
+        (d) => d.id
+      );
       newGroups.set(groupDef.id, createDefaultGroup(groupDef, dialIds));
     }
 

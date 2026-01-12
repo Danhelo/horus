@@ -43,7 +43,9 @@ export function App() {
       // Fall back to default if not available
       loadGraphFromURL(dataUrl).catch(() => {
         // If the selected model/layer data doesn't exist, try the default
-        console.warn(`Data not found for ${selectedModel}/layer-${selectedLayer}, trying fallback...`);
+        console.warn(
+          `Data not found for ${selectedModel}/layer-${selectedLayer}, trying fallback...`
+        );
         loadGraphFromURL('/data/gemma-2-2b/layer-12.json').catch(() => {
           // Final fallback to legacy path
           loadGraphFromURL('/data/layer-12.json');

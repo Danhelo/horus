@@ -213,12 +213,10 @@ export function MixerPanel({
                 transition: 'color 150ms ease',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.color =
-                  'var(--color-text-primary)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-primary)';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.color =
-                  'var(--color-text-secondary)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-secondary)';
               }}
             >
               <CollapseIcon collapsed={collapsed} />
@@ -241,12 +239,10 @@ export function MixerPanel({
                 transition: 'color 150ms ease',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.color =
-                  'var(--color-text-primary)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-primary)';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.color =
-                  'var(--color-text-secondary)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-secondary)';
               }}
             >
               <CloseIcon />
@@ -305,15 +301,12 @@ export function MixerPanel({
               transition: 'all 150ms ease',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor =
-                'var(--color-gold-dim)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-gold-dim)';
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-gold)';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor =
-                'var(--color-border)';
-              (e.currentTarget as HTMLButtonElement).style.color =
-                'var(--color-text-muted)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-border)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-muted)';
             }}
             onClick={() => {
               // TODO: Open dial search/add modal

@@ -84,9 +84,7 @@ export function isSteeringConfig(value: unknown): value is SteeringConfig {
 /**
  * Type guard for conflict severity
  */
-export function isConflictSeverity(
-  value: unknown
-): value is 'low' | 'medium' | 'high' {
+export function isConflictSeverity(value: unknown): value is 'low' | 'medium' | 'high' {
   return typeof value === 'string' && VALID_CONFLICT_SEVERITIES.includes(value);
 }
 

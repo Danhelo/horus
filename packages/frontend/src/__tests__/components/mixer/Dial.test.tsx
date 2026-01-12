@@ -2,10 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { Dial } from '../../../components/mixer/Dial';
-import {
-  valueToAngle,
-  angleToValue,
-} from '../../../components/mixer/useDial';
+import { valueToAngle, angleToValue } from '../../../components/mixer/useDial';
 
 describe('Dial', () => {
   const defaultProps = {
@@ -237,9 +234,7 @@ describe('Dial', () => {
   describe('double-click reset', () => {
     it('resets to default value on double click', () => {
       const onChange = vi.fn();
-      render(
-        <Dial {...defaultProps} value={0.75} defaultValue={0} onChange={onChange} />
-      );
+      render(<Dial {...defaultProps} value={0.75} defaultValue={0} onChange={onChange} />);
       const slider = screen.getByRole('slider');
 
       fireEvent.doubleClick(slider);
@@ -249,9 +244,7 @@ describe('Dial', () => {
 
     it('resets to custom default value', () => {
       const onChange = vi.fn();
-      render(
-        <Dial {...defaultProps} value={0.75} defaultValue={0.25} onChange={onChange} />
-      );
+      render(<Dial {...defaultProps} value={0.75} defaultValue={0.25} onChange={onChange} />);
       const slider = screen.getByRole('slider');
 
       fireEvent.doubleClick(slider);
@@ -261,15 +254,7 @@ describe('Dial', () => {
 
     it('does not reset when disabled', () => {
       const onChange = vi.fn();
-      render(
-        <Dial
-          {...defaultProps}
-          value={0.75}
-          defaultValue={0}
-          onChange={onChange}
-          disabled
-        />
-      );
+      render(<Dial {...defaultProps} value={0.75} defaultValue={0} onChange={onChange} disabled />);
       const slider = screen.getByRole('slider');
 
       fireEvent.doubleClick(slider);
@@ -279,15 +264,7 @@ describe('Dial', () => {
 
     it('does not reset when locked', () => {
       const onChange = vi.fn();
-      render(
-        <Dial
-          {...defaultProps}
-          value={0.75}
-          defaultValue={0}
-          onChange={onChange}
-          locked
-        />
-      );
+      render(<Dial {...defaultProps} value={0.75} defaultValue={0} onChange={onChange} locked />);
       const slider = screen.getByRole('slider');
 
       fireEvent.doubleClick(slider);
@@ -330,9 +307,7 @@ describe('Dial', () => {
 
     it('clamps to 0 minimum', () => {
       const onChange = vi.fn();
-      render(
-        <Dial {...defaultProps} polarity="unipolar" value={0.02} onChange={onChange} />
-      );
+      render(<Dial {...defaultProps} polarity="unipolar" value={0.02} onChange={onChange} />);
       const slider = screen.getByRole('slider');
 
       fireEvent.keyDown(slider, { key: 'ArrowDown' });
@@ -342,9 +317,7 @@ describe('Dial', () => {
 
     it('clamps to 1 maximum', () => {
       const onChange = vi.fn();
-      render(
-        <Dial {...defaultProps} polarity="unipolar" value={0.98} onChange={onChange} />
-      );
+      render(<Dial {...defaultProps} polarity="unipolar" value={0.98} onChange={onChange} />);
       const slider = screen.getByRole('slider');
 
       fireEvent.keyDown(slider, { key: 'ArrowUp' });
@@ -354,9 +327,7 @@ describe('Dial', () => {
 
     it('sets to 0 on Home key', () => {
       const onChange = vi.fn();
-      render(
-        <Dial {...defaultProps} polarity="unipolar" value={0.5} onChange={onChange} />
-      );
+      render(<Dial {...defaultProps} polarity="unipolar" value={0.5} onChange={onChange} />);
       const slider = screen.getByRole('slider');
 
       fireEvent.keyDown(slider, { key: 'Home' });

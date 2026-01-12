@@ -53,10 +53,7 @@ interface LoaderOptions {
 
 // Placeholder loader functions - will be replaced with actual imports
 // when the loaders module is implemented
-async function loadGraphFromURLImpl(
-  url: string,
-  options?: LoaderOptions
-): Promise<LoaderResult> {
+async function loadGraphFromURLImpl(url: string, options?: LoaderOptions): Promise<LoaderResult> {
   const { signal, onProgress } = options ?? {};
 
   // Fetch with abort support
