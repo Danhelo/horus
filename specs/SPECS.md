@@ -44,10 +44,24 @@ HORUS is a creative instrument for navigating and sculpting in **ideaspace**—t
 | [TRJ-001](phase-2/TRJ-001-trajectory.md) | Trajectory View | Complete | frontend |
 | [GEN-001](phase-2/GEN-001-generation.md) | Steered Generation | Complete | backend |
 
-## Phase 3: Dynamic Hierarchy
+## Phase 3: Dynamic Hierarchy + Live Neural Surgery
 
-**Goal**: LLM-assisted semantic zoom, natural language queries
-**Status**: Not Started
+**Goal**: LLM-assisted semantic zoom, natural language queries, **live steering from graph interaction**
+**Status**: Draft
+
+### Live Neural Surgery (NEW)
+
+Transform the graph from visualization to control surface. Click nodes to steer generation.
+
+| Spec | Title | Status | Package |
+|------|-------|--------|---------|
+| [LIVE-000](phase-3/LIVE-000-master-plan.md) | **Master Plan** | Draft | - |
+| [LIVE-001](phase-3/LIVE-001-click-to-steer.md) | Click-to-Steer | Draft | frontend |
+| [GRP-001](phase-3/GRP-001-steering-groups.md) | Steering Groups | Draft | frontend, backend |
+| [CIR-001](phase-3/CIR-001-circuit-tracing.md) | Circuit Tracing | Draft | frontend, backend |
+| [SUG-001](phase-3/SUG-001-llm-suggestions.md) | LLM Suggestions | Draft | frontend, backend |
+
+### Semantic Navigation (Original)
 
 | Spec | Title | Status | Package |
 |------|-------|--------|---------|
