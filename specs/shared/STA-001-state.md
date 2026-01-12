@@ -1,10 +1,10 @@
 # STA-001: Zustand Architecture
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | STA-001 |
-| **Phase** | Shared |
-| **Status** | Draft |
+| Field       | Value             |
+| ----------- | ----------------- |
+| **Spec ID** | STA-001           |
+| **Phase**   | Shared            |
+| **Status**  | Draft             |
 | **Package** | `@horus/frontend` |
 
 ## Summary
@@ -81,6 +81,7 @@ interface LargeDataStore {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Three stores created with distinct purposes
 - [ ] TransientStore never triggers React re-renders
 - [ ] AppStore uses proper React subscription
@@ -120,6 +121,7 @@ useEffect(() => {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] No setState calls in useFrame
 - [ ] Large data accessed via getState() in useFrame
 - [ ] Subscriptions used for non-React updates
@@ -139,17 +141,23 @@ export interface TextSlice {
   stopGeneration: () => void;
 }
 
-export const createTextSlice: StateCreator<
-  AppStore,
-  [['zustand/immer', never]],
-  [],
-  TextSlice
-> = (set) => ({
+export const createTextSlice: StateCreator<AppStore, [['zustand/immer', never]], [], TextSlice> = (
+  set
+) => ({
   currentText: '',
   isGenerating: false,
-  setText: (text) => set((state) => { state.currentText = text; }),
-  startGeneration: () => set((state) => { state.isGenerating = true; }),
-  stopGeneration: () => set((state) => { state.isGenerating = false; }),
+  setText: (text) =>
+    set((state) => {
+      state.currentText = text;
+    }),
+  startGeneration: () =>
+    set((state) => {
+      state.isGenerating = true;
+    }),
+  stopGeneration: () =>
+    set((state) => {
+      state.isGenerating = false;
+    }),
 });
 
 // slices/mixerSlice.ts
@@ -175,6 +183,7 @@ export const useAppStore = create<AppStore>()(
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Each domain has its own slice file
 - [ ] Slices composed into single store
 - [ ] Types properly merged
@@ -189,10 +198,14 @@ import { immer } from 'zustand/middleware/immer';
 import { temporal } from 'zundo';
 
 export const useAppStore = create<AppStore>()(
-  subscribeWithSelector(              // Fine-grained subscriptions
-    temporal(                         // Undo/redo
-      devtools(                       // DevTools integration
-        immer(                        // Immutable updates
+  subscribeWithSelector(
+    // Fine-grained subscriptions
+    temporal(
+      // Undo/redo
+      devtools(
+        // DevTools integration
+        immer(
+          // Immutable updates
           (set, get) => ({
             // ... state and actions
           })
@@ -222,6 +235,7 @@ export const useAppStore = create<AppStore>()(
 | persist | LocalStorage/IndexedDB persistence |
 
 **Acceptance Criteria:**
+
 - [ ] All middleware properly ordered
 - [ ] DevTools enabled in development only
 - [ ] Undo/redo works for relevant state
@@ -234,32 +248,33 @@ export const useAppStore = create<AppStore>()(
 import { shallow } from 'zustand/shallow';
 
 // Atomic selector - single value, minimal re-renders
-export const useSelectedCount = () =>
-  useAppStore((s) => s.selectedNodeIds.size);
+export const useSelectedCount = () => useAppStore((s) => s.selectedNodeIds.size);
 
 // Derived selector - computed from multiple values
 export const useActiveNodes = () =>
   useAppStore((s) => {
     const { selectedNodeIds } = s;
     const { nodes } = useLargeDataStore.getState();
-    return Array.from(selectedNodeIds).map(id => nodes.get(id)).filter(Boolean);
+    return Array.from(selectedNodeIds)
+      .map((id) => nodes.get(id))
+      .filter(Boolean);
   }, shallow);
 
 // Parameterized selector factory
-export const selectDialById = (id: string) =>
-  (state: AppStore) => state.dials.get(id);
+export const selectDialById = (id: string) => (state: AppStore) => state.dials.get(id);
 
-export const useDialValue = (id: string) =>
-  useAppStore(selectDialById(id));
+export const useDialValue = (id: string) => useAppStore(selectDialById(id));
 ```
 
 **Selector Rules:**
+
 1. Use atomic selectors when possible (single primitive value)
 2. Use `shallow` comparison for object/array selectors
 3. Don't compute in selector if expensive - use useMemo
 4. Parameterized selectors should be stable (no inline functions)
 
 **Acceptance Criteria:**
+
 - [ ] Selectors organized by domain
 - [ ] Shallow comparison used appropriately
 - [ ] No expensive computations in selectors
@@ -286,7 +301,9 @@ const indexedDBStorage = {
 
 export const useLargeDataStore = create<LargeDataStore>()(
   persist(
-    (set) => ({ /* ... */ }),
+    (set) => ({
+      /* ... */
+    }),
     {
       name: 'horus-graph-data',
       storage: createJSONStorage(() => indexedDBStorage),
@@ -301,7 +318,9 @@ export const useLargeDataStore = create<LargeDataStore>()(
 // LocalStorage for preferences
 export const useAppStore = create<AppStore>()(
   persist(
-    (set) => ({ /* ... */ }),
+    (set) => ({
+      /* ... */
+    }),
     {
       name: 'horus-preferences',
       partialize: (state) => ({
@@ -314,6 +333,7 @@ export const useAppStore = create<AppStore>()(
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Large data uses IndexedDB (5MB+ capable)
 - [ ] Preferences use localStorage
 - [ ] Partialize excludes transient state
@@ -347,7 +367,12 @@ const customSerializer = {
   },
   reviver: (key: string, value: unknown) => {
     if (value && typeof value === 'object' && '__type' in value) {
-      const typed = value as { __type: string; data?: number[]; entries?: unknown[]; values?: unknown[] };
+      const typed = value as {
+        __type: string;
+        data?: number[];
+        entries?: unknown[];
+        values?: unknown[];
+      };
       if (typed.__type === 'Float32Array' && typed.data) {
         return new Float32Array(typed.data);
       }
@@ -364,6 +389,7 @@ const customSerializer = {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Float32Array serializes/deserializes correctly
 - [ ] Map and Set handled
 - [ ] DevTools displays typed data properly
@@ -390,6 +416,6 @@ const customSerializer = {
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

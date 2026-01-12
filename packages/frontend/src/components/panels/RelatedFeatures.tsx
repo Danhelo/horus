@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { useAppStore } from '../../stores';
 import type { GraphEdge } from '@horus/shared';

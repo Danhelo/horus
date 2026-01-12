@@ -6,7 +6,7 @@ import type { Trajectory } from '@horus/shared';
 import { interpolateTrajectoryPosition } from '../../utils';
 
 // Pre-allocated objects for useFrame performance
-const tempVec = new THREE.Vector3();
+const _tempVec = new THREE.Vector3();
 
 interface TrajectoryMarkerProps {
   /** The trajectory this marker is on */
@@ -70,15 +70,9 @@ export function TrajectoryMarker({
   );
 
   // Sphere geometry
-  const sphereGeometry = useMemo(
-    () => new THREE.SphereGeometry(size, 16, 16),
-    [size]
-  );
+  const sphereGeometry = useMemo(() => new THREE.SphereGeometry(size, 16, 16), [size]);
 
-  const glowGeometry = useMemo(
-    () => new THREE.SphereGeometry(size * 2, 16, 16),
-    [size]
-  );
+  const glowGeometry = useMemo(() => new THREE.SphereGeometry(size * 2, 16, 16), [size]);
 
   // Animate pulse effect
   useFrame(({ clock }) => {
@@ -130,9 +124,9 @@ interface TrajectoryLabelProps {
 }
 
 export function TrajectoryLabel({
-  trajectory,
-  position,
-  showToken = true,
+  trajectory: _trajectory,
+  position: _position,
+  showToken: _showToken = true,
 }: TrajectoryLabelProps) {
   // TODO: Implement using drei's Text or Html component
   // For now, just return null - label rendering will be added
@@ -156,7 +150,7 @@ export function TrajectoryVisualization({
   trajectory,
   position,
   color = '#d4af37',
-  showPath = true,
+  showPath: _showPath = true,
   showMarker = true,
   showLabel = false,
 }: TrajectoryVisualizationProps) {
@@ -165,16 +159,8 @@ export function TrajectoryVisualization({
 
   return (
     <group>
-      {showMarker && (
-        <TrajectoryMarker
-          trajectory={trajectory}
-          position={position}
-          color={color}
-        />
-      )}
-      {showLabel && (
-        <TrajectoryLabel trajectory={trajectory} position={position} />
-      )}
+      {showMarker && <TrajectoryMarker trajectory={trajectory} position={position} color={color} />}
+      {showLabel && <TrajectoryLabel trajectory={trajectory} position={position} />}
     </group>
   );
 }

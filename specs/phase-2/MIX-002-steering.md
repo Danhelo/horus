@@ -1,11 +1,11 @@
 # MIX-002: Steering Vector
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | MIX-002 |
-| **Phase** | 2 - Interactive Explorer |
-| **Status** | Draft |
-| **Package** | `@horus/shared` |
+| Field       | Value                    |
+| ----------- | ------------------------ |
+| **Spec ID** | MIX-002                  |
+| **Phase**   | 2 - Interactive Explorer |
+| **Status**  | Draft                    |
+| **Package** | `@horus/shared`          |
 
 ## Summary
 
@@ -18,23 +18,24 @@ Define the steering vector data structure and computation logic. A steering vect
 ```typescript
 interface SteeringVector {
   features: Array<{
-    source: string;              // Neuronpedia source ID (e.g., "12-gemmascope-res-16k")
-    index: number;               // Feature index within source
-    strength: number;            // -1 to 1 (negative = suppress, positive = amplify)
+    source: string; // Neuronpedia source ID (e.g., "12-gemmascope-res-16k")
+    index: number; // Feature index within source
+    strength: number; // -1 to 1 (negative = suppress, positive = amplify)
   }>;
-  modelId: string;               // Target model (e.g., "gemma-2-2b")
-  timestamp: number;             // When computed
+  modelId: string; // Target model (e.g., "gemma-2-2b")
+  timestamp: number; // When computed
 }
 
 interface SteeringConfig {
-  method: 'SIMPLE_ADDITIVE';     // Neuronpedia steering method
-  maxFeatures: number;           // Limit features in vector (default: 20)
-  strengthMultiplier: number;    // Scale factor for all strengths (default: 1.0)
-  clampRange: [number, number];  // Min/max strength values (default: [-2, 2])
+  method: 'SIMPLE_ADDITIVE'; // Neuronpedia steering method
+  maxFeatures: number; // Limit features in vector (default: 20)
+  strengthMultiplier: number; // Scale factor for all strengths (default: 1.0)
+  clampRange: [number, number]; // Min/max strength values (default: [-2, 2])
 }
 ```
 
 **Acceptance Criteria:**
+
 - [ ] SteeringVector interface defined in `@horus/shared`
 - [ ] Compatible with Neuronpedia `/api/steer` request format
 - [ ] Configurable limits on feature count and strength range
@@ -42,13 +43,11 @@ interface SteeringConfig {
 ### REQ-2: Vector Computation from Dials
 
 ```typescript
-function computeSteeringVector(
-  dials: Dial[],
-  config: SteeringConfig
-): SteeringVector;
+function computeSteeringVector(dials: Dial[], config: SteeringConfig): SteeringVector;
 ```
 
 **Algorithm:**
+
 1. For each dial with non-zero value:
    - Multiply each feature weight by dial value
    - Add to cumulative feature map
@@ -59,6 +58,7 @@ function computeSteeringVector(
 5. Return sparse vector with only significant features
 
 **Example:**
+
 ```typescript
 // Dial "Formality" at 0.8 with trace:
 //   feat_1234: weight 0.5
@@ -75,6 +75,7 @@ function computeSteeringVector(
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Vector correctly aggregates multiple dial contributions
 - [ ] Overlapping features sum their strengths
 - [ ] Strength values clamped to configured range
@@ -87,7 +88,7 @@ function computeSteeringVector(
 interface SteeringStore {
   vector: SteeringVector | null;
   config: SteeringConfig;
-  isStale: boolean;               // True when dials changed but vector not recomputed
+  isStale: boolean; // True when dials changed but vector not recomputed
 
   // Actions
   recompute: () => void;
@@ -97,12 +98,14 @@ interface SteeringStore {
 ```
 
 **Behavior:**
+
 - Vector recomputes when any dial value changes
 - Debounce recomputation (50ms) to batch rapid changes
 - Mark as stale immediately on dial change
 - Clear vector when all dials reset to zero
 
 **Acceptance Criteria:**
+
 - [ ] Store exposes current steering vector
 - [ ] Automatic recomputation on dial changes
 - [ ] Stale flag for UI feedback during computation
@@ -117,20 +120,22 @@ interface DialConflict {
   dialIds: [string, string];
   conflictingFeatures: Array<{
     featureId: string;
-    contributions: [number, number];  // Opposing signs
+    contributions: [number, number]; // Opposing signs
   }>;
-  severity: 'low' | 'medium' | 'high';  // Based on magnitude
+  severity: 'low' | 'medium' | 'high'; // Based on magnitude
 }
 
 function detectConflicts(dials: Dial[]): DialConflict[];
 ```
 
 **Conflict Severity:**
+
 - Low: < 0.3 net cancellation
 - Medium: 0.3 - 0.6 net cancellation
 - High: > 0.6 net cancellation
 
 **Acceptance Criteria:**
+
 - [ ] Detect when dial traces have opposing contributions
 - [ ] Calculate severity based on cancellation magnitude
 - [ ] Return list of conflicts for UI display
@@ -155,6 +160,7 @@ function deserializeSteeringState(json: string): SerializedSteeringState;
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Serialize dial values (not computed vector)
 - [ ] Include config for reproducibility
 - [ ] Version field for future compatibility
@@ -179,11 +185,12 @@ interface SteerRequest {
 interface SteerResponse {
   text: string;
   tokens: string[];
-  activations?: ActivationData;  // If requested
+  activations?: ActivationData; // If requested
 }
 ```
 
 **Acceptance Criteria:**
+
 - [ ] SteeringVector converts to Neuronpedia request format
 - [ ] Validate steering vector before API call
 - [ ] Handle API errors gracefully (rate limits, invalid features)
@@ -210,6 +217,6 @@ interface SteerResponse {
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

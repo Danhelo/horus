@@ -12,27 +12,33 @@ import type { SteeringVector, SteeringConfig, DialConflict } from '../../steerin
 
 describe('isSteeringFeature', () => {
   it('validates correct steering feature', () => {
-    expect(isSteeringFeature({
-      source: '12-gemmascope-res-16k',
-      index: 456,
-      strength: 1.5,
-    })).toBe(true);
+    expect(
+      isSteeringFeature({
+        source: '12-gemmascope-res-16k',
+        index: 456,
+        strength: 1.5,
+      })
+    ).toBe(true);
   });
 
   it('validates negative strength', () => {
-    expect(isSteeringFeature({
-      source: '12-gemmascope-res-16k',
-      index: 456,
-      strength: -1.5,
-    })).toBe(true);
+    expect(
+      isSteeringFeature({
+        source: '12-gemmascope-res-16k',
+        index: 456,
+        strength: -1.5,
+      })
+    ).toBe(true);
   });
 
   it('validates zero values', () => {
-    expect(isSteeringFeature({
-      source: 'test',
-      index: 0,
-      strength: 0,
-    })).toBe(true);
+    expect(
+      isSteeringFeature({
+        source: 'test',
+        index: 0,
+        strength: 0,
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -60,9 +66,7 @@ describe('isSteeringFeature', () => {
 
 describe('isSteeringVector', () => {
   const validVector: SteeringVector = {
-    features: [
-      { source: '12-gemmascope-res-16k', index: 456, strength: 1.0 },
-    ],
+    features: [{ source: '12-gemmascope-res-16k', index: 456, strength: 1.0 }],
     modelId: 'gemma-2-2b',
     timestamp: Date.now(),
   };
@@ -72,11 +76,13 @@ describe('isSteeringVector', () => {
   });
 
   it('validates empty features array', () => {
-    expect(isSteeringVector({
-      features: [],
-      modelId: 'gemma-2-2b',
-      timestamp: Date.now(),
-    })).toBe(true);
+    expect(
+      isSteeringVector({
+        features: [],
+        modelId: 'gemma-2-2b',
+        timestamp: Date.now(),
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -89,10 +95,12 @@ describe('isSteeringVector', () => {
   });
 
   it('rejects invalid feature in array', () => {
-    expect(isSteeringVector({
-      ...validVector,
-      features: [{ source: '', index: 0, strength: 0 }],
-    })).toBe(false);
+    expect(
+      isSteeringVector({
+        ...validVector,
+        features: [{ source: '', index: 0, strength: 0 }],
+      })
+    ).toBe(false);
   });
 
   it('rejects non-finite timestamp', () => {
@@ -165,9 +173,7 @@ describe('isConflictSeverity', () => {
 describe('isDialConflict', () => {
   const validConflict: DialConflict = {
     dialIds: ['tone:formality', 'style:casual'],
-    conflictingFeatures: [
-      { featureId: 'gemma-2-2b:12:456', contributions: [0.5, -0.5] },
-    ],
+    conflictingFeatures: [{ featureId: 'gemma-2-2b:12:456', contributions: [0.5, -0.5] }],
     severity: 'medium',
   };
 
@@ -176,10 +182,12 @@ describe('isDialConflict', () => {
   });
 
   it('validates empty conflicting features', () => {
-    expect(isDialConflict({
-      ...validConflict,
-      conflictingFeatures: [],
-    })).toBe(true);
+    expect(
+      isDialConflict({
+        ...validConflict,
+        conflictingFeatures: [],
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -194,14 +202,18 @@ describe('isDialConflict', () => {
   });
 
   it('rejects invalid conflicting feature', () => {
-    expect(isDialConflict({
-      ...validConflict,
-      conflictingFeatures: [{ featureId: 123, contributions: [0.5, -0.5] }],
-    })).toBe(false);
-    expect(isDialConflict({
-      ...validConflict,
-      conflictingFeatures: [{ featureId: 'test', contributions: [0.5] }],
-    })).toBe(false);
+    expect(
+      isDialConflict({
+        ...validConflict,
+        conflictingFeatures: [{ featureId: 123, contributions: [0.5, -0.5] }],
+      })
+    ).toBe(false);
+    expect(
+      isDialConflict({
+        ...validConflict,
+        conflictingFeatures: [{ featureId: 'test', contributions: [0.5] }],
+      })
+    ).toBe(false);
   });
 
   it('rejects invalid severity', () => {
@@ -223,12 +235,14 @@ describe('isSteerRequest', () => {
   });
 
   it('validates with optional fields', () => {
-    expect(isSteerRequest({
-      ...validRequest,
-      temperature: 0.7,
-      n_tokens: 100,
-      steer_method: 'SIMPLE_ADDITIVE',
-    })).toBe(true);
+    expect(
+      isSteerRequest({
+        ...validRequest,
+        temperature: 0.7,
+        n_tokens: 100,
+        steer_method: 'SIMPLE_ADDITIVE',
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -241,10 +255,12 @@ describe('isSteerRequest', () => {
   });
 
   it('rejects invalid feature in array', () => {
-    expect(isSteerRequest({
-      ...validRequest,
-      features: [{ modelId: 123, layer: 'test', index: 0, strength: 0 }],
-    })).toBe(false);
+    expect(
+      isSteerRequest({
+        ...validRequest,
+        features: [{ modelId: 123, layer: 'test', index: 0, strength: 0 }],
+      })
+    ).toBe(false);
   });
 });
 
@@ -259,10 +275,12 @@ describe('isSteerResponse', () => {
   });
 
   it('validates empty logprobs', () => {
-    expect(isSteerResponse({
-      defaultOutput: { text: '', logprobs: [] },
-      steeredOutput: { text: '', logprobs: [] },
-    })).toBe(true);
+    expect(
+      isSteerResponse({
+        defaultOutput: { text: '', logprobs: [] },
+        steeredOutput: { text: '', logprobs: [] },
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -276,9 +294,11 @@ describe('isSteerResponse', () => {
   });
 
   it('rejects invalid output format', () => {
-    expect(isSteerResponse({
-      defaultOutput: { text: 123, logprobs: [] },
-      steeredOutput: validResponse.steeredOutput,
-    })).toBe(false);
+    expect(
+      isSteerResponse({
+        defaultOutput: { text: 123, logprobs: [] },
+        steeredOutput: validResponse.steeredOutput,
+      })
+    ).toBe(false);
   });
 });

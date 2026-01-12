@@ -90,13 +90,10 @@ export function useDial(options: UseDialOptions) {
     [isDragging, polarity, onChange]
   );
 
-  const handlePointerUp = useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-      setIsDragging(false);
-    },
-    []
-  );
+  const handlePointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    setIsDragging(false);
+  }, []);
 
   return {
     isDragging,
@@ -152,7 +149,7 @@ export function useDialKeyboard(options: UseDialKeyboardOptions) {
           break;
       }
     },
-    [value, polarity, disabled, locked, onChange, min, max]
+    [value, disabled, locked, onChange, min, max]
   );
 
   return { onKeyDown: handleKeyDown };
@@ -168,9 +165,11 @@ export function useDialWheel(options: UseDialWheelOptions) {
 
   // Store current values in refs to avoid stale closures
   const valueRef = useRef(value);
+  // eslint-disable-next-line react-hooks/refs -- Updating refs during render to avoid stale closures is intentional
   valueRef.current = value;
 
   const onChangeRef = useRef(onChange);
+  // eslint-disable-next-line react-hooks/refs -- Updating refs during render to avoid stale closures is intentional
   onChangeRef.current = onChange;
 
   useEffect(() => {

@@ -39,8 +39,7 @@ export function isGenerationOptions(value: unknown): value is GenerationOptions 
     typeof obj.temperature === 'number' &&
     obj.temperature >= 0 &&
     obj.temperature <= 2 &&
-    (obj.topP === undefined ||
-      (typeof obj.topP === 'number' && obj.topP >= 0 && obj.topP <= 1)) &&
+    (obj.topP === undefined || (typeof obj.topP === 'number' && obj.topP >= 0 && obj.topP <= 1)) &&
     (obj.stopSequences === undefined ||
       (Array.isArray(obj.stopSequences) &&
         obj.stopSequences.every((s) => typeof s === 'string'))) &&
@@ -103,9 +102,7 @@ export function isGenerationRequest(value: unknown): value is GenerationRequest 
 /**
  * Type guard for StreamingGenerationEvent
  */
-export function isStreamingGenerationEvent(
-  value: unknown
-): value is StreamingGenerationEvent {
+export function isStreamingGenerationEvent(value: unknown): value is StreamingGenerationEvent {
   if (typeof value !== 'object' || value === null) return false;
   const obj = value as Record<string, unknown>;
 

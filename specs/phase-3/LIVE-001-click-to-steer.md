@@ -1,11 +1,11 @@
 # LIVE-001: Click-to-Steer
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | LIVE-001 |
-| **Phase** | 3 - Dynamic Hierarchy |
-| **Status** | Draft |
-| **Package** | `@horus/frontend` |
+| Field       | Value                 |
+| ----------- | --------------------- |
+| **Spec ID** | LIVE-001              |
+| **Phase**   | 3 - Dynamic Hierarchy |
+| **Status**  | Draft                 |
+| **Package** | `@horus/frontend`     |
 
 ## Summary
 
@@ -19,12 +19,12 @@ Track features the user has selected for steering.
 
 ```typescript
 interface ActiveFeature {
-  featureId: string;           // "gemma-2-2b/12/2341"
-  layer: number;               // 12
-  index: number;               // 2341
-  strength: number;            // -10 to +10 (default: +2 on click)
+  featureId: string; // "gemma-2-2b/12/2341"
+  layer: number; // 12
+  index: number; // 2341
+  strength: number; // -10 to +10 (default: +2 on click)
   source: 'click' | 'dial' | 'group' | 'circuit';
-  addedAt: number;             // Timestamp for ordering
+  addedAt: number; // Timestamp for ordering
 }
 
 interface ActiveFeaturesSlice {
@@ -43,6 +43,7 @@ interface ActiveFeaturesSlice {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Active features stored with strength and metadata
 - [ ] Add/remove operations update in <10ms
 - [ ] Maximum 50 active features (prevent overwhelming steering)
@@ -67,7 +68,7 @@ const handleClick = (event: ThreeEvent<MouseEvent>) => {
     if (isActive) {
       removeFeature(nodeId);
     } else {
-      addFeature(nodeId, 2.0, 'click');  // Default strength +2
+      addFeature(nodeId, 2.0, 'click'); // Default strength +2
     }
   }
 
@@ -78,12 +79,14 @@ const handleClick = (event: ThreeEvent<MouseEvent>) => {
 ```
 
 **Behavior:**
+
 - Single click → Add to activeFeatures (or remove if already active)
 - Shift+click → Multi-select (existing behavior)
 - Right-click → Context menu (future: REQ-6)
 - Double-click → Focus camera only (no steering change)
 
 **Acceptance Criteria:**
+
 - [ ] Click adds feature with default strength +2
 - [ ] Click on active feature removes it
 - [ ] Shift+click preserves multi-select behavior
@@ -95,8 +98,8 @@ Active features need distinct visual treatment.
 
 ```typescript
 // In colors.ts
-export const ACTIVE_FEATURE_COLOR = new THREE.Color('#00ffff');  // Cyan
-export const ACTIVE_FEATURE_GLOW = 0.8;  // Emissive intensity
+export const ACTIVE_FEATURE_COLOR = new THREE.Color('#00ffff'); // Cyan
+export const ACTIVE_FEATURE_GLOW = 0.8; // Emissive intensity
 
 // Color priority (highest to lowest):
 // 1. Active (cyan) - features being steered
@@ -111,9 +114,10 @@ export const ACTIVE_FEATURE_GLOW = 0.8;  // Emissive intensity
 |-------|-------|-------------------|
 | Active | Cyan (#00ffff) | Slight pulse animation |
 | Active + Negative | Purple (#ff00ff) | Pulse animation |
-| Active Strength | Size varies | Scale 1.0 + (strength * 0.1) |
+| Active Strength | Size varies | Scale 1.0 + (strength \* 0.1) |
 
 **Acceptance Criteria:**
+
 - [ ] Active features visually distinct from selected/hovered
 - [ ] Color indicates positive (cyan) vs negative (purple) steering
 - [ ] Scale indicates steering strength
@@ -126,7 +130,7 @@ Popup panel when feature is clicked, allowing strength adjustment.
 ```typescript
 interface QuickSteeringPanelProps {
   featureId: string;
-  position: { x: number; y: number };  // Screen coordinates
+  position: { x: number; y: number }; // Screen coordinates
   onClose: () => void;
 }
 
@@ -139,6 +143,7 @@ interface QuickSteeringPanelProps {
 ```
 
 **UI Mockup:**
+
 ```
 ┌──────────────────────────────┐
 │ formal academic tone         │
@@ -153,6 +158,7 @@ interface QuickSteeringPanelProps {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Panel appears near clicked node (screen space)
 - [ ] Slider allows -10 to +10 range
 - [ ] Changes apply immediately (optimistic update)
@@ -166,9 +172,9 @@ Active feature changes should trigger generation after debounce.
 ```typescript
 // In useSteeringGeneration.ts
 const useSteeringGeneration = () => {
-  const activeFeatures = useAppStore(s => s.activeFeatures);
-  const dialVector = useAppStore(s => s.steeringVector);
-  const currentText = useAppStore(s => s.currentText);
+  const activeFeatures = useAppStore((s) => s.activeFeatures);
+  const dialVector = useAppStore((s) => s.steeringVector);
+  const currentText = useAppStore((s) => s.currentText);
 
   // Combine active features + dial vector
   const combinedVector = useMemo(() => {
@@ -192,7 +198,7 @@ const useSteeringGeneration = () => {
         // Handle streaming tokens
       }
     },
-    2000  // 2 second debounce
+    2000 // 2 second debounce
   );
 
   // Trigger on activeFeatures or dialVector change
@@ -206,6 +212,7 @@ const useSteeringGeneration = () => {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Generation triggers 2s after last change
 - [ ] Pending state shows countdown
 - [ ] New changes reset the debounce timer
@@ -236,6 +243,7 @@ const contextMenuActions: ContextMenuAction[] = [
 **Note:** Implement in later iteration. Focus on click-to-steer first.
 
 **Acceptance Criteria:**
+
 - [ ] Right-click shows context menu
 - [ ] Menu positioned near click point
 - [ ] Keyboard shortcut alternatives (e.g., 'A' to amplify hovered)
@@ -273,7 +281,7 @@ function mergeSteeringVectors(
         strength: clamp(strength, -10, 10),
       }))
       .sort((a, b) => Math.abs(b.strength) - Math.abs(a.strength))
-      .slice(0, 100),  // Max 100 features per request
+      .slice(0, 100), // Max 100 features per request
     modelId: 'gemma-2-2b',
     timestamp: Date.now(),
   };
@@ -290,7 +298,7 @@ function mergeSteeringVectors(
 // In NodeMesh.tsx - subscribe to activeFeatures changes
 useEffect(() => {
   const unsubscribe = useAppStore.subscribe(
-    state => state.activeFeatures,
+    (state) => state.activeFeatures,
     (activeFeatures) => {
       // Update colors directly, no re-render
       updateNodeColors(meshRef.current, activeFeatures);
@@ -316,6 +324,6 @@ useEffect(() => {
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-11 | Initial draft |

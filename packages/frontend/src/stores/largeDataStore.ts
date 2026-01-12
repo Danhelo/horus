@@ -72,7 +72,7 @@ export const useLargeDataStore = create<LargeDataStore>()(
         positions[index * 3 + 2] = node.position[2];
 
         // Default color: inactive (dark gray-blue)
-        colors[index * 3] = 0.16;     // R
+        colors[index * 3] = 0.16; // R
         colors[index * 3 + 1] = 0.16; // G
         colors[index * 3 + 2] = 0.23; // B
 
@@ -96,7 +96,7 @@ export const useLargeDataStore = create<LargeDataStore>()(
       let writeIndex = 0;
       const maxEdges = validEdges.length;
       const edgePositions = new Float32Array(maxEdges * 6); // 2 points * 3 coords
-      const edgeColors = new Float32Array(maxEdges * 6);    // 2 points * 3 colors
+      const edgeColors = new Float32Array(maxEdges * 6); // 2 points * 3 colors
 
       for (let i = 0; i < maxEdges; i++) {
         const edge = validEdges[i];

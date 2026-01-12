@@ -32,10 +32,7 @@ const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 // Import after mocks are set up
-import {
-  neuronpediaService,
-  CacheStats,
-} from '../services/neuronpedia';
+import { neuronpediaService, CacheStats } from '../services/neuronpedia';
 
 describe('Cache Statistics', () => {
   beforeEach(() => {
@@ -93,11 +90,7 @@ describe('Cache Statistics', () => {
           }),
       });
 
-      const feature = await neuronpediaService.getFeature(
-        'gemma-2-2b',
-        12,
-        100
-      );
+      const feature = await neuronpediaService.getFeature('gemma-2-2b', 12, 100);
 
       expect(feature.cached).toBe(false);
       // stale should be undefined for fresh data
@@ -143,11 +136,7 @@ describe('Cache Statistics', () => {
       await neuronpediaService.getFeature('gemma-2-2b', 12, 300);
 
       // Second request - should be memory hit
-      const feature = await neuronpediaService.getFeature(
-        'gemma-2-2b',
-        12,
-        300
-      );
+      const feature = await neuronpediaService.getFeature('gemma-2-2b', 12, 300);
 
       const stats = neuronpediaService.getCacheStats();
       expect(stats.memoryHits).toBe(1);

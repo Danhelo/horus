@@ -14,8 +14,8 @@ const PI_2 = Math.PI / 2;
 let animationProgress = 0;
 let isAnimating = false;
 let animationDuration = 1000;
-let animStartPos = new THREE.Vector3();
-let animEndPos = new THREE.Vector3();
+const animStartPos = new THREE.Vector3();
+const animEndPos = new THREE.Vector3();
 
 // FPS state (outside React for performance)
 let yaw = 0;
@@ -103,21 +103,14 @@ function saveCameraToStorage(state: CameraState): void {
  */
 function computeGraphBounds(positions: Float32Array | null): THREE.Box3 {
   if (!positions || positions.length === 0) {
-    return new THREE.Box3(
-      new THREE.Vector3(-10, -10, -10),
-      new THREE.Vector3(10, 10, 10)
-    );
+    return new THREE.Box3(new THREE.Vector3(-10, -10, -10), new THREE.Vector3(10, 10, 10));
   }
 
   const box = new THREE.Box3();
   const nodeCount = positions.length / 3;
 
   for (let i = 0; i < nodeCount; i++) {
-    tempVec3.set(
-      positions[i * 3],
-      positions[i * 3 + 1],
-      positions[i * 3 + 2]
-    );
+    tempVec3.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
     box.expandByPoint(tempVec3);
   }
 
@@ -139,11 +132,7 @@ function computeOptimalCameraPosition(bounds: THREE.Box3): {
   const distance = Math.max(maxExtent * 2, 5);
 
   // Position camera above and back from center
-  const position = new THREE.Vector3(
-    center.x,
-    center.y + distance * 0.3,
-    center.z + distance
-  );
+  const position = new THREE.Vector3(center.x, center.y + distance * 0.3, center.z + distance);
 
   return { position, target: center };
 }
@@ -167,9 +156,9 @@ export function CameraController() {
   const canvasRef = useRef(gl.domElement);
 
   // Get settings from store
-  const isPointerLocked = useAppStore((state) => state.isPointerLocked);
+  const _isPointerLocked = useAppStore((state) => state.isPointerLocked);
   const setPointerLocked = useAppStore((state) => state.setPointerLocked);
-  const movementSpeed = useAppStore((state) => state.movementSpeed);
+  const _movementSpeed = useAppStore((state) => state.movementSpeed);
 
   // Subscribe to node count to detect when graph loads
   const nodeCount = useLargeDataStore((state) => state.nodeCount);
@@ -429,7 +418,7 @@ export function CameraController() {
         moveState.ctrl = true;
         break;
       case 'KeyR':
-      case 'Home':
+      case 'Home': {
         event.preventDefault();
         // Reset camera to frame graph
         const store = useAppStore.getState() as unknown as Record<string, unknown>;
@@ -437,6 +426,7 @@ export function CameraController() {
           (store.resetCamera as () => void)();
         }
         break;
+      }
       case 'Escape':
         // Let browser handle pointer lock exit
         break;
@@ -553,7 +543,10 @@ export function CameraController() {
       animEndPos.set(...targetPosition);
 
       // Calculate target yaw/pitch from targetLookAt
-      tempVec3.set(...targetLookAt).sub(animEndPos).normalize();
+      tempVec3
+        .set(...targetLookAt)
+        .sub(animEndPos)
+        .normalize();
       const targetYaw = Math.atan2(-tempVec3.x, -tempVec3.z);
       const targetPitch = Math.asin(tempVec3.y);
 
@@ -709,9 +702,7 @@ export function CameraController() {
 
         // Get camera forward/right vectors
         const cameraDir = camera.getWorldDirection(tempVec3_2);
-        const cameraRight = new THREE.Vector3()
-          .crossVectors(cameraDir, camera.up)
-          .normalize();
+        const cameraRight = new THREE.Vector3().crossVectors(cameraDir, camera.up).normalize();
 
         if (forward) tempVec3.add(cameraDir);
         if (backward) tempVec3.sub(cameraDir);

@@ -70,6 +70,7 @@ For extended autonomous work:
 ```
 
 This will keep implementing specs until:
+
 - All specs in the current phase are complete
 - An ambiguity requires human input
 - A test failure can't be automatically resolved

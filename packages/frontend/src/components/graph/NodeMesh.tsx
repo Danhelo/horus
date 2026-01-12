@@ -46,11 +46,7 @@ export function NodeMesh() {
 
         const count = useLargeDataStore.getState().nodeCount;
         for (let i = 0; i < count; i++) {
-          tempMatrix.setPosition(
-            positions[i * 3],
-            positions[i * 3 + 1],
-            positions[i * 3 + 2]
-          );
+          tempMatrix.setPosition(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
           meshRef.current.setMatrixAt(i, tempMatrix);
         }
         meshRef.current.instanceMatrix.needsUpdate = true;
@@ -89,11 +85,7 @@ export function NodeMesh() {
 
     // Set positions
     for (let i = 0; i < nodeCount; i++) {
-      tempMatrix.setPosition(
-        positions[i * 3],
-        positions[i * 3 + 1],
-        positions[i * 3 + 2]
-      );
+      tempMatrix.setPosition(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
       meshRef.current.setMatrixAt(i, tempMatrix);
     }
     meshRef.current.instanceMatrix.needsUpdate = true;

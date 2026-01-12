@@ -9,7 +9,8 @@ interface SkeletonProps {
 }
 
 const skeletonBase: CSSProperties = {
-  background: 'linear-gradient(90deg, var(--color-surface) 0%, var(--color-surface-elevated) 50%, var(--color-surface) 100%)',
+  background:
+    'linear-gradient(90deg, var(--color-surface) 0%, var(--color-surface-elevated) 50%, var(--color-surface) 100%)',
   backgroundSize: '200% 100%',
   animation: 'shimmer 1.5s ease-in-out infinite',
 };

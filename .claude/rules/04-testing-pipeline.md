@@ -16,11 +16,13 @@ describe('graphLoader', () => {
 ```
 
 ### Zustand Store Testing
+
 ```typescript
 beforeEach(() => useAppStore.setState({ currentText: '', selectedNodeIds: new Set() }));
 ```
 
 ### Mocking
+
 ```typescript
 // Three.js
 vi.mock('three', () => ({ Vector3: vi.fn(() => ({ set: vi.fn() })) }));
@@ -30,10 +32,13 @@ global.fetch = vi.fn().mockResolvedValue({ ok: true, json: () => mockData });
 
 // MSW for Neuronpedia
 import { setupServer } from 'msw/node';
-const server = setupServer(http.get('https://www.neuronpedia.org/*', () => HttpResponse.json(mock)));
+const server = setupServer(
+  http.get('https://www.neuronpedia.org/*', () => HttpResponse.json(mock))
+);
 ```
 
 ### Hono Route Testing
+
 ```typescript
 const res = await app.request('/api/features/gemma-2-2b/12/1622');
 expect(res.status).toBe(200);
@@ -51,6 +56,7 @@ scripts/compute_positions/
 ```
 
 ### UMAP Parameters
+
 ```python
 UMAP_PARAMS = {
     'n_neighbors': 40,    # Higher for 16k points
@@ -61,6 +67,7 @@ UMAP_PARAMS = {
 ```
 
 ### Edge Computation
+
 ```python
 k = 25                   # Neighbors per node
 threshold = 0.25         # Min similarity for edge
@@ -68,12 +75,14 @@ threshold = 0.25         # Min similarity for edge
 ```
 
 ### Output Schema (Critical)
+
 ```python
 # Frontend expects layers as ARRAY
 "metadata": { "layers": [12] }  # NOT "layer": 12
 ```
 
 ### Caching
+
 ```
 cache/{model}/layer_{N}/
 ├── decoder_vectors.npy  # 16384 × 2304
@@ -83,14 +92,16 @@ cache/{model}/layer_{N}/
 ```
 
 ### Timing (M4 Pro)
-| Step | Time |
-|------|------|
-| UMAP | ~8 min |
-| Edges | ~2 min |
-| Labels (1000) | ~9 min |
-| **Total** | ~20 min/layer |
+
+| Step          | Time          |
+| ------------- | ------------- |
+| UMAP          | ~8 min        |
+| Edges         | ~2 min        |
+| Labels (1000) | ~9 min        |
+| **Total**     | ~20 min/layer |
 
 ### Anti-Patterns
+
 - Don't use Euclidean distance (use cosine)
 - Don't fetch all 16k labels upfront (rate limits)
 - Don't compute similarity on raw activations (use decoder vectors)

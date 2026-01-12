@@ -22,9 +22,7 @@ function ActiveTrajectory() {
   const playbackPosition = useAppStore((state) => state.playbackPosition);
 
   // Get active trajectory
-  const activeTrajectory = activeTrajectoryId
-    ? trajectories.get(activeTrajectoryId)
-    : null;
+  const activeTrajectory = activeTrajectoryId ? trajectories.get(activeTrajectoryId) : null;
 
   if (!activeTrajectory || activeTrajectory.points.length === 0) {
     return null;
@@ -32,14 +30,8 @@ function ActiveTrajectory() {
 
   return (
     <group>
-      <TrajectoryPath
-        trajectory={activeTrajectory}
-        currentPosition={playbackPosition}
-      />
-      <TrajectoryMarker
-        trajectory={activeTrajectory}
-        position={playbackPosition}
-      />
+      <TrajectoryPath trajectory={activeTrajectory} currentPosition={playbackPosition} />
+      <TrajectoryMarker trajectory={activeTrajectory} position={playbackPosition} />
     </group>
   );
 }

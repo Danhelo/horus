@@ -42,27 +42,28 @@ python export_layer.py --model gemma-2-2b --layer 12 --no-compress
 
 ## Layer 12 Results (Gemma-2-2B)
 
-| Metric | Value |
-|--------|-------|
-| Features | 16,384 |
-| Edges (k=25, threshold=0.25) | 12,599 |
-| Labels fetched | 1,000 |
-| UMAP time | ~8 min on M4 Pro |
-| Output size | 5.75 MB (uncompressed) |
+| Metric                       | Value                  |
+| ---------------------------- | ---------------------- |
+| Features                     | 16,384                 |
+| Edges (k=25, threshold=0.25) | 12,599                 |
+| Labels fetched               | 1,000                  |
+| UMAP time                    | ~8 min on M4 Pro       |
+| Output size                  | 5.75 MB (uncompressed) |
 
 ## Configuration
 
 Edit `config.py` to adjust:
+
 - UMAP parameters (n_neighbors, min_dist, metric)
 - Edge computation (k neighbors, similarity threshold)
 - Output format (compression, precision)
 
 ## Supported Models
 
-| Model | Layers | Features/Layer | HuggingFace Repo |
-|-------|--------|----------------|------------------|
-| gemma-2-2b | 26 | 16,384 | google/gemma-scope-2b-pt-res |
-| gemma-2-9b | 42 | 16,384 | google/gemma-scope-9b-pt-res |
+| Model      | Layers | Features/Layer | HuggingFace Repo             |
+| ---------- | ------ | -------------- | ---------------------------- |
+| gemma-2-2b | 26     | 16,384         | google/gemma-scope-2b-pt-res |
+| gemma-2-9b | 42     | 16,384         | google/gemma-scope-9b-pt-res |
 
 ## Environment Variables
 

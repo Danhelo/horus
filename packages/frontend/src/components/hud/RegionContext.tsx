@@ -27,13 +27,70 @@ interface RegionInfo {
 function extractDominantConcepts(labels: string[], maxConcepts: number = 3): ConceptWithCount[] {
   const wordFreq = new Map<string, number>();
   const stopWords = new Set([
-    'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-    'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
-    'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-    'could', 'should', 'may', 'might', 'must', 'shall', 'can', 'that',
-    'this', 'these', 'those', 'it', 'its', 'they', 'their', 'we', 'our',
-    'you', 'your', 'he', 'she', 'him', 'her', 'his', 'hers', 'related',
-    'words', 'text', 'phrases', 'about', 'like', 'such', 'often', 'when',
+    'a',
+    'an',
+    'the',
+    'and',
+    'or',
+    'but',
+    'in',
+    'on',
+    'at',
+    'to',
+    'for',
+    'of',
+    'with',
+    'by',
+    'from',
+    'as',
+    'is',
+    'was',
+    'are',
+    'were',
+    'been',
+    'be',
+    'have',
+    'has',
+    'had',
+    'do',
+    'does',
+    'did',
+    'will',
+    'would',
+    'could',
+    'should',
+    'may',
+    'might',
+    'must',
+    'shall',
+    'can',
+    'that',
+    'this',
+    'these',
+    'those',
+    'it',
+    'its',
+    'they',
+    'their',
+    'we',
+    'our',
+    'you',
+    'your',
+    'he',
+    'she',
+    'him',
+    'her',
+    'his',
+    'hers',
+    'related',
+    'words',
+    'text',
+    'phrases',
+    'about',
+    'like',
+    'such',
+    'often',
+    'when',
   ]);
 
   for (const label of labels) {
@@ -183,20 +240,23 @@ export function RegionContext() {
   }
 
   // Format density for display (scientific notation for small numbers)
-  const densityDisplay = regionInfo.density > 0.001
-    ? regionInfo.density.toFixed(3)
-    : regionInfo.density.toExponential(1);
+  const densityDisplay =
+    regionInfo.density > 0.001
+      ? regionInfo.density.toFixed(3)
+      : regionInfo.density.toExponential(1);
 
   return (
     <div>
       {/* Region stats bar */}
-      <div style={{
-        display: 'flex',
-        gap: 12,
-        marginBottom: 8,
-        fontSize: 10,
-        color: '#6b6b7b',
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 12,
+          marginBottom: 8,
+          fontSize: 10,
+          color: '#6b6b7b',
+        }}
+      >
         <span title="Labeled features in search radius">
           <span style={{ color: 'var(--color-gold-dim)' }}>{regionInfo.nearbyCount}</span> nearby
         </span>
@@ -204,7 +264,10 @@ export function RegionContext() {
           ρ = <span style={{ color: 'var(--color-gold-dim)' }}>{densityDisplay}</span>
         </span>
         <span title="Adaptive search radius">
-          r = <span style={{ color: 'var(--color-gold-dim)' }}>{regionInfo.searchRadius.toFixed(0)}</span>
+          r ={' '}
+          <span style={{ color: 'var(--color-gold-dim)' }}>
+            {regionInfo.searchRadius.toFixed(0)}
+          </span>
         </span>
       </div>
 
@@ -229,11 +292,13 @@ export function RegionContext() {
                 title={`"${concept.word}" appears in ${concept.count} nearby features`}
               >
                 {concept.word}
-                <span style={{
-                  fontSize: 9,
-                  opacity: 0.7,
-                  fontFamily: 'var(--font-mono)',
-                }}>
+                <span
+                  style={{
+                    fontSize: 9,
+                    opacity: 0.7,
+                    fontFamily: 'var(--font-mono)',
+                  }}
+                >
                   ({concept.count})
                 </span>
               </span>

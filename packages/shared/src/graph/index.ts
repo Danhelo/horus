@@ -1,12 +1,5 @@
 // Types
-export type {
-  FeatureId,
-  GraphNode,
-  GraphEdge,
-  EdgeType,
-  GraphMetadata,
-  GraphData,
-} from './types';
+export type { FeatureId, GraphNode, GraphEdge, EdgeType, GraphMetadata, GraphData } from './types';
 
 // Utilities
 export { createNodeId, parseNodeId } from './types';

@@ -149,11 +149,7 @@ export interface ErrorEvent {
 /**
  * Union type of all streaming events
  */
-export type StreamingGenerationEvent =
-  | TokenEvent
-  | ActivationEvent
-  | DoneEvent
-  | ErrorEvent;
+export type StreamingGenerationEvent = TokenEvent | ActivationEvent | DoneEvent | ErrorEvent;
 
 // ---------------------------------------------------------------------------
 // Error Types

@@ -1,10 +1,10 @@
 # UI-001: Design System
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | UI-001 |
-| **Phase** | Shared |
-| **Status** | Draft |
+| Field       | Value             |
+| ----------- | ----------------- |
+| **Spec ID** | UI-001            |
+| **Phase**   | Shared            |
+| **Status**  | Draft             |
 | **Package** | `@horus/frontend` |
 
 ## Summary
@@ -20,37 +20,37 @@ Define the HORUS design system - a cohesive visual language combining Egyptian m
 export const colors = {
   // Base: Cosmic Dark
   background: {
-    primary: '#0a0a0f',      // Deep space black
-    secondary: '#121218',     // Panel background
-    tertiary: '#1a1a2e',      // Hover states, borders
-    elevated: '#1e1e2d',      // Floating panels
+    primary: '#0a0a0f', // Deep space black
+    secondary: '#121218', // Panel background
+    tertiary: '#1a1a2e', // Hover states, borders
+    elevated: '#1e1e2d', // Floating panels
   },
 
   // Accent: Sacred Gold
   gold: {
-    dim: '#2a2a1a',          // Barely visible
-    low: '#5c4d1a',          // Low activation
-    medium: '#8b7355',       // Medium activation
-    primary: '#d4af37',      // Primary gold
-    bright: '#ffd700',       // High activation
-    glow: '#ffdf80',         // Glow effect center
+    dim: '#2a2a1a', // Barely visible
+    low: '#5c4d1a', // Low activation
+    medium: '#8b7355', // Medium activation
+    primary: '#d4af37', // Primary gold
+    bright: '#ffd700', // High activation
+    glow: '#ffdf80', // Glow effect center
   },
 
   // Signal Colors
   signal: {
-    blue: '#00bfff',         // Fingerprint A, info
-    coral: '#ff6b6b',        // Fingerprint B, error
-    teal: '#20b2aa',         // Success, complete
-    orange: '#ffa500',       // Warning, conflict
-    purple: '#9b59b6',       // Tertiary accent
+    blue: '#00bfff', // Fingerprint A, info
+    coral: '#ff6b6b', // Fingerprint B, error
+    teal: '#20b2aa', // Success, complete
+    orange: '#ffa500', // Warning, conflict
+    purple: '#9b59b6', // Tertiary accent
   },
 
   // Text
   text: {
-    primary: '#f0f0f0',      // Primary text
-    secondary: '#a0a0a0',    // Secondary text
-    muted: '#606060',        // Disabled, hints
-    gold: '#d4af37',         // Accent text
+    primary: '#f0f0f0', // Primary text
+    secondary: '#a0a0a0', // Secondary text
+    muted: '#606060', // Disabled, hints
+    gold: '#d4af37', // Accent text
   },
 
   // Semantic
@@ -73,6 +73,7 @@ export const activationGradient = [
 ```
 
 **Acceptance Criteria:**
+
 - [ ] All colors defined as CSS custom properties
 - [ ] Dark mode only (no light mode)
 - [ ] Gradient utilities for activation intensity
@@ -84,20 +85,20 @@ export const activationGradient = [
 // tokens/typography.ts
 export const typography = {
   fonts: {
-    heading: '"Cinzel", serif',           // Egyptian feel
-    body: '"Inter", sans-serif',          // Clean, readable
-    mono: '"JetBrains Mono", monospace',  // Code, technical
+    heading: '"Cinzel", serif', // Egyptian feel
+    body: '"Inter", sans-serif', // Clean, readable
+    mono: '"JetBrains Mono", monospace', // Code, technical
   },
 
   sizes: {
-    xs: '0.75rem',    // 12px
-    sm: '0.875rem',   // 14px
-    base: '1rem',     // 16px
-    lg: '1.125rem',   // 18px
-    xl: '1.25rem',    // 20px
-    '2xl': '1.5rem',  // 24px
-    '3xl': '2rem',    // 32px
-    '4xl': '2.5rem',  // 40px
+    xs: '0.75rem', // 12px
+    sm: '0.875rem', // 14px
+    base: '1rem', // 16px
+    lg: '1.125rem', // 18px
+    xl: '1.25rem', // 20px
+    '2xl': '1.5rem', // 24px
+    '3xl': '2rem', // 32px
+    '4xl': '2.5rem', // 40px
   },
 
   weights: {
@@ -149,6 +150,7 @@ export const textStyles = {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Font files loaded efficiently (font-display: swap)
 - [ ] Fallback fonts specified
 - [ ] Text styles as reusable utilities
@@ -160,16 +162,16 @@ export const textStyles = {
 // tokens/spacing.ts
 export const spacing = {
   0: '0',
-  1: '0.25rem',    // 4px
-  2: '0.5rem',     // 8px
-  3: '0.75rem',    // 12px
-  4: '1rem',       // 16px
-  5: '1.25rem',    // 20px
-  6: '1.5rem',     // 24px
-  8: '2rem',       // 32px
-  10: '2.5rem',    // 40px
-  12: '3rem',      // 48px
-  16: '4rem',      // 64px
+  1: '0.25rem', // 4px
+  2: '0.5rem', // 8px
+  3: '0.75rem', // 12px
+  4: '1rem', // 16px
+  5: '1.25rem', // 20px
+  6: '1.5rem', // 24px
+  8: '2rem', // 32px
+  10: '2.5rem', // 40px
+  12: '3rem', // 48px
+  16: '4rem', // 64px
 };
 
 export const layout = {
@@ -201,6 +203,7 @@ export const zIndex = {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Consistent spacing scale
 - [ ] Panel/card dimensions defined
 - [ ] Z-index prevents stacking issues
@@ -234,6 +237,7 @@ export const borders = {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Glow effects for activation states
 - [ ] Subtle borders maintain visibility
 - [ ] Shadows create depth without overwhelming
@@ -261,8 +265,8 @@ export const motion = {
 
 // Breathing animation for nodes
 export const breathe = {
-  duration: 3000,    // 3 seconds
-  scaleRange: 0.02,  // 2% scale oscillation
+  duration: 3000, // 3 seconds
+  scaleRange: 0.02, // 2% scale oscillation
   opacityRange: 0.1, // 10% opacity oscillation
 };
 
@@ -275,6 +279,7 @@ export const camera = {
 ```
 
 **Reduced Motion:**
+
 ```typescript
 // Respect prefers-reduced-motion
 export const useReducedMotion = () => {
@@ -283,6 +288,7 @@ export const useReducedMotion = () => {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Consistent timing across UI
 - [ ] Spring easing for organic feel
 - [ ] Reduced motion preference respected
@@ -335,6 +341,7 @@ const buttonVariants = {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Panel component defined
 - [ ] Dial sizing standardized
 - [ ] Button variants cover all use cases
@@ -346,11 +353,11 @@ const buttonVariants = {
 // Egyptian-inspired iconography
 export const icons = {
   // Core icons
-  eye: 'eye-of-horus',           // HORUS logo, insight
-  falcon: 'falcon',              // Navigate, fly
-  ankh: 'ankh',                  // Amplify, life
-  scarab: 'scarab',              // Transform, regenerate
-  cartouche: 'cartouche',        // Snapshot, save
+  eye: 'eye-of-horus', // HORUS logo, insight
+  falcon: 'falcon', // Navigate, fly
+  ankh: 'ankh', // Amplify, life
+  scarab: 'scarab', // Transform, regenerate
+  cartouche: 'cartouche', // Snapshot, save
 
   // Functional icons (use Lucide/Tabler)
   play: 'play',
@@ -373,6 +380,7 @@ export const icons = {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Custom icons for brand elements
 - [ ] Lucide icons for standard UI
 - [ ] Consistent sizing scale
@@ -410,13 +418,14 @@ export const graphStyles = {
 
   background: {
     color: colors.background.primary,
-    starDensity: 0.001,           // Subtle background stars
+    starDensity: 0.001, // Subtle background stars
     starSize: 0.005,
   },
 };
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Node sizes scale with importance/activation
 - [ ] Edge visibility tied to relevance
 - [ ] Consistent glow/highlight treatment
@@ -431,6 +440,7 @@ export const graphStyles = {
 - Test on various monitors (color accuracy varies)
 
 **Tailwind Configuration:**
+
 ```typescript
 // tailwind.config.ts
 import { colors, spacing, typography } from './tokens';
@@ -466,6 +476,6 @@ export default {
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

@@ -1,17 +1,17 @@
 # SUG-001: LLM Suggestions
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | SUG-001 |
-| **Phase** | 3 - Dynamic Hierarchy |
-| **Status** | Draft |
+| Field       | Value                               |
+| ----------- | ----------------------------------- |
+| **Spec ID** | SUG-001                             |
+| **Phase**   | 3 - Dynamic Hierarchy               |
+| **Status**  | Draft                               |
 | **Package** | `@horus/frontend`, `@horus/backend` |
 
 ## Summary
 
 The system observes user steering actions and proactively suggests relevant steering groups. When a user boosts "nostalgia," the LLM might suggest "temporal distance," "sensory memory," or "bittersweet" as complementary concepts. This implements the "perspectival grouping" vision where the right controls surface based on context.
 
-> *"The dials that appear are dynamic—they change based on what you're doing."*
+> _"The dials that appear are dynamic—they change based on what you're doing."_
 > — ideas/05-mixing.md
 
 ## Requirements
@@ -48,8 +48,8 @@ interface SteeringContext {
 
 interface SteeringAction {
   type: 'add_feature' | 'remove_feature' | 'adjust_strength' | 'add_group' | 'search';
-  target: string;          // Feature/group ID or search query
-  value?: number;          // Strength value
+  target: string; // Feature/group ID or search query
+  value?: number; // Strength value
   timestamp: number;
 }
 
@@ -59,6 +59,7 @@ const ACTION_WINDOW_MS = 30000;
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Context captures current steering state
 - [ ] Recent actions tracked (last 10, last 30s)
 - [ ] Context serializable for API request
@@ -68,15 +69,15 @@ const ACTION_WINDOW_MS = 30000;
 ```typescript
 interface SuggestionRequest {
   context: SteeringContext;
-  maxSuggestions?: number;   // Default: 3
-  excludeGroups?: string[];  // Don't suggest already-active groups
+  maxSuggestions?: number; // Default: 3
+  excludeGroups?: string[]; // Don't suggest already-active groups
 }
 
 interface GroupSuggestion {
-  concept: string;           // The suggested concept
-  reason: string;            // Why this is suggested
-  confidence: number;        // 0-1, how confident the suggestion is
-  category?: string;         // Suggested category
+  concept: string; // The suggested concept
+  reason: string; // Why this is suggested
+  confidence: number; // 0-1, how confident the suggestion is
+  category?: string; // Suggested category
 
   // If we have precomputed group, include it
   existingGroupId?: string;
@@ -85,7 +86,7 @@ interface GroupSuggestion {
 interface SuggestionResponse {
   suggestions: GroupSuggestion[];
   metadata: {
-    modelUsed: string;       // Which LLM generated this
+    modelUsed: string; // Which LLM generated this
     latencyMs: number;
     cached: boolean;
   };
@@ -93,6 +94,7 @@ interface SuggestionResponse {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Request includes full steering context
 - [ ] Response includes 1-5 suggestions
 - [ ] Each suggestion has reason and confidence
@@ -103,45 +105,45 @@ interface SuggestionResponse {
 ```typescript
 // packages/backend/src/routes/suggestions.ts
 
-const suggestionsRoutes = new Hono()
-  .post('/suggest-groups',
-    zValidator('json', SuggestionRequestSchema),
-    rateLimit({ limit: 2, window: 60 }),  // 2/min to conserve LLM costs
-    async (c) => {
-      const request = c.req.valid('json');
+const suggestionsRoutes = new Hono().post(
+  '/suggest-groups',
+  zValidator('json', SuggestionRequestSchema),
+  rateLimit({ limit: 2, window: 60 }), // 2/min to conserve LLM costs
+  async (c) => {
+    const request = c.req.valid('json');
 
-      // Check cache
-      const cacheKey = hashContext(request.context);
-      const cached = await suggestionCache.get(cacheKey);
-      if (cached) {
-        return c.json({ ...cached, metadata: { ...cached.metadata, cached: true } });
-      }
-
-      // Build LLM prompt
-      const prompt = buildSuggestionPrompt(request.context);
-
-      // Call LLM
-      const llmResponse = await llmService.complete({
-        model: 'claude-3-haiku',  // Fast and cheap
-        messages: [
-          { role: 'system', content: SUGGESTION_SYSTEM_PROMPT },
-          { role: 'user', content: prompt },
-        ],
-        maxTokens: 500,
-      });
-
-      // Parse structured response
-      const suggestions = parseSuggestionResponse(llmResponse);
-
-      // Match with precomputed groups
-      const enrichedSuggestions = await matchWithPrecomputed(suggestions);
-
-      // Cache for 5 minutes (context-dependent)
-      await suggestionCache.set(cacheKey, enrichedSuggestions, 300);
-
-      return c.json(enrichedSuggestions);
+    // Check cache
+    const cacheKey = hashContext(request.context);
+    const cached = await suggestionCache.get(cacheKey);
+    if (cached) {
+      return c.json({ ...cached, metadata: { ...cached.metadata, cached: true } });
     }
-  );
+
+    // Build LLM prompt
+    const prompt = buildSuggestionPrompt(request.context);
+
+    // Call LLM
+    const llmResponse = await llmService.complete({
+      model: 'claude-3-haiku', // Fast and cheap
+      messages: [
+        { role: 'system', content: SUGGESTION_SYSTEM_PROMPT },
+        { role: 'user', content: prompt },
+      ],
+      maxTokens: 500,
+    });
+
+    // Parse structured response
+    const suggestions = parseSuggestionResponse(llmResponse);
+
+    // Match with precomputed groups
+    const enrichedSuggestions = await matchWithPrecomputed(suggestions);
+
+    // Cache for 5 minutes (context-dependent)
+    await suggestionCache.set(cacheKey, enrichedSuggestions, 300);
+
+    return c.json(enrichedSuggestions);
+  }
+);
 
 // System prompt for suggestion generation
 const SUGGESTION_SYSTEM_PROMPT = `You are a creative assistant helping users steer language model generation.
@@ -173,11 +175,14 @@ function buildSuggestionPrompt(context: SteeringContext): string {
 Current text: "${context.currentText.slice(0, 200)}..."
 
 Active steering:
-${context.activeFeatures.map(f => `- ${f.label || f.featureId}: ${f.strength > 0 ? '+' : ''}${f.strength}`).join('\n')}
-${context.activeGroups.map(g => `- ${g.label} (${g.category}): ${g.strength > 0 ? '+' : ''}${g.strength}`).join('\n')}
+${context.activeFeatures.map((f) => `- ${f.label || f.featureId}: ${f.strength > 0 ? '+' : ''}${f.strength}`).join('\n')}
+${context.activeGroups.map((g) => `- ${g.label} (${g.category}): ${g.strength > 0 ? '+' : ''}${g.strength}`).join('\n')}
 
 Recent actions:
-${context.recentActions.slice(-5).map(a => `- ${a.type}: ${a.target}`).join('\n')}
+${context.recentActions
+  .slice(-5)
+  .map((a) => `- ${a.type}: ${a.target}`)
+  .join('\n')}
 
 ${context.generatedText ? `Generated text: "${context.generatedText.slice(0, 200)}..."` : ''}
 
@@ -187,6 +192,7 @@ Suggest 3 steering concepts that would complement this creative direction.
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Endpoint calls LLM with structured prompt
 - [ ] Response parsed into typed suggestions
 - [ ] Rate limited to prevent cost overrun
@@ -199,8 +205,8 @@ Suggest 3 steering concepts that would complement this creative direction.
 
 interface UseSuggestionsOptions {
   enabled?: boolean;
-  debounceMs?: number;       // Default: 5000 (5 seconds)
-  minInterval?: number;      // Default: 30000 (30 seconds)
+  debounceMs?: number; // Default: 5000 (5 seconds)
+  minInterval?: number; // Default: 30000 (30 seconds)
 }
 
 function useSuggestions(options: UseSuggestionsOptions = {}) {
@@ -214,39 +220,36 @@ function useSuggestions(options: UseSuggestionsOptions = {}) {
   const context = useSteeringContext();
 
   // Debounced fetch
-  const fetchSuggestions = useDebouncedCallback(
-    async () => {
-      // Enforce minimum interval
-      const now = Date.now();
-      if (now - lastFetchRef.current < minInterval) return;
+  const fetchSuggestions = useDebouncedCallback(async () => {
+    // Enforce minimum interval
+    const now = Date.now();
+    if (now - lastFetchRef.current < minInterval) return;
 
-      // Don't fetch if context is empty
-      if (context.activeFeatures.length === 0 && context.activeGroups.length === 0) {
-        return;
+    // Don't fetch if context is empty
+    if (context.activeFeatures.length === 0 && context.activeGroups.length === 0) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/suggestions/suggest-groups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ context }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSuggestions(data.suggestions);
       }
-
-      setLoading(true);
-
-      try {
-        const response = await fetch('/api/suggestions/suggest-groups', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ context }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setSuggestions(data.suggestions);
-        }
-      } catch (error) {
-        console.error('Failed to fetch suggestions:', error);
-      } finally {
-        setLoading(false);
-        lastFetchRef.current = Date.now();
-      }
-    },
-    debounceMs
-  );
+    } catch (error) {
+      console.error('Failed to fetch suggestions:', error);
+    } finally {
+      setLoading(false);
+      lastFetchRef.current = Date.now();
+    }
+  }, debounceMs);
 
   // Trigger on context changes
   useEffect(() => {
@@ -267,11 +270,11 @@ function useSuggestions(options: UseSuggestionsOptions = {}) {
     }
 
     // Remove from suggestions
-    setSuggestions(prev => prev.filter(s => s.concept !== suggestion.concept));
+    setSuggestions((prev) => prev.filter((s) => s.concept !== suggestion.concept));
   };
 
   const dismissSuggestion = (concept: string) => {
-    setSuggestions(prev => prev.filter(s => s.concept !== concept));
+    setSuggestions((prev) => prev.filter((s) => s.concept !== concept));
   };
 
   return {
@@ -285,6 +288,7 @@ function useSuggestions(options: UseSuggestionsOptions = {}) {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Hook fetches suggestions after steering changes
 - [ ] 5 second debounce before fetching
 - [ ] Minimum 30 second interval between fetches
@@ -356,6 +360,7 @@ function SuggestionChip({ suggestion, onApply, onDismiss }) {
 ```
 
 **Visual Design:**
+
 - Chips appear below active groups in mixer
 - Gold accent color (matches theme)
 - Confidence shown as percentage
@@ -363,6 +368,7 @@ function SuggestionChip({ suggestion, onApply, onDismiss }) {
 - "×" to dismiss
 
 **Acceptance Criteria:**
+
 - [ ] Suggestions appear as clickable chips
 - [ ] Tooltip shows reason on hover
 - [ ] Click creates/activates group
@@ -422,6 +428,7 @@ function createLLMService(): LLMService {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Support Claude (Anthropic) and GPT (OpenAI)
 - [ ] Model selection via environment variable
 - [ ] Error handling for API failures
@@ -446,13 +453,13 @@ For caching, hash the context to detect similar states:
 function hashContext(context: SteeringContext): string {
   // Normalize and hash
   const normalized = {
-    text: context.currentText.slice(0, 100),  // First 100 chars
+    text: context.currentText.slice(0, 100), // First 100 chars
     features: context.activeFeatures
       .sort((a, b) => a.featureId.localeCompare(b.featureId))
-      .map(f => `${f.featureId}:${Math.round(f.strength)}`),
+      .map((f) => `${f.featureId}:${Math.round(f.strength)}`),
     groups: context.activeGroups
       .sort((a, b) => a.groupId.localeCompare(b.groupId))
-      .map(g => `${g.groupId}:${Math.round(g.strength)}`),
+      .map((g) => `${g.groupId}:${Math.round(g.strength)}`),
   };
 
   return sha256(JSON.stringify(normalized));
@@ -464,16 +471,15 @@ function hashContext(context: SteeringContext): string {
 Link suggestions to existing groups when possible:
 
 ```typescript
-async function matchWithPrecomputed(
-  suggestions: GroupSuggestion[]
-): Promise<GroupSuggestion[]> {
+async function matchWithPrecomputed(suggestions: GroupSuggestion[]): Promise<GroupSuggestion[]> {
   const precomputed = await loadPrecomputedGroups();
 
-  return suggestions.map(suggestion => {
+  return suggestions.map((suggestion) => {
     // Fuzzy match concept to precomputed group labels
-    const match = precomputed.find(g =>
-      g.label.toLowerCase().includes(suggestion.concept.toLowerCase()) ||
-      suggestion.concept.toLowerCase().includes(g.label.toLowerCase())
+    const match = precomputed.find(
+      (g) =>
+        g.label.toLowerCase().includes(suggestion.concept.toLowerCase()) ||
+        suggestion.concept.toLowerCase().includes(g.label.toLowerCase())
     );
 
     return {
@@ -499,6 +505,6 @@ async function matchWithPrecomputed(
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-11 | Initial draft |

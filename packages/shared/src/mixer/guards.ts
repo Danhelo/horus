@@ -1,10 +1,4 @@
-import type {
-  Dial,
-  DialTrace,
-  DialGroup,
-  TraceHighlight,
-  DialPolarity,
-} from './types';
+import type { Dial, DialTrace, DialGroup, TraceHighlight, DialPolarity } from './types';
 
 const VALID_POLARITIES: DialPolarity[] = ['bipolar', 'unipolar'];
 
@@ -18,9 +12,7 @@ export function isDialPolarity(value: unknown): value is DialPolarity {
 /**
  * Type guard for trace feature entry
  */
-export function isTraceFeature(
-  value: unknown
-): value is { nodeId: string; weight: number } {
+export function isTraceFeature(value: unknown): value is { nodeId: string; weight: number } {
   if (typeof value !== 'object' || value === null) return false;
   const obj = value as Record<string, unknown>;
   return (

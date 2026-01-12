@@ -46,9 +46,7 @@ describe('Features Routes', () => {
   let app: Hono;
 
   beforeEach(() => {
-    app = new Hono()
-      .route('/api/features', featuresRoutes)
-      .onError(errorHandler);
+    app = new Hono().route('/api/features', featuresRoutes).onError(errorHandler);
     vi.clearAllMocks();
   });
 
@@ -93,11 +91,7 @@ describe('Features Routes', () => {
 
       expect(res.status).toBe(200);
       expect(json).toEqual(mockFeature);
-      expect(neuronpediaService.getFeature).toHaveBeenCalledWith(
-        'gemma-2-2b',
-        12,
-        1622
-      );
+      expect(neuronpediaService.getFeature).toHaveBeenCalledWith('gemma-2-2b', 12, 1622);
     });
 
     it('validates layer range', async () => {
@@ -161,9 +155,7 @@ describe('Features Routes', () => {
         { modelId: 'gemma-2-2b', layer: 12, index: 200, score: 0.8 },
       ];
 
-      vi.mocked(neuronpediaService.searchFeatures).mockResolvedValue(
-        mockResults
-      );
+      vi.mocked(neuronpediaService.searchFeatures).mockResolvedValue(mockResults);
 
       const res = await app.request('/api/features/search', {
         method: 'POST',

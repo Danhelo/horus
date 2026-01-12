@@ -36,14 +36,8 @@ describe('Rate Limiting Middleware', () => {
         headers: { 'x-forwarded-for': 'test-client-1' },
       });
 
-      const remaining1 = parseInt(
-        res1.headers.get('X-RateLimit-Remaining') || '0',
-        10
-      );
-      const remaining2 = parseInt(
-        res2.headers.get('X-RateLimit-Remaining') || '0',
-        10
-      );
+      const remaining1 = parseInt(res1.headers.get('X-RateLimit-Remaining') || '0', 10);
+      const remaining2 = parseInt(res2.headers.get('X-RateLimit-Remaining') || '0', 10);
 
       expect(remaining2).toBe(remaining1 - 1);
     });
@@ -75,10 +69,7 @@ describe('Rate Limiting Middleware', () => {
           if (err.retryAfter) {
             c.header('Retry-After', String(err.retryAfter));
           }
-          return c.json(
-            { error: { message: err.message, code: err.code } },
-            err.statusCode as 429
-          );
+          return c.json({ error: { message: err.message, code: err.code } }, err.statusCode as 429);
         }
         return c.json({ error: { message: 'Internal error' } }, 500);
       });

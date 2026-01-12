@@ -1,10 +1,10 @@
 # CIR-001: Circuit Tracing
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | CIR-001 |
-| **Phase** | 3 - Dynamic Hierarchy |
-| **Status** | Draft |
+| Field       | Value                               |
+| ----------- | ----------------------------------- |
+| **Spec ID** | CIR-001                             |
+| **Phase**   | 3 - Dynamic Hierarchy               |
+| **Status**  | Draft                               |
 | **Package** | `@horus/frontend`, `@horus/backend` |
 
 ## Summary
@@ -19,10 +19,10 @@ This implements "Discovery Mode" from the master plan - making the invisible vis
 
 ```typescript
 interface CircuitTraceRequest {
-  text: string;              // Input text to trace
-  targetToken?: string;      // Specific token to explain (optional)
-  maxDepth?: number;         // Attribution depth (default: 3)
-  minContribution?: number;  // Minimum contribution threshold (default: 0.1)
+  text: string; // Input text to trace
+  targetToken?: string; // Specific token to explain (optional)
+  maxDepth?: number; // Attribution depth (default: 3)
+  minContribution?: number; // Minimum contribution threshold (default: 0.1)
 }
 
 interface CircuitTraceResponse {
@@ -56,18 +56,19 @@ interface AttributionNode {
   position?: number;
 
   // Attribution
-  contribution: number;      // How much this node contributed (0-1)
-  activation?: number;       // Raw activation value
+  contribution: number; // How much this node contributed (0-1)
+  activation?: number; // Raw activation value
 }
 
 interface AttributionEdge {
-  source: string;            // Node ID
-  target: string;            // Node ID
-  weight: number;            // Edge contribution (0-1)
+  source: string; // Node ID
+  target: string; // Node ID
+  weight: number; // Edge contribution (0-1)
 }
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Request structure compatible with Neuronpedia graph API
 - [ ] Response includes full attribution graph
 - [ ] Optional target token for focused tracing
@@ -80,49 +81,52 @@ Proxy Neuronpedia's `/api/graph/generate` with retry logic.
 ```typescript
 // packages/backend/src/routes/circuits.ts
 
-const circuitsRoutes = new Hono()
-  .post('/trace',
-    zValidator('json', CircuitTraceRequestSchema),
-    rateLimit({ limit: 20, window: 60 }),  // 20/min
-    async (c) => {
-      const request = c.req.valid('json');
+const circuitsRoutes = new Hono().post(
+  '/trace',
+  zValidator('json', CircuitTraceRequestSchema),
+  rateLimit({ limit: 20, window: 60 }), // 20/min
+  async (c) => {
+    const request = c.req.valid('json');
 
-      // Check cache first
-      const cacheKey = hashRequest(request);
-      const cached = await circuitCache.get(cacheKey);
-      if (cached) {
-        return c.json({ ...cached, metadata: { ...cached.metadata, cached: true } });
-      }
+    // Check cache first
+    const cacheKey = hashRequest(request);
+    const cached = await circuitCache.get(cacheKey);
+    if (cached) {
+      return c.json({ ...cached, metadata: { ...cached.metadata, cached: true } });
+    }
 
-      // Call Neuronpedia with retry
-      const response = await retryWithBackoff(
-        () => neuronpedia.generateGraph({
+    // Call Neuronpedia with retry
+    const response = await retryWithBackoff(
+      () =>
+        neuronpedia.generateGraph({
           modelId: 'gemma-2-2b',
           prompt: request.text,
-          maxTokens: 64,  // Neuronpedia limit
+          maxTokens: 64, // Neuronpedia limit
         }),
-        {
-          maxRetries: 3,
-          initialDelay: 1000,
-          maxDelay: 10000,
-          shouldRetry: (error) => error.status === 503,
-        }
-      );
+      {
+        maxRetries: 3,
+        initialDelay: 1000,
+        maxDelay: 10000,
+        shouldRetry: (error) => error.status === 503,
+      }
+    );
 
-      // Cache successful responses (1 hour)
-      await circuitCache.set(cacheKey, response, 3600);
+    // Cache successful responses (1 hour)
+    await circuitCache.set(cacheKey, response, 3600);
 
-      return c.json(response);
-    }
-  );
+    return c.json(response);
+  }
+);
 ```
 
 **Error Handling:**
+
 - 503 (GPU busy): Retry with exponential backoff
 - 429 (rate limited): Return error with retry time
 - Timeout: Return partial results if available
 
 **Acceptance Criteria:**
+
 - [ ] Endpoint proxies Neuronpedia graph API
 - [ ] Retry logic for 503 errors
 - [ ] Response cached for 1 hour
@@ -199,6 +203,7 @@ function CircuitPanel({ isOpen, selectedText }: CircuitPanelProps) {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Panel opens from text selection or button
 - [ ] Loading state during trace
 - [ ] Error state with retry option
@@ -275,12 +280,14 @@ function CircuitNode({ node, position, onClick, onHover }) {
 ```
 
 **Layout Algorithm:**
+
 - Input tokens: Left column
 - Features by layer: Middle columns (layer 0 → layer 25)
 - Output token(s): Right column
 - Dagre.js or custom force-directed layout
 
 **Acceptance Criteria:**
+
 - [ ] Clear left-to-right flow visualization
 - [ ] Node size reflects contribution
 - [ ] Edge thickness reflects weight
@@ -294,7 +301,7 @@ Clicking circuit node highlights corresponding feature in main 3D graph.
 ```typescript
 // In CircuitPanel
 const handleNodeClick = (nodeId: string) => {
-  const node = circuit.graph.nodes.find(n => n.id === nodeId);
+  const node = circuit.graph.nodes.find((n) => n.id === nodeId);
 
   if (node?.featureId) {
     // Highlight in main graph
@@ -310,7 +317,7 @@ const handleNodeClick = (nodeId: string) => {
 
 const handleNodeHover = (nodeId: string | null) => {
   if (nodeId) {
-    const node = circuit.graph.nodes.find(n => n.id === nodeId);
+    const node = circuit.graph.nodes.find((n) => n.id === nodeId);
     if (node?.featureId) {
       setHoveredNode(node.featureId);
     }
@@ -321,6 +328,7 @@ const handleNodeHover = (nodeId: string | null) => {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Hover in circuit → hover highlight in main graph
 - [ ] Click in circuit → select in main graph
 - [ ] Camera optionally flies to feature
@@ -333,8 +341,8 @@ Convert discovered circuit into a steering group.
 ```typescript
 interface CircuitToGroupOptions {
   name: string;
-  minContribution: number;     // Only include features above threshold
-  normalizeWeights: boolean;   // Scale weights to 0-1
+  minContribution: number; // Only include features above threshold
+  normalizeWeights: boolean; // Scale weights to 0-1
 }
 
 function circuitToSteeringGroup(
@@ -343,20 +351,20 @@ function circuitToSteeringGroup(
 ): SteeringGroup {
   // Extract features with sufficient contribution
   const featureNodes = circuit.nodes.filter(
-    n => n.type === 'feature' && n.contribution >= options.minContribution
+    (n) => n.type === 'feature' && n.contribution >= options.minContribution
   );
 
   // Build feature map
   const features = new Map<string, number>();
   for (const node of featureNodes) {
     const weight = options.normalizeWeights
-      ? node.contribution / Math.max(...featureNodes.map(n => n.contribution))
+      ? node.contribution / Math.max(...featureNodes.map((n) => n.contribution))
       : node.contribution;
     features.set(node.featureId!, weight);
   }
 
   // Compute centroid
-  const positions = featureNodes.map(n => getFeaturePosition(n.featureId!));
+  const positions = featureNodes.map((n) => getFeaturePosition(n.featureId!));
   const centroid = computeCentroid(positions);
   const radius = computeRadius(positions, centroid);
 
@@ -375,6 +383,7 @@ function circuitToSteeringGroup(
 ```
 
 **UI:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Create Steering Group from Circuit  │
@@ -391,6 +400,7 @@ function circuitToSteeringGroup(
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Button to convert circuit to group
 - [ ] Configurable contribution threshold
 - [ ] Group appears in mixer panel
@@ -444,6 +454,6 @@ POST /api/graph/generate
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-11 | Initial draft |

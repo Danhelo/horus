@@ -40,12 +40,10 @@ let lastAnimationTime = 0;
 // Slice Creator
 // ---------------------------------------------------------------------------
 
-export const createTrajectorySlice: StateCreator<
-  TrajectorySlice,
-  [],
-  [],
-  TrajectorySlice
-> = (set, get) => {
+export const createTrajectorySlice: StateCreator<TrajectorySlice, [], [], TrajectorySlice> = (
+  set,
+  get
+) => {
   // Animation loop function
   const animate = (currentTime: number) => {
     const state = get();
@@ -134,8 +132,7 @@ export const createTrajectorySlice: StateCreator<
         newTrajectories.delete(id);
 
         // Clear active if removed
-        const newActiveId =
-          state.activeTrajectoryId === id ? null : state.activeTrajectoryId;
+        const newActiveId = state.activeTrajectoryId === id ? null : state.activeTrajectoryId;
 
         return {
           trajectories: newTrajectories,
@@ -229,9 +226,7 @@ export const createTrajectorySlice: StateCreator<
       const currentIndex = Math.floor(state.playbackPosition * trajectory.points.length);
       const newIndex = Math.max(0, currentIndex - 1);
       const newPosition =
-        trajectory.points.length > 1
-          ? newIndex / (trajectory.points.length - 1)
-          : 0;
+        trajectory.points.length > 1 ? newIndex / (trajectory.points.length - 1) : 0;
 
       set({ playbackPosition: newPosition });
     },
@@ -247,14 +242,9 @@ export const createTrajectorySlice: StateCreator<
       const trajectory = state.trajectories.get(state.activeTrajectoryId);
       if (!trajectory || trajectory.points.length === 0) return;
 
-      const clampedIndex = Math.max(
-        0,
-        Math.min(trajectory.points.length - 1, tokenIndex)
-      );
+      const clampedIndex = Math.max(0, Math.min(trajectory.points.length - 1, tokenIndex));
       const position =
-        trajectory.points.length > 1
-          ? clampedIndex / (trajectory.points.length - 1)
-          : 0;
+        trajectory.points.length > 1 ? clampedIndex / (trajectory.points.length - 1) : 0;
 
       set({ playbackPosition: position });
     },

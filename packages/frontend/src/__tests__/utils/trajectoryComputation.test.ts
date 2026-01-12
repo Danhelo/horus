@@ -114,9 +114,15 @@ describe('computeCentroid', () => {
 describe('buildNodePositionsMap', () => {
   it('converts Float32Array to Map correctly', () => {
     const positions = new Float32Array([
-      1, 2, 3, // node-a at index 0
-      4, 5, 6, // node-b at index 1
-      7, 8, 9, // node-c at index 2
+      1,
+      2,
+      3, // node-a at index 0
+      4,
+      5,
+      6, // node-b at index 1
+      7,
+      8,
+      9, // node-c at index 2
     ]);
     const nodeIndexMap = new Map<string, number>([
       ['node-a', 0],
@@ -141,10 +147,7 @@ describe('createTrajectoryPoints', () => {
 
   it('creates trajectory points from tokens and activations', () => {
     const tokens = ['Hello', 'world'];
-    const tokenActivations = [
-      new Map([['node-1', 1.0]]),
-      new Map([['node-2', 1.0]]),
-    ];
+    const tokenActivations = [new Map([['node-1', 1.0]]), new Map([['node-2', 1.0]])];
 
     const result = createTrajectoryPoints(tokens, tokenActivations, nodePositions);
 

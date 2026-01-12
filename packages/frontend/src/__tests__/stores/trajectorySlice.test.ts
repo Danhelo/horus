@@ -85,11 +85,7 @@ describe('TrajectorySlice', () => {
     it('accepts custom color', () => {
       const points = createMockPoints(2);
 
-      const trajectoryId = useAppStore.getState().addTrajectory(
-        'Colored',
-        points,
-        '#00bfff'
-      );
+      const trajectoryId = useAppStore.getState().addTrajectory('Colored', points, '#00bfff');
 
       const trajectory = useAppStore.getState().trajectories.get(trajectoryId);
       expect(trajectory?.color).toBe('#00bfff');

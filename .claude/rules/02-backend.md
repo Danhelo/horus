@@ -1,6 +1,7 @@
 # Backend Patterns (Hono + Drizzle)
 
 ## Structure
+
 ```
 src/
 ├── app.ts              # Hono app + middleware
@@ -12,6 +13,7 @@ src/
 ```
 
 ## Hono App
+
 ```typescript
 const app = new Hono()
   .use('*', logger())
@@ -24,6 +26,7 @@ export type AppType = typeof app;
 ```
 
 ## Routes with Zod
+
 ```typescript
 const featuresRoutes = new Hono()
   .get('/:model/:layer/:index', async (c) => {
@@ -36,16 +39,24 @@ const featuresRoutes = new Hono()
 ```
 
 ## Drizzle Schema
+
 ```typescript
-export const artifacts = sqliteTable('artifacts', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text('user_id').notNull(),
-  data: text('data', { mode: 'json' }).$type<ArtifactData>(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-}, (t) => [index('artifacts_user_idx').on(t.userId)]);
+export const artifacts = sqliteTable(
+  'artifacts',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text('user_id').notNull(),
+    data: text('data', { mode: 'json' }).$type<ArtifactData>(),
+    createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  },
+  (t) => [index('artifacts_user_idx').on(t.userId)]
+);
 ```
 
 ## SSE Streaming
+
 ```typescript
 import { streamSSE } from 'hono/streaming';
 
@@ -61,9 +72,16 @@ app.post('/generate', async (c) => {
 ```
 
 ## Error Handling
+
 ```typescript
 class AppError extends Error {
-  constructor(message: string, public statusCode = 500, public code?: string) { super(message); }
+  constructor(
+    message: string,
+    public statusCode = 500,
+    public code?: string
+  ) {
+    super(message);
+  }
 }
 
 const errorHandler = (err: Error, c: Context) => {
@@ -74,6 +92,7 @@ const errorHandler = (err: Error, c: Context) => {
 ```
 
 ## Neuronpedia Proxy
+
 ```typescript
 class NeuronpediaService {
   private baseUrl = 'https://www.neuronpedia.org';
@@ -91,6 +110,7 @@ class NeuronpediaService {
 ```
 
 ## Rate Limiting
+
 - Server: `hono-rate-limiter` - 10 req/min/IP for generate
 - Client: Debounce dial changes 500ms before generation
 - Neuronpedia: 100 steers/hour, exponential backoff on 429/503

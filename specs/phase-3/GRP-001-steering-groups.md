@@ -1,10 +1,10 @@
 # GRP-001: Steering Groups
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | GRP-001 |
-| **Phase** | 3 - Dynamic Hierarchy |
-| **Status** | Draft |
+| Field       | Value                               |
+| ----------- | ----------------------------------- |
+| **Spec ID** | GRP-001                             |
+| **Phase**   | 3 - Dynamic Hierarchy               |
+| **Status**  | Draft                               |
 | **Package** | `@horus/frontend`, `@horus/backend` |
 
 ## Summary
@@ -12,6 +12,7 @@
 Steering groups are collections of features that act as a single control. Instead of manipulating individual features, users can adjust a "playfulness" group or a "formal tone" group. Groups provide semantic granularity control and enable zoom-based interaction where zooming out clusters features into manipulable groups.
 
 Three types of groups work together:
+
 1. **Precomputed** - Ship with ~50 curated groups
 2. **Search-based** - User creates via semantic search
 3. **LLM-suggested** - System recommends based on context
@@ -22,24 +23,24 @@ Three types of groups work together:
 
 ```typescript
 interface SteeringGroup {
-  id: string;                              // UUID or semantic slug
-  label: string;                           // Display name
-  description?: string;                    // Tooltip explanation
+  id: string; // UUID or semantic slug
+  label: string; // Display name
+  description?: string; // Tooltip explanation
 
-  features: Map<string, number>;           // featureId → weight (0-1)
+  features: Map<string, number>; // featureId → weight (0-1)
 
   // Spatial representation
-  position: [number, number, number];      // Centroid in UMAP space
-  radius: number;                          // Visual size based on spread
+  position: [number, number, number]; // Centroid in UMAP space
+  radius: number; // Visual size based on spread
 
   // Metadata
   source: 'precomputed' | 'search' | 'circuit' | 'llm' | 'user';
   createdAt: number;
-  category?: string;                       // emotion, style, domain, etc.
+  category?: string; // emotion, style, domain, etc.
 
   // Current state
-  strength: number;                        // Like a dial: -10 to +10
-  isActive: boolean;                       // Contributing to steering
+  strength: number; // Like a dial: -10 to +10
+  isActive: boolean; // Contributing to steering
 }
 
 interface SteeringGroupsSlice {
@@ -61,6 +62,7 @@ interface SteeringGroupsSlice {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Groups store feature weights for proportional steering
 - [ ] Position/radius enable 3D visualization
 - [ ] Source tracking for UI differentiation
@@ -72,14 +74,14 @@ Ship with curated groups covering common steering needs.
 
 **Categories:**
 
-| Category | Example Groups |
-|----------|----------------|
-| **Emotion** | joy, sadness, anger, fear, surprise, disgust, nostalgia, hope |
-| **Style** | formal, casual, technical, poetic, humorous, serious |
-| **Domain** | science, art, politics, personal, business, academic |
-| **Structure** | concise, verbose, narrative, analytical, list-based |
-| **Tone** | confident, uncertain, warm, cold, enthusiastic, neutral |
-| **Complexity** | simple, complex, jargon-heavy, accessible |
+| Category       | Example Groups                                                |
+| -------------- | ------------------------------------------------------------- |
+| **Emotion**    | joy, sadness, anger, fear, surprise, disgust, nostalgia, hope |
+| **Style**      | formal, casual, technical, poetic, humorous, serious          |
+| **Domain**     | science, art, politics, personal, business, academic          |
+| **Structure**  | concise, verbose, narrative, analytical, list-based           |
+| **Tone**       | confident, uncertain, warm, cold, enthusiastic, neutral       |
+| **Complexity** | simple, complex, jargon-heavy, accessible                     |
 
 **Generation Script:**
 
@@ -123,6 +125,7 @@ async def generate_group(client, concept, category):
 **Output:** `public/groups/precomputed.json`
 
 **Acceptance Criteria:**
+
 - [ ] ~50 groups covering emotion, style, domain, structure
 - [ ] Each group has 30-50 features with weights
 - [ ] Positions computed from UMAP coordinates
@@ -137,13 +140,11 @@ User creates groups via semantic search (Cmd+K).
 
 interface SearchGroupRequest {
   query: string;
-  topK?: number;           // Default: 50
-  minActivation?: number;  // Default: 0.1
+  topK?: number; // Default: 50
+  minActivation?: number; // Default: 0.1
 }
 
-async function createGroupFromSearch(
-  request: SearchGroupRequest
-): Promise<SteeringGroup> {
+async function createGroupFromSearch(request: SearchGroupRequest): Promise<SteeringGroup> {
   // Call backend
   const response = await fetch('/api/features/search-to-group', {
     method: 'POST',
@@ -191,6 +192,7 @@ app.post('/search-to-group', async (c) => {
 ```
 
 **UI Flow:**
+
 1. User presses Cmd+K
 2. Search bar appears with placeholder "Create steering group for..."
 3. User types concept (e.g., "playfulness")
@@ -199,6 +201,7 @@ app.post('/search-to-group', async (c) => {
 6. Group appears in mixer panel
 
 **Acceptance Criteria:**
+
 - [ ] Cmd+K opens search modal
 - [ ] Search returns group within 2s
 - [ ] Group renders at correct position in graph
@@ -213,8 +216,8 @@ When camera zooms out, nearby features cluster into groups.
 
 interface ClusterConfig {
   zoomLevel: 'near' | 'medium' | 'far';
-  minClusterSize: number;        // Minimum features to form cluster
-  maxClusters: number;           // Maximum clusters per level
+  minClusterSize: number; // Minimum features to form cluster
+  maxClusters: number; // Maximum clusters per level
 }
 
 function computeSpatialClusters(
@@ -222,10 +225,9 @@ function computeSpatialClusters(
   edges: Map<string, string[]>,
   config: ClusterConfig
 ): SteeringGroup[] {
-  const k = config.zoomLevel === 'far' ? 20 :
-            config.zoomLevel === 'medium' ? 100 : 0;
+  const k = config.zoomLevel === 'far' ? 20 : config.zoomLevel === 'medium' ? 100 : 0;
 
-  if (k === 0) return [];  // No clustering at near zoom
+  if (k === 0) return []; // No clustering at near zoom
 
   // K-means clustering on UMAP positions
   const clusters = kMeans(positions, k);
@@ -233,11 +235,11 @@ function computeSpatialClusters(
   // Convert to SteeringGroup format
   return clusters.map((cluster, i) => ({
     id: `spatial-${config.zoomLevel}-${i}`,
-    label: `Region ${i + 1}`,  // TODO: LLM-generated labels
+    label: `Region ${i + 1}`, // TODO: LLM-generated labels
     features: new Map(
-      cluster.members.map(idx => [
+      cluster.members.map((idx) => [
         getNodeIdFromIndex(idx),
-        1.0 / cluster.members.length,  // Equal weight
+        1.0 / cluster.members.length, // Equal weight
       ])
     ),
     position: cluster.centroid,
@@ -251,13 +253,14 @@ function computeSpatialClusters(
 
 **Zoom Level Mapping:**
 
-| Camera Distance | Cluster Count | Interaction |
-|-----------------|---------------|-------------|
-| < 30 | 0 (individual nodes) | Click single feature |
-| 30-100 | ~100-200 | Click medium groups |
-| > 100 | ~20 | Click large regions |
+| Camera Distance | Cluster Count        | Interaction          |
+| --------------- | -------------------- | -------------------- |
+| < 30            | 0 (individual nodes) | Click single feature |
+| 30-100          | ~100-200             | Click medium groups  |
+| > 100           | ~20                  | Click large regions  |
 
 **Acceptance Criteria:**
+
 - [ ] Clusters compute based on camera distance
 - [ ] Smooth transition animation between levels (300ms)
 - [ ] Clicking cluster steers all constituent features
@@ -315,6 +318,7 @@ function ClusterMesh({ groups, onGroupClick, onGroupHover }: ClusterMeshProps) {
 ```
 
 **Visual Design:**
+
 - Semi-transparent sphere showing group boundary
 - Label floating at centroid
 - Active groups: brighter, pulsing boundary
@@ -322,6 +326,7 @@ function ClusterMesh({ groups, onGroupClick, onGroupHover }: ClusterMeshProps) {
 - Color coding by source or category
 
 **Acceptance Criteria:**
+
 - [ ] Groups render as translucent spheres
 - [ ] Labels visible and readable
 - [ ] Click/hover interactions work
@@ -363,6 +368,7 @@ function MixerPanel() {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Groups organized by category
 - [ ] Each group has dial-like control
 - [ ] Strength adjustable -10 to +10
@@ -431,6 +437,6 @@ function mergeAllSteering(
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-11 | Initial draft |
