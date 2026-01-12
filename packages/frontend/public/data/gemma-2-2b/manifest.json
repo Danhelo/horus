@@ -1,0 +1,162 @@
+{
+  "modelId": "gemma-2-2b",
+  "displayName": "Gemma 2 2B",
+  "totalLayers": 26,
+  "featuresPerLayer": 16384,
+  "layers": [
+    {
+      "layer": 0,
+      "filePath": "layer-00.json.gz",
+      "fileSize": 411551,
+      "sourceId": "0-gemmascope-res-16k"
+    },
+    {
+      "layer": 1,
+      "filePath": "layer-01.json.gz",
+      "fileSize": 890111,
+      "sourceId": "1-gemmascope-res-16k"
+    },
+    {
+      "layer": 2,
+      "filePath": "layer-02.json.gz",
+      "fileSize": 1008457,
+      "sourceId": "2-gemmascope-res-16k"
+    },
+    {
+      "layer": 3,
+      "filePath": "layer-03.json.gz",
+      "fileSize": 1169204,
+      "sourceId": "3-gemmascope-res-16k"
+    },
+    {
+      "layer": 4,
+      "filePath": "layer-04.json.gz",
+      "fileSize": 508138,
+      "sourceId": "4-gemmascope-res-16k"
+    },
+    {
+      "layer": 5,
+      "filePath": "layer-05.json.gz",
+      "fileSize": 505499,
+      "sourceId": "5-gemmascope-res-16k"
+    },
+    {
+      "layer": 6,
+      "filePath": "layer-06.json.gz",
+      "fileSize": 509464,
+      "sourceId": "6-gemmascope-res-16k"
+    },
+    {
+      "layer": 7,
+      "filePath": "layer-07.json.gz",
+      "fileSize": 506922,
+      "sourceId": "7-gemmascope-res-16k"
+    },
+    {
+      "layer": 8,
+      "filePath": "layer-08.json.gz",
+      "fileSize": 485162,
+      "sourceId": "8-gemmascope-res-16k"
+    },
+    {
+      "layer": 9,
+      "filePath": "layer-09.json.gz",
+      "fileSize": 484113,
+      "sourceId": "9-gemmascope-res-16k"
+    },
+    {
+      "layer": 10,
+      "filePath": "layer-10.json.gz",
+      "fileSize": 492593,
+      "sourceId": "10-gemmascope-res-16k"
+    },
+    {
+      "layer": 11,
+      "filePath": "layer-11.json.gz",
+      "fileSize": 507500,
+      "sourceId": "11-gemmascope-res-16k"
+    },
+    {
+      "layer": 13,
+      "filePath": "layer-13.json.gz",
+      "fileSize": 497739,
+      "sourceId": "13-gemmascope-res-16k"
+    },
+    {
+      "layer": 14,
+      "filePath": "layer-14.json.gz",
+      "fileSize": 480364,
+      "sourceId": "14-gemmascope-res-16k"
+    },
+    {
+      "layer": 15,
+      "filePath": "layer-15.json.gz",
+      "fileSize": 466239,
+      "sourceId": "15-gemmascope-res-16k"
+    },
+    {
+      "layer": 16,
+      "filePath": "layer-16.json.gz",
+      "fileSize": 436064,
+      "sourceId": "16-gemmascope-res-16k"
+    },
+    {
+      "layer": 17,
+      "filePath": "layer-17.json.gz",
+      "fileSize": 430816,
+      "sourceId": "17-gemmascope-res-16k"
+    },
+    {
+      "layer": 18,
+      "filePath": "layer-18.json.gz",
+      "fileSize": 427663,
+      "sourceId": "18-gemmascope-res-16k"
+    },
+    {
+      "layer": 19,
+      "filePath": "layer-19.json.gz",
+      "fileSize": 425741,
+      "sourceId": "19-gemmascope-res-16k"
+    },
+    {
+      "layer": 20,
+      "filePath": "layer-20.json.gz",
+      "fileSize": 422551,
+      "sourceId": "20-gemmascope-res-16k"
+    },
+    {
+      "layer": 21,
+      "filePath": "layer-21.json.gz",
+      "fileSize": 422496,
+      "sourceId": "21-gemmascope-res-16k"
+    },
+    {
+      "layer": 22,
+      "filePath": "layer-22.json.gz",
+      "fileSize": 411090,
+      "sourceId": "22-gemmascope-res-16k"
+    },
+    {
+      "layer": 23,
+      "filePath": "layer-23.json.gz",
+      "fileSize": 401628,
+      "sourceId": "23-gemmascope-res-16k"
+    },
+    {
+      "layer": 24,
+      "filePath": "layer-24.json.gz",
+      "fileSize": 406541,
+      "sourceId": "24-gemmascope-res-16k"
+    },
+    {
+      "layer": 25,
+      "filePath": "layer-25.json.gz",
+      "fileSize": 433380,
+      "sourceId": "25-gemmascope-res-16k"
+    }
+  ],
+  "neuronpediaModelId": "gemma-2-2b",
+  "neuronpediaSourceSet": "gemmascope-res-16k",
+  "pipelineVersion": "1.0.0",
+  "generatedAt": "2026-01-12T04:20:41.885368Z"
+}
