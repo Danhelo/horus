@@ -52,6 +52,7 @@ export function useKeyboardNavigation() {
     down: false,
   });
   const isMoving = useRef(false);
+  // eslint-disable-next-line react-hooks/purity -- Initial timestamp for animation timing is correct pattern
   const lastTimeRef = useRef(performance.now());
   const animationFrameRef = useRef<number | null>(null);
 
@@ -124,6 +125,7 @@ export function useKeyboardNavigation() {
     }
 
     // Continue animation loop
+    // eslint-disable-next-line react-hooks/immutability -- Self-referencing callback for animation loop is intentional
     animationFrameRef.current = requestAnimationFrame(animate);
   }, [camera, invalidate]);
 
@@ -186,31 +188,28 @@ export function useKeyboardNavigation() {
   );
 
   // Handle key up
-  const handleKeyUp = useCallback(
-    (event: KeyboardEvent) => {
-      const key = event.key;
+  const handleKeyUp = useCallback((event: KeyboardEvent) => {
+    const key = event.key;
 
-      if (KEY_BINDINGS.moveForward.includes(key as 'w')) {
-        keyState.current.forward = false;
-      }
-      if (KEY_BINDINGS.moveBackward.includes(key as 's')) {
-        keyState.current.backward = false;
-      }
-      if (KEY_BINDINGS.moveLeft.includes(key as 'a')) {
-        keyState.current.left = false;
-      }
-      if (KEY_BINDINGS.moveRight.includes(key as 'd')) {
-        keyState.current.right = false;
-      }
-      if (KEY_BINDINGS.moveUp.includes(key as 'q')) {
-        keyState.current.up = false;
-      }
-      if (KEY_BINDINGS.moveDown.includes(key as 'e')) {
-        keyState.current.down = false;
-      }
-    },
-    []
-  );
+    if (KEY_BINDINGS.moveForward.includes(key as 'w')) {
+      keyState.current.forward = false;
+    }
+    if (KEY_BINDINGS.moveBackward.includes(key as 's')) {
+      keyState.current.backward = false;
+    }
+    if (KEY_BINDINGS.moveLeft.includes(key as 'a')) {
+      keyState.current.left = false;
+    }
+    if (KEY_BINDINGS.moveRight.includes(key as 'd')) {
+      keyState.current.right = false;
+    }
+    if (KEY_BINDINGS.moveUp.includes(key as 'q')) {
+      keyState.current.up = false;
+    }
+    if (KEY_BINDINGS.moveDown.includes(key as 'e')) {
+      keyState.current.down = false;
+    }
+  }, []);
 
   // Handle window blur (release all keys)
   const handleBlur = useCallback(() => {

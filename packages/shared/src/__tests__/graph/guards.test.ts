@@ -230,11 +230,13 @@ describe('isGraphData', () => {
   });
 
   it('validates empty maps', () => {
-    expect(isGraphData({
-      nodes: new Map(),
-      edges: new Map(),
-      metadata: { ...validGraphData.metadata, nodeCount: 0, edgeCount: 0 },
-    })).toBe(true);
+    expect(
+      isGraphData({
+        nodes: new Map(),
+        edges: new Map(),
+        metadata: { ...validGraphData.metadata, nodeCount: 0, edgeCount: 0 },
+      })
+    ).toBe(true);
   });
 
   it('rejects non-Map nodes/edges', () => {

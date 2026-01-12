@@ -1,10 +1,10 @@
 # ACT-001: Activation Display
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | ACT-001 |
-| **Phase** | 1 - Static Viewer |
-| **Status** | Complete |
+| Field       | Value             |
+| ----------- | ----------------- |
+| **Spec ID** | ACT-001           |
+| **Phase**   | 1 - Static Viewer |
+| **Status**  | Complete          |
 | **Package** | `@horus/frontend` |
 
 ## Summary
@@ -38,6 +38,7 @@ function ActivationPanel() {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Panel positioned on right side of viewport
 - [x] Panel is collapsible/toggleable via header button
 - [x] Panel has dark theme matching cosmic aesthetic
@@ -79,6 +80,7 @@ function FeatureHeader({ feature }: { feature: FeatureBasicInfo }) {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Shows feature label (or "Feature {index}" if no label)
 - [x] Displays layer and index information
 - [x] Shows category tag if available
@@ -113,6 +115,7 @@ function ActivationValue({ nodeId }: { nodeId: string }) {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Shows activation as progress bar and numeric value
 - [x] Progress bar uses gold gradient matching graph colors
 - [x] Value updates in real-time when activations change
@@ -164,6 +167,7 @@ function FeatureExplanation({ feature }: { feature: NeuronpediaFeature }) {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Fetches feature data from Neuronpedia when node selected
 - [x] Displays auto-generated explanations with confidence scores
 - [x] Shows top 3 explanations (sorted by score)
@@ -196,6 +200,7 @@ function TopTokens({ tokens }: { tokens: Array<{ token: string; value: number }>
 ```
 
 **Acceptance Criteria:**
+
 - [x] Shows up to 10 top activating tokens
 - [x] Tokens displayed as chips/tags
 - [x] Logit value shown on hover (tooltip)
@@ -233,6 +238,7 @@ function FeatureDetails({ nodeId }: { nodeId: string }) {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Skeleton loading state matches content layout
 - [x] Loading state appears within 100ms of selection
 - [x] Basic info (from local data) shows immediately
@@ -274,6 +280,7 @@ function RelatedFeatures({ nodeId }: { nodeId: string }) {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Shows top 5 related features by edge weight
 - [x] Each item shows feature label and connection strength
 - [x] Clicking related feature navigates to it
@@ -285,6 +292,7 @@ function RelatedFeatures({ nodeId }: { nodeId: string }) {
 Maintain snappy interactions for flow state.
 
 **Acceptance Criteria:**
+
 - [x] Panel opens within 50ms of toggle action
 - [x] Basic info renders within 16ms of node selection
 - [x] API fetch initiated within 100ms of selection
@@ -350,6 +358,6 @@ packages/frontend/src/
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

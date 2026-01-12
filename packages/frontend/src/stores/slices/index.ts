@@ -1,7 +1,4 @@
-export {
-  createGraphLoadingSlice,
-  GraphLoadError,
-} from './graphLoadingSlice';
+export { createGraphLoadingSlice, GraphLoadError } from './graphLoadingSlice';
 
 export type {
   GraphLoadingSlice,

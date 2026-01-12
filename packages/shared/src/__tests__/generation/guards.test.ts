@@ -8,7 +8,11 @@ import {
   isStreamingGenerationEvent,
   isGenerationError,
 } from '../../generation/guards';
-import type { GenerationOptions, GenerationResponse, GenerationMetadata } from '../../generation/types';
+import type {
+  GenerationOptions,
+  GenerationResponse,
+  GenerationMetadata,
+} from '../../generation/types';
 
 describe('isFinishReason', () => {
   it('validates stop', () => {
@@ -43,11 +47,13 @@ describe('isGenerationOptions', () => {
   });
 
   it('validates with optional fields', () => {
-    expect(isGenerationOptions({
-      ...validOptions,
-      topP: 0.9,
-      stopSequences: ['END', 'STOP'],
-    })).toBe(true);
+    expect(
+      isGenerationOptions({
+        ...validOptions,
+        topP: 0.9,
+        stopSequences: ['END', 'STOP'],
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -150,10 +156,12 @@ describe('isGenerationResponse', () => {
   });
 
   it('validates with activations', () => {
-    expect(isGenerationResponse({
-      ...validResponse,
-      activations: [],
-    })).toBe(true);
+    expect(
+      isGenerationResponse({
+        ...validResponse,
+        activations: [],
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -218,38 +226,46 @@ describe('isGenerationRequest', () => {
 
 describe('isStreamingGenerationEvent', () => {
   it('validates token event', () => {
-    expect(isStreamingGenerationEvent({
-      type: 'token',
-      data: { token: 'Hello', index: 0 },
-    })).toBe(true);
+    expect(
+      isStreamingGenerationEvent({
+        type: 'token',
+        data: { token: 'Hello', index: 0 },
+      })
+    ).toBe(true);
   });
 
   it('validates activation event', () => {
-    expect(isStreamingGenerationEvent({
-      type: 'activation',
-      data: { point: { tokenIndex: 0, token: 'Hi', activations: {}, position: [0, 0, 0] } },
-    })).toBe(true);
+    expect(
+      isStreamingGenerationEvent({
+        type: 'activation',
+        data: { point: { tokenIndex: 0, token: 'Hi', activations: {}, position: [0, 0, 0] } },
+      })
+    ).toBe(true);
   });
 
   it('validates done event', () => {
-    expect(isStreamingGenerationEvent({
-      type: 'done',
-      data: {
-        metadata: {
-          modelId: 'gemma-2-2b',
-          tokenCount: 10,
-          latencyMs: 500,
-          finishReason: 'stop',
+    expect(
+      isStreamingGenerationEvent({
+        type: 'done',
+        data: {
+          metadata: {
+            modelId: 'gemma-2-2b',
+            tokenCount: 10,
+            latencyMs: 500,
+            finishReason: 'stop',
+          },
         },
-      },
-    })).toBe(true);
+      })
+    ).toBe(true);
   });
 
   it('validates error event', () => {
-    expect(isStreamingGenerationEvent({
-      type: 'error',
-      data: { message: 'Something went wrong' },
-    })).toBe(true);
+    expect(
+      isStreamingGenerationEvent({
+        type: 'error',
+        data: { message: 'Something went wrong' },
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -258,10 +274,12 @@ describe('isStreamingGenerationEvent', () => {
   });
 
   it('rejects invalid type', () => {
-    expect(isStreamingGenerationEvent({
-      type: 'invalid',
-      data: {},
-    })).toBe(false);
+    expect(
+      isStreamingGenerationEvent({
+        type: 'invalid',
+        data: {},
+      })
+    ).toBe(false);
   });
 
   it('rejects missing data', () => {
@@ -269,53 +287,67 @@ describe('isStreamingGenerationEvent', () => {
   });
 
   it('rejects token event with missing token', () => {
-    expect(isStreamingGenerationEvent({
-      type: 'token',
-      data: { index: 0 },
-    })).toBe(false);
+    expect(
+      isStreamingGenerationEvent({
+        type: 'token',
+        data: { index: 0 },
+      })
+    ).toBe(false);
   });
 
   it('rejects error event with missing message', () => {
-    expect(isStreamingGenerationEvent({
-      type: 'error',
-      data: {},
-    })).toBe(false);
+    expect(
+      isStreamingGenerationEvent({
+        type: 'error',
+        data: {},
+      })
+    ).toBe(false);
   });
 });
 
 describe('isGenerationError', () => {
   it('validates RATE_LIMITED error', () => {
-    expect(isGenerationError({
-      type: 'RATE_LIMITED',
-      retryAfter: 60,
-    })).toBe(true);
+    expect(
+      isGenerationError({
+        type: 'RATE_LIMITED',
+        retryAfter: 60,
+      })
+    ).toBe(true);
   });
 
   it('validates INVALID_STEERING error', () => {
-    expect(isGenerationError({
-      type: 'INVALID_STEERING',
-      details: 'Too many features',
-    })).toBe(true);
+    expect(
+      isGenerationError({
+        type: 'INVALID_STEERING',
+        details: 'Too many features',
+      })
+    ).toBe(true);
   });
 
   it('validates MODEL_UNAVAILABLE error', () => {
-    expect(isGenerationError({
-      type: 'MODEL_UNAVAILABLE',
-      message: 'Model is offline',
-    })).toBe(true);
+    expect(
+      isGenerationError({
+        type: 'MODEL_UNAVAILABLE',
+        message: 'Model is offline',
+      })
+    ).toBe(true);
   });
 
   it('validates NETWORK_ERROR', () => {
-    expect(isGenerationError({
-      type: 'NETWORK_ERROR',
-      message: 'Connection timeout',
-    })).toBe(true);
+    expect(
+      isGenerationError({
+        type: 'NETWORK_ERROR',
+        message: 'Connection timeout',
+      })
+    ).toBe(true);
   });
 
   it('validates CANCELLED error', () => {
-    expect(isGenerationError({
-      type: 'CANCELLED',
-    })).toBe(true);
+    expect(
+      isGenerationError({
+        type: 'CANCELLED',
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -328,16 +360,20 @@ describe('isGenerationError', () => {
   });
 
   it('rejects RATE_LIMITED with negative retryAfter', () => {
-    expect(isGenerationError({
-      type: 'RATE_LIMITED',
-      retryAfter: -1,
-    })).toBe(false);
+    expect(
+      isGenerationError({
+        type: 'RATE_LIMITED',
+        retryAfter: -1,
+      })
+    ).toBe(false);
   });
 
   it('rejects INVALID_STEERING with non-string details', () => {
-    expect(isGenerationError({
-      type: 'INVALID_STEERING',
-      details: 123,
-    })).toBe(false);
+    expect(
+      isGenerationError({
+        type: 'INVALID_STEERING',
+        details: 123,
+      })
+    ).toBe(false);
   });
 });

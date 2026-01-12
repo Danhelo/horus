@@ -1,17 +1,17 @@
 # LIVE-000: Live Neural Surgery Master Plan
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | LIVE-000 |
-| **Phase** | 3 - Dynamic Hierarchy |
-| **Status** | Draft |
-| **Type** | Master Plan |
+| Field       | Value                 |
+| ----------- | --------------------- |
+| **Spec ID** | LIVE-000              |
+| **Phase**   | 3 - Dynamic Hierarchy |
+| **Status**  | Draft                 |
+| **Type**    | Master Plan           |
 
 ## Vision
 
 Transform the HORUS feature graph from a **visualization** into a **control surface** for neural surgery. Users click/adjust nodes to directly steer Gemma-2-2B generation in real-time, with semantic zoom allowing granularity control via "steering groups."
 
-> *"The text and graph are two views of the same thing. Change one, the other updates. There's no 'submit' button. There's just... the state, and how you're shaping it."*
+> _"The text and graph are two views of the same thing. Change one, the other updates. There's no 'submit' button. There's just... the state, and how you're shaping it."_
 
 ---
 
@@ -52,13 +52,13 @@ Transform the HORUS feature graph from a **visualization** into a **control surf
 
 ## Specs Overview
 
-| Spec | Title | Purpose |
-|------|-------|---------|
-| **LIVE-000** | Master Plan | This document - architecture overview |
-| **[LIVE-001](LIVE-001-click-to-steer.md)** | Click-to-Steer | Core interaction: click node → steer generation |
-| **[GRP-001](GRP-001-steering-groups.md)** | Steering Groups | Cluster features into manipulable concepts |
-| **[CIR-001](CIR-001-circuit-tracing.md)** | Circuit Tracing | "Why did this generate?" attribution discovery |
-| **[SUG-001](SUG-001-llm-suggestions.md)** | LLM Suggestions | Context-aware group recommendations |
+| Spec                                       | Title           | Purpose                                         |
+| ------------------------------------------ | --------------- | ----------------------------------------------- |
+| **LIVE-000**                               | Master Plan     | This document - architecture overview           |
+| **[LIVE-001](LIVE-001-click-to-steer.md)** | Click-to-Steer  | Core interaction: click node → steer generation |
+| **[GRP-001](GRP-001-steering-groups.md)**  | Steering Groups | Cluster features into manipulable concepts      |
+| **[CIR-001](CIR-001-circuit-tracing.md)**  | Circuit Tracing | "Why did this generate?" attribution discovery  |
+| **[SUG-001](SUG-001-llm-suggestions.md)**  | LLM Suggestions | Context-aware group recommendations             |
 
 ---
 
@@ -70,15 +70,15 @@ Features the user has selected for steering, with their strengths.
 
 ```typescript
 interface ActiveFeature {
-  featureId: string;      // e.g., "gemma-2-2b/12/2341"
+  featureId: string; // e.g., "gemma-2-2b/12/2341"
   layer: number;
   index: number;
-  strength: number;       // -10 to +10 (0 = no effect)
+  strength: number; // -10 to +10 (0 = no effect)
   source: 'click' | 'dial' | 'group' | 'circuit';
 }
 
 // Store
-activeFeatures: Map<featureId, ActiveFeature>
+activeFeatures: Map<featureId, ActiveFeature>;
 ```
 
 ### 2. Steering Groups
@@ -89,11 +89,11 @@ Collections of features that act as a single control.
 interface SteeringGroup {
   id: string;
   label: string;
-  features: Map<featureId, weight>;  // Constituent features + weights
-  position: [x, y, z];               // Centroid in graph
-  radius: number;                     // Visual size
+  features: Map<featureId, weight>; // Constituent features + weights
+  position: [x, y, z]; // Centroid in graph
+  radius: number; // Visual size
   source: 'spatial' | 'semantic' | 'circuit' | 'precomputed' | 'user';
-  strength: number;                   // Current group strength (like a dial)
+  strength: number; // Current group strength (like a dial)
 }
 ```
 
@@ -141,13 +141,14 @@ User clicks node →
 
 ## Semantic Zoom Levels
 
-| Zoom Level | Distance | View | Interaction |
-|------------|----------|------|-------------|
-| **Far** | > 100 | ~20 mega-clusters | Click = steer whole domain |
-| **Medium** | 30-100 | ~200 groups | Click = steer concept |
-| **Near** | < 30 | Individual nodes | Click = steer single feature |
+| Zoom Level | Distance | View              | Interaction                  |
+| ---------- | -------- | ----------------- | ---------------------------- |
+| **Far**    | > 100    | ~20 mega-clusters | Click = steer whole domain   |
+| **Medium** | 30-100   | ~200 groups       | Click = steer concept        |
+| **Near**   | < 30     | Individual nodes  | Click = steer single feature |
 
 **Transition behavior:**
+
 - Smooth morphing between levels (300ms animation)
 - Clusters expand/collapse as camera moves
 - Labels appear/disappear based on screen space
@@ -159,6 +160,7 @@ User clicks node →
 ### Tier 1: Precomputed Groups (~50)
 
 Ship with curated groups for common concepts:
+
 - Emotion: joy, sadness, anger, fear, surprise
 - Style: formal, casual, technical, poetic
 - Domain: science, art, politics, personal
@@ -171,6 +173,7 @@ Ship with curated groups for common concepts:
 User types "playfulness" → system creates group from search results.
 
 **Flow:**
+
 1. Cmd+K opens search bar
 2. User enters concept
 3. `/api/search-all` returns top features
@@ -182,6 +185,7 @@ User types "playfulness" → system creates group from search results.
 System observes user actions → suggests relevant groups.
 
 **Flow:**
+
 1. User boosts "nostalgia" dial
 2. After 5s, system sends context to LLM
 3. LLM suggests: "temporal_distance", "sensory_memory", "bittersweet"
@@ -199,6 +203,7 @@ System observes user actions → suggests relevant groups.
 User asks "Why did this word appear?" → system shows attribution.
 
 **Flow:**
+
 1. User selects output token/phrase
 2. POST to `/api/circuits/trace`
 3. Attribution graph returned
@@ -285,36 +290,36 @@ Converts attribution graph into a steering group for direct manipulation.
 
 ### Frontend
 
-| File | Action | Purpose |
-|------|--------|---------|
-| `stores/appStore.ts` | Modify | Add activeFeatures, generationStatus, clusterLevel |
-| `hooks/useSteeringGeneration.ts` | Create | Connect steering → generation with debounce |
-| `hooks/useSuggestions.ts` | Create | LLM group suggestions |
-| `components/graph/NodeMesh.tsx` | Modify | Click adds to activeFeatures |
-| `components/graph/ClusterMesh.tsx` | Create | Render steering groups |
-| `components/ui/GenerationStatus.tsx` | Create | Show generation state + quota |
-| `components/ui/QuickSteeringPanel.tsx` | Create | Per-node steering controls |
-| `components/ui/SearchBar.tsx` | Create | Semantic group creation (Cmd+K) |
-| `components/ui/SuggestedGroups.tsx` | Create | LLM suggestion chips |
-| `components/panels/CircuitPanel.tsx` | Create | Attribution graph view |
-| `utils/spatialClustering.ts` | Create | Zoom-based clustering |
-| `services/semanticGrouping.ts` | Create | All three grouping approaches |
+| File                                   | Action | Purpose                                            |
+| -------------------------------------- | ------ | -------------------------------------------------- |
+| `stores/appStore.ts`                   | Modify | Add activeFeatures, generationStatus, clusterLevel |
+| `hooks/useSteeringGeneration.ts`       | Create | Connect steering → generation with debounce        |
+| `hooks/useSuggestions.ts`              | Create | LLM group suggestions                              |
+| `components/graph/NodeMesh.tsx`        | Modify | Click adds to activeFeatures                       |
+| `components/graph/ClusterMesh.tsx`     | Create | Render steering groups                             |
+| `components/ui/GenerationStatus.tsx`   | Create | Show generation state + quota                      |
+| `components/ui/QuickSteeringPanel.tsx` | Create | Per-node steering controls                         |
+| `components/ui/SearchBar.tsx`          | Create | Semantic group creation (Cmd+K)                    |
+| `components/ui/SuggestedGroups.tsx`    | Create | LLM suggestion chips                               |
+| `components/panels/CircuitPanel.tsx`   | Create | Attribution graph view                             |
+| `utils/spatialClustering.ts`           | Create | Zoom-based clustering                              |
+| `services/semanticGrouping.ts`         | Create | All three grouping approaches                      |
 
 ### Backend
 
-| File | Action | Purpose |
-|------|--------|---------|
-| `routes/features.ts` | Modify | Add `/search-to-group` endpoint |
-| `routes/suggestions.ts` | Create | `/suggest-groups` with LLM |
-| `routes/circuits.ts` | Create | Circuit tracing proxy |
-| `services/llm.ts` | Create | LLM client for suggestions |
+| File                    | Action | Purpose                         |
+| ----------------------- | ------ | ------------------------------- |
+| `routes/features.ts`    | Modify | Add `/search-to-group` endpoint |
+| `routes/suggestions.ts` | Create | `/suggest-groups` with LLM      |
+| `routes/circuits.ts`    | Create | Circuit tracing proxy           |
+| `services/llm.ts`       | Create | LLM client for suggestions      |
 
 ### Scripts
 
-| File | Action | Purpose |
-|------|--------|---------|
-| `scripts/generate_groups.py` | Create | Precompute ~50 steering groups |
-| `public/groups/precomputed.json` | Create | Cached precomputed groups |
+| File                             | Action | Purpose                        |
+| -------------------------------- | ------ | ------------------------------ |
+| `scripts/generate_groups.py`     | Create | Precompute ~50 steering groups |
+| `public/groups/precomputed.json` | Create | Cached precomputed groups      |
 
 ---
 
@@ -331,13 +336,13 @@ Converts attribution graph into a steering group for direct manipulation.
 
 ## Technical Constraints
 
-| Constraint | Mitigation |
-|------------|------------|
-| 100 steers/hour | Debounce 2-3s, show quota, batch changes |
-| ~2-5s latency | Show pending state, stream tokens |
-| Graph 503s | Retry with backoff, cache aggressively |
-| 50k nodes | Use existing InstancedMesh, cluster on zoom-out |
-| Activation fetches | Batch after generation, not per-token |
+| Constraint         | Mitigation                                      |
+| ------------------ | ----------------------------------------------- |
+| 100 steers/hour    | Debounce 2-3s, show quota, batch changes        |
+| ~2-5s latency      | Show pending state, stream tokens               |
+| Graph 503s         | Retry with backoff, cache aggressively          |
+| 50k nodes          | Use existing InstancedMesh, cluster on zoom-out |
+| Activation fetches | Batch after generation, not per-token           |
 
 ---
 
@@ -362,6 +367,6 @@ Converts attribution graph into a steering group for direct manipulation.
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-11 | Initial draft |

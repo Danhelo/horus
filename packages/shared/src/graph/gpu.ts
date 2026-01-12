@@ -5,9 +5,9 @@ import type { GraphData } from './types';
  * Uses Float32Array for efficient WebGL buffer transfer
  */
 export interface GraphPositionData {
-  positions: Float32Array;           // [x1,y1,z1, x2,y2,z2, ...]
-  colors: Float32Array;              // [r1,g1,b1, r2,g2,b2, ...]
-  scales: Float32Array;              // [s1, s2, ...]
+  positions: Float32Array; // [x1,y1,z1, x2,y2,z2, ...]
+  colors: Float32Array; // [r1,g1,b1, r2,g2,b2, ...]
+  scales: Float32Array; // [s1, s2, ...]
   nodeIndexMap: Map<string, number>; // id -> array index
 }
 
@@ -93,11 +93,7 @@ export function setNodeColor(
 /**
  * Set scale for a specific node
  */
-export function setNodeScale(
-  data: GraphPositionData,
-  nodeId: string,
-  scale: number
-): boolean {
+export function setNodeScale(data: GraphPositionData, nodeId: string, scale: number): boolean {
   const index = data.nodeIndexMap.get(nodeId);
   if (index === undefined) return false;
 

@@ -2,20 +2,20 @@
  * Feature identifier within a model
  */
 export interface FeatureId {
-  modelId: string;    // e.g., 'gemma-2-2b'
-  layer: number;      // 0-25 for Gemma-2-2B
-  index: number;      // Feature index within layer
+  modelId: string; // e.g., 'gemma-2-2b'
+  layer: number; // 0-25 for Gemma-2-2B
+  index: number; // Feature index within layer
 }
 
 /**
  * A node in the feature graph representing a single SAE feature
  */
 export interface GraphNode {
-  id: string;                           // Format: `${modelId}:${layer}:${index}`
+  id: string; // Format: `${modelId}:${layer}:${index}`
   featureId: FeatureId;
-  position: [number, number, number];   // UMAP coordinates [x, y, z]
-  label?: string;                       // Human-readable label
-  category?: string;                    // Semantic category
+  position: [number, number, number]; // UMAP coordinates [x, y, z]
+  label?: string; // Human-readable label
+  category?: string; // Semantic category
 }
 
 /**
@@ -28,9 +28,9 @@ export type EdgeType = 'coactivation' | 'attention' | 'circuit';
  */
 export interface GraphEdge {
   id: string;
-  source: string;     // Source node ID
-  target: string;     // Target node ID
-  weight: number;     // 0-1, connection strength
+  source: string; // Source node ID
+  target: string; // Target node ID
+  weight: number; // 0-1, connection strength
   type: EdgeType;
 }
 
@@ -39,10 +39,10 @@ export interface GraphEdge {
  */
 export interface GraphMetadata {
   modelId: string;
-  layers: number[];       // Which layers are included
+  layers: number[]; // Which layers are included
   nodeCount: number;
   edgeCount: number;
-  createdAt: string;      // ISO timestamp
+  createdAt: string; // ISO timestamp
 }
 
 /**

@@ -10,6 +10,7 @@ export function GraphHUD() {
   const [showPerf, setShowPerf] = useState(false);
   const [fps, setFps] = useState(60);
   const frameCountRef = useRef(0);
+  // eslint-disable-next-line react-hooks/purity -- Initial timestamp for FPS calculation is correct pattern
   const lastTimeRef = useRef(performance.now());
 
   // Graph data
@@ -132,7 +133,9 @@ export function GraphHUD() {
           {/* Labeled nodes */}
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#6b6b7b' }}>Labeled</span>
-            <span style={{ color: 'var(--color-gold-dim)' }}>{labeledNodeCount.toLocaleString()}</span>
+            <span style={{ color: 'var(--color-gold-dim)' }}>
+              {labeledNodeCount.toLocaleString()}
+            </span>
           </div>
         </div>
 

@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { useAppStore } from '../../stores';
 import { useFeatureDetails } from '../../hooks';
 
@@ -8,12 +6,7 @@ import { ActivationValue } from './ActivationValue';
 import { FeatureExplanation } from './FeatureExplanation';
 import { TopTokens } from './TopTokens';
 import { RelatedFeatures } from './RelatedFeatures';
-import {
-  FeatureHeaderSkeleton,
-  ActivationValueSkeleton,
-  EmptyState,
-  ErrorDisplay,
-} from './LoadingStates';
+import { EmptyState, ErrorDisplay } from './LoadingStates';
 
 /**
  * Right-side panel displaying details about the selected node/feature
@@ -30,9 +23,7 @@ export function ActivationPanel() {
   });
 
   // Get the node data from the graph
-  const selectedNode = useAppStore((s) =>
-    selectedNodeId ? s.nodes.get(selectedNodeId) : null
-  );
+  const selectedNode = useAppStore((s) => (selectedNodeId ? s.nodes.get(selectedNodeId) : null));
 
   // Fetch extended feature data from Neuronpedia
   const {
@@ -128,12 +119,7 @@ export function ActivationPanel() {
             <ActivationValue nodeId={selectedNodeId!} />
 
             {/* Error state */}
-            {error && (
-              <ErrorDisplay
-                error={error}
-                onRetry={() => refetch()}
-              />
-            )}
+            {error && <ErrorDisplay error={error} onRetry={() => refetch()} />}
 
             {/* Extended info from Neuronpedia */}
             {!error && (
@@ -143,10 +129,7 @@ export function ActivationPanel() {
                   isLoading={isLoading}
                 />
 
-                <TopTokens
-                  tokens={featureData?.topLogits}
-                  isLoading={isLoading}
-                />
+                <TopTokens tokens={featureData?.topLogits} isLoading={isLoading} />
               </>
             )}
 

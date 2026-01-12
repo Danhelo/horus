@@ -11,11 +11,11 @@ function generateMockGraph(nodeCount: number, edgeCount: number) {
     nodes.push({
       id: `node-${i}`,
       featureId: { modelId: 'gemma-2-2b', layer: Math.floor(i / 2000) % 26, index: i },
-      position: [
-        Math.random() * 100 - 50,
-        Math.random() * 100 - 50,
-        Math.random() * 100 - 50,
-      ] as [number, number, number],
+      position: [Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 100 - 50] as [
+        number,
+        number,
+        number,
+      ],
       label: i % 10 === 0 ? `Feature ${i}` : undefined,
     });
   }
@@ -250,7 +250,9 @@ describe('graphLoader', () => {
       expect(jsonConversionTime).toBeLessThan(500);
 
       // Log for visibility in test output
-      console.log(`[BENCHMARK] JSON -> GraphData (${nodeCount} nodes): ${jsonConversionTime.toFixed(2)}ms`);
+      console.log(
+        `[BENCHMARK] JSON -> GraphData (${nodeCount} nodes): ${jsonConversionTime.toFixed(2)}ms`
+      );
     });
 
     it('converts 50k nodes to GPU format in < 100ms', () => {
@@ -276,7 +278,9 @@ describe('graphLoader', () => {
       expect(gpuConversionTime).toBeLessThan(500);
 
       // Log for visibility in test output
-      console.log(`[BENCHMARK] GraphData -> GPU format (${nodeCount} nodes): ${gpuConversionTime.toFixed(2)}ms`);
+      console.log(
+        `[BENCHMARK] GraphData -> GPU format (${nodeCount} nodes): ${gpuConversionTime.toFixed(2)}ms`
+      );
     });
 
     it('full pipeline (JSON -> GPU) completes in < 200ms for 50k nodes', () => {
@@ -308,9 +312,7 @@ describe('graphLoader', () => {
     });
 
     it('creates validation error from Zod errors', () => {
-      const zodErrors = [
-        { path: ['nodes', 0, 'id'], message: 'Required' },
-      ];
+      const zodErrors = [{ path: ['nodes', 0, 'id'], message: 'Required' }];
 
       const error = GraphLoadError.fromValidation(zodErrors);
 

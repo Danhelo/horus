@@ -240,7 +240,7 @@ describe('graphSchema', () => {
       // Create a Zod error by triggering validation failure
       const result = graphJSONSchema.safeParse({
         metadata: { modelId: 'test', layers: [] }, // layers must have at least 1
-        nodes: [],  // must have at least 1 node
+        nodes: [], // must have at least 1 node
         edges: [],
       });
       expect(result.success).toBe(false);

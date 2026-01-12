@@ -26,9 +26,7 @@ describe('Generation Routes', () => {
     // Re-import with fresh modules after reset
     const { generationRoutes } = await import('../routes/generation');
     const { errorHandler } = await import('../middleware/error-handler');
-    app = new Hono()
-      .route('/api/generation', generationRoutes)
-      .onError(errorHandler);
+    app = new Hono().route('/api/generation', generationRoutes).onError(errorHandler);
   });
 
   describe('GET /api/generation/status', () => {
@@ -63,9 +61,7 @@ describe('Generation Routes', () => {
         body: JSON.stringify({
           prompt: 'Say hello',
           steeringVector: {
-            features: [
-              { source: '12-gemmascope-res-16k', index: 1622, strength: 1.5 },
-            ],
+            features: [{ source: '12-gemmascope-res-16k', index: 1622, strength: 1.5 }],
             modelId: 'gemma-2-2b',
           },
           options: {
@@ -170,9 +166,7 @@ describe('Generation Routes', () => {
         body: JSON.stringify({
           prompt: 'Test',
           steeringVector: {
-            features: [
-              { source: '12-gemmascope-res-16k', index: 999999, strength: 1.0 },
-            ],
+            features: [{ source: '12-gemmascope-res-16k', index: 999999, strength: 1.0 }],
             modelId: 'gemma-2-2b',
           },
           options: { stream: false },
@@ -189,9 +183,7 @@ describe('Generation Routes', () => {
         body: JSON.stringify({
           prompt: 'Test',
           steeringVector: {
-            features: [
-              { source: '12-gemmascope-res-16k', index: 100, strength: 200 },
-            ],
+            features: [{ source: '12-gemmascope-res-16k', index: 100, strength: 200 }],
             modelId: 'gemma-2-2b',
           },
           options: { stream: false },

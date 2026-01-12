@@ -125,9 +125,7 @@ export function ModelSelector() {
     return (
       <div style={containerStyles}>
         <LoadingSpinner />
-        <span style={{ color: 'var(--color-text-muted)', fontSize: 12 }}>
-          Loading models...
-        </span>
+        <span style={{ color: 'var(--color-text-muted)', fontSize: 12 }}>Loading models...</span>
       </div>
     );
   }
@@ -136,9 +134,7 @@ export function ModelSelector() {
   if (modelsError && availableModels.length === 0) {
     return (
       <div style={containerStyles}>
-        <span style={{ color: 'var(--color-signal-coral)', fontSize: 12 }}>
-          {modelsError}
-        </span>
+        <span style={{ color: 'var(--color-signal-coral)', fontSize: 12 }}>{modelsError}</span>
         <button
           onClick={() => loadModels()}
           style={{

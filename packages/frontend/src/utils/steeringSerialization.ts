@@ -6,11 +6,7 @@
  * saving them to localStorage.
  */
 
-import type {
-  Dial,
-  SteeringConfig,
-  SerializedSteeringState,
-} from '@horus/shared';
+import type { Dial, SteeringConfig, SerializedSteeringState } from '@horus/shared';
 import { DEFAULT_STEERING_CONFIG } from '@horus/shared';
 
 // ---------------------------------------------------------------------------
@@ -28,10 +24,7 @@ import { DEFAULT_STEERING_CONFIG } from '@horus/shared';
  * @param config - Current steering configuration
  * @returns JSON string representation of the state
  */
-export function serializeSteeringState(
-  dials: Map<string, Dial>,
-  config: SteeringConfig
-): string {
+export function serializeSteeringState(dials: Map<string, Dial>, config: SteeringConfig): string {
   const state: SerializedSteeringState = {
     version: 1,
     dials: Array.from(dials.values())
@@ -60,10 +53,7 @@ export function serializeSteeringStateToBase64(
 ): string {
   const json = serializeSteeringState(dials, config);
   // Use URL-safe base64 encoding
-  return btoa(json)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+  return btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
 // ---------------------------------------------------------------------------
@@ -96,18 +86,12 @@ export function deserializeSteeringState(json: string): SerializedSteeringState 
   try {
     parsed = JSON.parse(json);
   } catch {
-    throw new SteeringDeserializationError(
-      'Invalid JSON format',
-      'INVALID_JSON'
-    );
+    throw new SteeringDeserializationError('Invalid JSON format', 'INVALID_JSON');
   }
 
   // Validate structure
   if (!parsed || typeof parsed !== 'object') {
-    throw new SteeringDeserializationError(
-      'Expected an object',
-      'INVALID_STRUCTURE'
-    );
+    throw new SteeringDeserializationError('Expected an object', 'INVALID_STRUCTURE');
   }
 
   const obj = parsed as Record<string, unknown>;
@@ -122,19 +106,13 @@ export function deserializeSteeringState(json: string): SerializedSteeringState 
 
   // Validate dials array
   if (!Array.isArray(obj.dials)) {
-    throw new SteeringDeserializationError(
-      'Missing or invalid dials array',
-      'INVALID_STRUCTURE'
-    );
+    throw new SteeringDeserializationError('Missing or invalid dials array', 'INVALID_STRUCTURE');
   }
 
   const dials: Array<{ id: string; value: number }> = [];
   for (const dial of obj.dials) {
     if (!dial || typeof dial !== 'object') {
-      throw new SteeringDeserializationError(
-        'Invalid dial entry',
-        'INVALID_STRUCTURE'
-      );
+      throw new SteeringDeserializationError('Invalid dial entry', 'INVALID_STRUCTURE');
     }
     const d = dial as Record<string, unknown>;
     if (typeof d.id !== 'string' || typeof d.value !== 'number') {
@@ -163,9 +141,7 @@ export function deserializeSteeringState(json: string): SerializedSteeringState 
  * @returns Parsed steering state
  * @throws SteeringDeserializationError if invalid
  */
-export function deserializeSteeringStateFromBase64(
-  base64: string
-): SerializedSteeringState {
+export function deserializeSteeringStateFromBase64(base64: string): SerializedSteeringState {
   try {
     // Restore standard base64 characters
     const standardBase64 = base64.replace(/-/g, '+').replace(/_/g, '/');
@@ -177,10 +153,7 @@ export function deserializeSteeringStateFromBase64(
     if (error instanceof SteeringDeserializationError) {
       throw error;
     }
-    throw new SteeringDeserializationError(
-      'Invalid base64 encoding',
-      'INVALID_JSON'
-    );
+    throw new SteeringDeserializationError('Invalid base64 encoding', 'INVALID_JSON');
   }
 }
 
@@ -200,14 +173,16 @@ function validateAndMergeConfig(config: unknown): SteeringConfig {
 
   return {
     method: c.method === 'SIMPLE_ADDITIVE' ? 'SIMPLE_ADDITIVE' : DEFAULT_STEERING_CONFIG.method,
-    maxFeatures: typeof c.maxFeatures === 'number' && c.maxFeatures > 0
-      ? Math.min(c.maxFeatures, 100)
-      : DEFAULT_STEERING_CONFIG.maxFeatures,
-    strengthMultiplier: typeof c.strengthMultiplier === 'number'
-      ? c.strengthMultiplier
-      : DEFAULT_STEERING_CONFIG.strengthMultiplier,
+    maxFeatures:
+      typeof c.maxFeatures === 'number' && c.maxFeatures > 0
+        ? Math.min(c.maxFeatures, 100)
+        : DEFAULT_STEERING_CONFIG.maxFeatures,
+    strengthMultiplier:
+      typeof c.strengthMultiplier === 'number'
+        ? c.strengthMultiplier
+        : DEFAULT_STEERING_CONFIG.strengthMultiplier,
     clampRange: isValidClampRange(c.clampRange)
-      ? c.clampRange as [number, number]
+      ? (c.clampRange as [number, number])
       : DEFAULT_STEERING_CONFIG.clampRange,
   };
 }
@@ -253,9 +228,10 @@ export function applySerializedState(
     const dial = newDials.get(id);
     if (dial) {
       // Clamp value based on polarity
-      const clampedValue = dial.polarity === 'bipolar'
-        ? Math.max(-1, Math.min(1, value))
-        : Math.max(0, Math.min(1, value));
+      const clampedValue =
+        dial.polarity === 'bipolar'
+          ? Math.max(-1, Math.min(1, value))
+          : Math.max(0, Math.min(1, value));
       newDials.set(id, { ...dial, value: clampedValue });
     }
   }
@@ -275,10 +251,7 @@ const STORAGE_KEY = 'horus-steering-state';
  * @param dials - Map of dial IDs to Dial objects
  * @param config - Current steering configuration
  */
-export function saveSteeringStateToStorage(
-  dials: Map<string, Dial>,
-  config: SteeringConfig
-): void {
+export function saveSteeringStateToStorage(dials: Map<string, Dial>, config: SteeringConfig): void {
   try {
     const json = serializeSteeringState(dials, config);
     localStorage.setItem(STORAGE_KEY, json);

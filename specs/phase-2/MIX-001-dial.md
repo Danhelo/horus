@@ -1,11 +1,11 @@
 # MIX-001: Dial Component
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | MIX-001 |
-| **Phase** | 2 - Interactive Explorer |
-| **Status** | Draft |
-| **Package** | `@horus/frontend` |
+| Field       | Value                    |
+| ----------- | ------------------------ |
+| **Spec ID** | MIX-001                  |
+| **Phase**   | 2 - Interactive Explorer |
+| **Status**  | Draft                    |
+| **Package** | `@horus/frontend`        |
 
 ## Summary
 
@@ -17,32 +17,33 @@ Implement the Dial component - a knob-style control for manipulating feature str
 
 ```typescript
 interface Dial {
-  id: string;                      // Unique identifier
-  label: string;                   // Display name ("Formality", "Abstractness")
-  value: number;                   // Current value (-1 to 1 for bipolar, 0 to 1 for unipolar)
-  defaultValue: number;            // Reset target
+  id: string; // Unique identifier
+  label: string; // Display name ("Formality", "Abstractness")
+  value: number; // Current value (-1 to 1 for bipolar, 0 to 1 for unipolar)
+  defaultValue: number; // Reset target
   polarity: 'bipolar' | 'unipolar';
-  trace: DialTrace;                // Features this dial affects
-  locked: boolean;                 // Prevent changes when true
+  trace: DialTrace; // Features this dial affects
+  locked: boolean; // Prevent changes when true
 }
 
 interface DialTrace {
   features: Array<{
-    nodeId: string;                // Graph node ID
-    weight: number;                // Contribution weight (0-1)
+    nodeId: string; // Graph node ID
+    weight: number; // Contribution weight (0-1)
   }>;
-  color?: string;                  // Trace highlight color
+  color?: string; // Trace highlight color
 }
 
 interface DialGroup {
   id: string;
-  label: string;                   // "Tone", "Style", "Content"
-  dials: string[];                 // Dial IDs in this group
+  label: string; // "Tone", "Style", "Content"
+  dials: string[]; // Dial IDs in this group
   collapsed: boolean;
 }
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Dial interface defined in `@horus/shared`
 - [ ] DialTrace links dials to graph nodes
 - [ ] Bipolar dials support negative values (e.g., formal <-> casual)
@@ -53,6 +54,7 @@ interface DialGroup {
 The dial should feel like a professional audio mixing board control.
 
 **Visual Requirements:**
+
 - Circular knob with rotation indicator
 - Gold accent color for active/hovered state
 - Value display (numeric or visual arc)
@@ -61,6 +63,7 @@ The dial should feel like a professional audio mixing board control.
 - Subtle glow effect proportional to activation level
 
 **Interaction Requirements:**
+
 - Drag vertically or rotationally to change value
 - Double-click to reset to default
 - Right-click context menu for lock/unlock/reset
@@ -70,7 +73,7 @@ The dial should feel like a professional audio mixing board control.
 ```typescript
 interface DialProps {
   dial: Dial;
-  size?: 'sm' | 'md' | 'lg';       // 32px, 48px, 64px diameter
+  size?: 'sm' | 'md' | 'lg'; // 32px, 48px, 64px diameter
   onChange: (value: number) => void;
   onHover: (hovered: boolean) => void;
   disabled?: boolean;
@@ -78,6 +81,7 @@ interface DialProps {
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Dial renders with gold-on-dark Egyptian aesthetic
 - [ ] Smooth drag interaction with visual feedback
 - [ ] Double-click resets to default value
@@ -94,12 +98,13 @@ When a dial is hovered or actively being adjusted, its trace lights up in the gr
 interface TraceHighlight {
   dialId: string;
   nodeIds: Set<string>;
-  weights: Map<string, number>;    // Node ID -> weight
+  weights: Map<string, number>; // Node ID -> weight
   active: boolean;
 }
 ```
 
 **Behavior:**
+
 - On dial hover: trace highlights with 50% intensity
 - On dial drag: trace highlights with 100% intensity
 - Highlight intensity per node proportional to feature weight
@@ -107,6 +112,7 @@ interface TraceHighlight {
 - Smooth fade in/out transitions (150ms)
 
 **Acceptance Criteria:**
+
 - [ ] Hovering dial highlights its trace in the graph
 - [ ] Node glow intensity proportional to feature weight
 - [ ] Trace deactivates smoothly when dial interaction ends
@@ -123,6 +129,7 @@ User drags dial
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Dial changes update Zustand store
 - [ ] Store changes trigger steering vector recalculation
 - [ ] Debounce dial changes (100ms) before triggering generation
@@ -139,6 +146,7 @@ interface MixerPanelProps {
 ```
 
 **Layout:**
+
 - Collapsible panel with drag handle
 - Groups are expandable sections
 - 2-4 dials per row depending on panel width
@@ -146,6 +154,7 @@ interface MixerPanelProps {
 - "Add dial" button at bottom
 
 **Acceptance Criteria:**
+
 - [ ] Panel can be collapsed/expanded
 - [ ] Groups organize dials into logical sections
 - [ ] Responsive layout adjusts dial grid
@@ -155,18 +164,19 @@ interface MixerPanelProps {
 
 Provide a curated set of default dials for common use cases:
 
-| Dial | Polarity | Description |
-|------|----------|-------------|
-| Formality | Bipolar | Casual <-> Formal |
-| Abstractness | Bipolar | Concrete <-> Abstract |
-| Emotional Valence | Bipolar | Negative <-> Positive |
-| Complexity | Unipolar | Simple -> Complex |
-| Creativity | Unipolar | Conventional -> Creative |
-| Technical | Unipolar | General -> Technical |
-| Brevity | Bipolar | Verbose <-> Concise |
-| Certainty | Bipolar | Uncertain <-> Confident |
+| Dial              | Polarity | Description              |
+| ----------------- | -------- | ------------------------ |
+| Formality         | Bipolar  | Casual <-> Formal        |
+| Abstractness      | Bipolar  | Concrete <-> Abstract    |
+| Emotional Valence | Bipolar  | Negative <-> Positive    |
+| Complexity        | Unipolar | Simple -> Complex        |
+| Creativity        | Unipolar | Conventional -> Creative |
+| Technical         | Unipolar | General -> Technical     |
+| Brevity           | Bipolar  | Verbose <-> Concise      |
+| Certainty         | Bipolar  | Uncertain <-> Confident  |
 
 **Acceptance Criteria:**
+
 - [ ] 8 default dials defined with feature mappings
 - [ ] Dials use Neuronpedia feature search to populate traces
 - [ ] Default dial set loads on first use
@@ -198,6 +208,6 @@ Provide a curated set of default dials for common use cases:
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes       |
+| ---------- | ------------- |
 | 2025-01-10 | Initial draft |

@@ -26,11 +26,7 @@ const activationsRoutes = new Hono()
     async (c) => {
       const { text, model, layers } = c.req.valid('json');
       // Service handles model/layer validation
-      const activations = await neuronpediaService.getActivations(
-        text,
-        model,
-        layers
-      );
+      const activations = await neuronpediaService.getActivations(text, model, layers);
       return c.json(activations);
     }
   );

@@ -36,9 +36,7 @@ setInterval(() => {
 /**
  * Get client key for rate limiting
  */
-function getClientKey(c: {
-  req: { header: (name: string) => string | undefined };
-}): string {
+function getClientKey(c: { req: { header: (name: string) => string | undefined } }): string {
   const forwarded = c.req.header('x-forwarded-for');
   if (forwarded) {
     return `gen:${forwarded.split(',')[0].trim()}`;
@@ -59,10 +57,7 @@ const generationRateLimit = createMiddleware(async (c, next) => {
     const resetAt = now + GENERATION_RATE_LIMIT.windowMs;
     generationRateLimitStore.set(key, { count: 1, resetAt });
     c.header('X-RateLimit-Limit', String(GENERATION_RATE_LIMIT.maxRequests));
-    c.header(
-      'X-RateLimit-Remaining',
-      String(GENERATION_RATE_LIMIT.maxRequests - 1)
-    );
+    c.header('X-RateLimit-Remaining', String(GENERATION_RATE_LIMIT.maxRequests - 1));
     c.header('X-RateLimit-Reset', String(Math.ceil(resetAt / 1000)));
     await next();
     return;
@@ -78,10 +73,7 @@ const generationRateLimit = createMiddleware(async (c, next) => {
   }
 
   c.header('X-RateLimit-Limit', String(GENERATION_RATE_LIMIT.maxRequests));
-  c.header(
-    'X-RateLimit-Remaining',
-    String(GENERATION_RATE_LIMIT.maxRequests - entry.count)
-  );
+  c.header('X-RateLimit-Remaining', String(GENERATION_RATE_LIMIT.maxRequests - entry.count));
   c.header('X-RateLimit-Reset', String(Math.ceil(entry.resetAt / 1000)));
 
   await next();
@@ -196,9 +188,7 @@ const generationRoutes = new Hono()
 
             // Choose output based on whether steering was applied
             const output =
-              steerFeatures.length > 0
-                ? response.steeredOutput.text
-                : response.defaultOutput.text;
+              steerFeatures.length > 0 ? response.steeredOutput.text : response.defaultOutput.text;
 
             // Tokenize response for streaming
             const tokens = tokenize(output);
@@ -239,23 +229,18 @@ const generationRoutes = new Hono()
         });
       } else {
         // Non-streaming response
-        try {
-          const response = await neuronpediaService.steer({
-            prompt: request.prompt,
-            features: steerFeatures,
-            temperature: request.options.temperature,
-            n_tokens: request.options.maxTokens,
-          });
+        const response = await neuronpediaService.steer({
+          prompt: request.prompt,
+          features: steerFeatures,
+          temperature: request.options.temperature,
+          n_tokens: request.options.maxTokens,
+        });
 
-          return c.json({
-            defaultText: response.defaultOutput.text,
-            steeredText: response.steeredOutput.text,
-            appliedFeatures: steerFeatures.length,
-          });
-        } catch (error) {
-          // Let the error handler deal with it
-          throw error;
-        }
+        return c.json({
+          defaultText: response.defaultOutput.text,
+          steeredText: response.steeredOutput.text,
+          appliedFeatures: steerFeatures.length,
+        });
       }
     }
   )

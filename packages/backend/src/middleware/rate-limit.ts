@@ -46,12 +46,7 @@ class RateLimiter {
     // Check if over limit
     if (entry.count > this.config.maxRequests) {
       const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
-      throw new AppError(
-        'Rate limit exceeded',
-        429,
-        'RATE_LIMITED',
-        retryAfter
-      );
+      throw new AppError('Rate limit exceeded', 429, 'RATE_LIMITED', retryAfter);
     }
 
     return {

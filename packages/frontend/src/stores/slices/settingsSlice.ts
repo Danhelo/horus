@@ -100,12 +100,10 @@ function getAllSettings(state: SettingsSlice): StoredSettings {
   };
 }
 
-export const createSettingsSlice: StateCreator<
-  SettingsSlice,
-  [],
-  [],
-  SettingsSlice
-> = (set, get) => ({
+export const createSettingsSlice: StateCreator<SettingsSlice, [], [], SettingsSlice> = (
+  set,
+  get
+) => ({
   // Initial values with defaults
   movementSpeed: DEFAULT_SETTINGS.movementSpeed,
   isPointerLocked: DEFAULT_SETTINGS.isPointerLocked,

@@ -3,13 +3,7 @@ import { useRef, useState, useCallback } from 'react';
 import type { Dial as DialData } from '@horus/shared';
 
 import { DialArc } from './DialArc';
-import {
-  useDial,
-  useDialKeyboard,
-  useDialWheel,
-  useDialReset,
-  type DialPolarity,
-} from './useDial';
+import { useDial, useDialKeyboard, useDialWheel, type DialPolarity } from './useDial';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -180,9 +174,7 @@ export function Dial(props: DialProps) {
   }, [onHover]);
 
   // Value range for aria
-  const { min, max } = polarity === 'bipolar'
-    ? { min: -1, max: 1 }
-    : { min: 0, max: 1 };
+  const { min, max } = polarity === 'bipolar' ? { min: -1, max: 1 } : { min: 0, max: 1 };
 
   // Compute CSS classes
   const containerClasses = [

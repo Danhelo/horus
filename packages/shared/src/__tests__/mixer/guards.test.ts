@@ -56,19 +56,23 @@ describe('isTraceFeature', () => {
 
 describe('isDialTrace', () => {
   it('validates correct dial trace', () => {
-    expect(isDialTrace({
-      features: [
-        { nodeId: 'gemma-2-2b:12:456', weight: 0.8 },
-        { nodeId: 'gemma-2-2b:12:789', weight: 0.6 },
-      ],
-    })).toBe(true);
+    expect(
+      isDialTrace({
+        features: [
+          { nodeId: 'gemma-2-2b:12:456', weight: 0.8 },
+          { nodeId: 'gemma-2-2b:12:789', weight: 0.6 },
+        ],
+      })
+    ).toBe(true);
   });
 
   it('validates with optional color', () => {
-    expect(isDialTrace({
-      features: [{ nodeId: 'test:0:0', weight: 0.5 }],
-      color: '#d4af37',
-    })).toBe(true);
+    expect(
+      isDialTrace({
+        features: [{ nodeId: 'test:0:0', weight: 0.5 }],
+        color: '#d4af37',
+      })
+    ).toBe(true);
   });
 
   it('validates empty features array', () => {
@@ -85,19 +89,23 @@ describe('isDialTrace', () => {
   });
 
   it('rejects invalid feature in array', () => {
-    expect(isDialTrace({
-      features: [
-        { nodeId: 'valid:0:0', weight: 0.5 },
-        { nodeId: '', weight: 0.5 }, // invalid
-      ],
-    })).toBe(false);
+    expect(
+      isDialTrace({
+        features: [
+          { nodeId: 'valid:0:0', weight: 0.5 },
+          { nodeId: '', weight: 0.5 }, // invalid
+        ],
+      })
+    ).toBe(false);
   });
 
   it('rejects invalid color type', () => {
-    expect(isDialTrace({
-      features: [],
-      color: 123,
-    })).toBe(false);
+    expect(
+      isDialTrace({
+        features: [],
+        color: 123,
+      })
+    ).toBe(false);
   });
 });
 
@@ -117,15 +125,15 @@ describe('isDial', () => {
   });
 
   it('validates with complex trace', () => {
-    expect(isDial({
-      ...validDial,
-      trace: {
-        features: [
-          { nodeId: 'gemma-2-2b:12:456', weight: 0.8 },
-        ],
-        color: '#ffd700',
-      },
-    })).toBe(true);
+    expect(
+      isDial({
+        ...validDial,
+        trace: {
+          features: [{ nodeId: 'gemma-2-2b:12:456', weight: 0.8 }],
+          color: '#ffd700',
+        },
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -211,12 +219,14 @@ describe('isTraceHighlight', () => {
   });
 
   it('validates with empty Set and Map', () => {
-    expect(isTraceHighlight({
-      dialId: 'test',
-      nodeIds: new Set(),
-      weights: new Map(),
-      active: false,
-    })).toBe(true);
+    expect(
+      isTraceHighlight({
+        dialId: 'test',
+        nodeIds: new Set(),
+        weights: new Map(),
+        active: false,
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {

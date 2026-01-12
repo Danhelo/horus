@@ -5,8 +5,9 @@
 **The magic of HORUS is not in reading or writing. It's in the seamless flow between them.**
 
 Most AI tools have modes:
-- *Analysis mode:* Paste text, get insights
-- *Generation mode:* Give prompt, get output
+
+- _Analysis mode:_ Paste text, get insights
+- _Generation mode:_ Give prompt, get output
 
 HORUS has no modes. There is only **flow**—a continuous loop where observation becomes intervention becomes observation.
 
@@ -22,7 +23,7 @@ You're curious. You drag the nostalgia node closer, amplifying it. The text on t
 
 You release. Now you want to see where this goes. You don't type a new prompt. You just... lean into the direction. Nudge another feature. Watch the text evolve.
 
-At some point you realize: you're not analyzing anymore. You're not generating anymore. You're *sculpting*. The text and the graph are one thing, and you're shaping it.
+At some point you realize: you're not analyzing anymore. You're not generating anymore. You're _sculpting_. The text and the graph are one thing, and you're shaping it.
 
 **That's flow.**
 
@@ -57,11 +58,13 @@ The text and graph are two views of the same thing. Change one, the other update
 Flow requires **low latency**. If you turn a dial and wait 2 seconds for the text to update, the spell breaks. You're back to "send command, wait for response."
 
 Targets:
+
 - **< 100ms** for graph highlighting updates
 - **< 300ms** for text generation to begin streaming
 - **< 500ms** for steering adjustments to be perceptible
 
 This is technically hard. Strategies:
+
 - Use smaller, faster models (Gemma-2-2B)
 - Speculative generation (start generating before user "confirms")
 - Partial updates (update what you can immediately, refine async)
@@ -91,15 +94,19 @@ HORUS should feel like playing an instrument, not operating a machine.
 Where does flow begin? Multiple valid entries:
 
 ### 1. **Start with text**
+
 Paste existing text. Graph illuminates. You enter flow through observation, then start steering.
 
 ### 2. **Start with prompt**
+
 Type a brief prompt. Model generates. Graph illuminates. You refine through steering rather than reprompting.
 
 ### 3. **Start with graph**
+
 Navigate to a region of ideaspace. Pin some features. Generate text that embodies them. Refine from there.
 
 ### 4. **Start with nothing**
+
 Random or default position. Just start exploring. See what emerges.
 
 All roads lead to flow. The entry point is a preference, not a mode.
@@ -129,6 +136,7 @@ Things that sustain it:
 How do we know if users are in flow?
 
 Behavioral signals:
+
 - Rapid succession of small adjustments (not long pauses)
 - Navigation and steering interleaved (not sequential)
 - Session length (flow extends sessions)
@@ -150,4 +158,4 @@ Design question for every decision: **Does this help flow or hinder it?**
 
 ---
 
-*The boundary dissolves. You are not using the tool. You are thinking with it. That's the goal.*
+_The boundary dissolves. You are not using the tool. You are thinking with it. That's the goal._

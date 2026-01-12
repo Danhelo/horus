@@ -3,18 +3,13 @@
  * @module loaders/graphLoader
  */
 import type { GraphData, GraphNode, GraphEdge, GraphMetadata, EdgeType } from '@horus/shared';
-import { graphJSONSchema, formatValidationErrors, type GraphJSONSchema } from './graphSchema';
+import { graphJSONSchema, type GraphJSONSchema } from './graphSchema';
 
 // ---------------------------------------------------------------------------
 // Error Types
 // ---------------------------------------------------------------------------
 
-export type GraphLoadErrorCode =
-  | 'NETWORK'
-  | 'PARSE'
-  | 'VALIDATION'
-  | 'EDGE_REF'
-  | 'CANCELLED';
+export type GraphLoadErrorCode = 'NETWORK' | 'PARSE' | 'VALIDATION' | 'EDGE_REF' | 'CANCELLED';
 
 /**
  * Custom error class for graph loading failures
@@ -38,7 +33,11 @@ export class GraphLoadError extends Error {
       const path = e.path.join('.');
       return path ? `${path}: ${e.message}` : e.message;
     });
-    return new GraphLoadError('Invalid graph data: schema validation failed', 'VALIDATION', details);
+    return new GraphLoadError(
+      'Invalid graph data: schema validation failed',
+      'VALIDATION',
+      details
+    );
   }
 
   static fromNetwork(originalError: Error, url: string): GraphLoadError {

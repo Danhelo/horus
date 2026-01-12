@@ -7,12 +7,7 @@
  */
 
 import type { StateCreator } from 'zustand';
-import type {
-  SteeringVector,
-  SteeringConfig,
-  DialConflict,
-  Dial,
-} from '@horus/shared';
+import type { SteeringVector, SteeringConfig, DialConflict, Dial } from '@horus/shared';
 import { DEFAULT_STEERING_CONFIG } from '@horus/shared';
 
 import { computeSteeringVector } from '../../utils/steeringComputation';
@@ -144,10 +139,7 @@ export function selectIsSteeringActive(state: SteeringSlice): boolean {
  */
 export function selectSteeringMagnitude(state: SteeringSlice): number {
   if (!state.vector) return 0;
-  return state.vector.features.reduce(
-    (sum, f) => sum + Math.abs(f.strength),
-    0
-  );
+  return state.vector.features.reduce((sum, f) => sum + Math.abs(f.strength), 0);
 }
 
 /**

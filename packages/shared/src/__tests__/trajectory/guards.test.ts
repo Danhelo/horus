@@ -48,17 +48,21 @@ describe('isTrajectoryPoint', () => {
   });
 
   it('validates with empty activations', () => {
-    expect(isTrajectoryPoint({
-      ...validPoint,
-      activations: new Map(),
-    })).toBe(true);
+    expect(
+      isTrajectoryPoint({
+        ...validPoint,
+        activations: new Map(),
+      })
+    ).toBe(true);
   });
 
   it('validates with optional timestamp', () => {
-    expect(isTrajectoryPoint({
-      ...validPoint,
-      timestamp: Date.now(),
-    })).toBe(true);
+    expect(
+      isTrajectoryPoint({
+        ...validPoint,
+        timestamp: Date.now(),
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -84,14 +88,18 @@ describe('isTrajectoryPoint', () => {
   });
 
   it('rejects Map with invalid entries', () => {
-    expect(isTrajectoryPoint({
-      ...validPoint,
-      activations: new Map([[123, 0.5]]),
-    })).toBe(false);
-    expect(isTrajectoryPoint({
-      ...validPoint,
-      activations: new Map([['key', 'value']]),
-    })).toBe(false);
+    expect(
+      isTrajectoryPoint({
+        ...validPoint,
+        activations: new Map([[123, 0.5]]),
+      })
+    ).toBe(false);
+    expect(
+      isTrajectoryPoint({
+        ...validPoint,
+        activations: new Map([['key', 'value']]),
+      })
+    ).toBe(false);
   });
 
   it('rejects invalid position', () => {
@@ -106,18 +114,22 @@ describe('isTrajectoryPoint', () => {
 
 describe('isTrajectoryMetadata', () => {
   it('validates correct metadata', () => {
-    expect(isTrajectoryMetadata({
-      modelId: 'gemma-2-2b',
-      createdAt: '2025-01-10T00:00:00Z',
-    })).toBe(true);
+    expect(
+      isTrajectoryMetadata({
+        modelId: 'gemma-2-2b',
+        createdAt: '2025-01-10T00:00:00Z',
+      })
+    ).toBe(true);
   });
 
   it('validates with optional label', () => {
-    expect(isTrajectoryMetadata({
-      modelId: 'gemma-2-2b',
-      createdAt: '2025-01-10T00:00:00Z',
-      label: 'Test trajectory',
-    })).toBe(true);
+    expect(
+      isTrajectoryMetadata({
+        modelId: 'gemma-2-2b',
+        createdAt: '2025-01-10T00:00:00Z',
+        label: 'Test trajectory',
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -126,18 +138,22 @@ describe('isTrajectoryMetadata', () => {
   });
 
   it('rejects empty modelId', () => {
-    expect(isTrajectoryMetadata({
-      modelId: '',
-      createdAt: '2025-01-10T00:00:00Z',
-    })).toBe(false);
+    expect(
+      isTrajectoryMetadata({
+        modelId: '',
+        createdAt: '2025-01-10T00:00:00Z',
+      })
+    ).toBe(false);
   });
 
   it('rejects non-string label', () => {
-    expect(isTrajectoryMetadata({
-      modelId: 'gemma-2-2b',
-      createdAt: '2025-01-10T00:00:00Z',
-      label: 123,
-    })).toBe(false);
+    expect(
+      isTrajectoryMetadata({
+        modelId: 'gemma-2-2b',
+        createdAt: '2025-01-10T00:00:00Z',
+        label: 123,
+      })
+    ).toBe(false);
   });
 });
 
@@ -165,10 +181,12 @@ describe('isTrajectory', () => {
   });
 
   it('validates with empty points', () => {
-    expect(isTrajectory({
-      ...validTrajectory,
-      points: [],
-    })).toBe(true);
+    expect(
+      isTrajectory({
+        ...validTrajectory,
+        points: [],
+      })
+    ).toBe(true);
   });
 
   it('rejects null and undefined', () => {
@@ -189,10 +207,12 @@ describe('isTrajectory', () => {
   });
 
   it('rejects invalid point in array', () => {
-    expect(isTrajectory({
-      ...validTrajectory,
-      points: [{ tokenIndex: -1, token: '', activations: new Map(), position: [0, 0, 0] }],
-    })).toBe(false);
+    expect(
+      isTrajectory({
+        ...validTrajectory,
+        points: [{ tokenIndex: -1, token: '', activations: new Map(), position: [0, 0, 0] }],
+      })
+    ).toBe(false);
   });
 
   it('rejects non-string color', () => {
@@ -206,45 +226,55 @@ describe('isTrajectory', () => {
 
 describe('isSerializedTrajectoryPoint', () => {
   it('validates correct serialized point', () => {
-    expect(isSerializedTrajectoryPoint({
-      tokenIndex: 0,
-      token: 'Hello',
-      activations: [['gemma-2-2b:12:456', 0.8]],
-      position: [1.0, 2.0, 3.0],
-    })).toBe(true);
+    expect(
+      isSerializedTrajectoryPoint({
+        tokenIndex: 0,
+        token: 'Hello',
+        activations: [['gemma-2-2b:12:456', 0.8]],
+        position: [1.0, 2.0, 3.0],
+      })
+    ).toBe(true);
   });
 
   it('validates empty activations array', () => {
-    expect(isSerializedTrajectoryPoint({
-      tokenIndex: 0,
-      token: 'Hello',
-      activations: [],
-      position: [0, 0, 0],
-    })).toBe(true);
+    expect(
+      isSerializedTrajectoryPoint({
+        tokenIndex: 0,
+        token: 'Hello',
+        activations: [],
+        position: [0, 0, 0],
+      })
+    ).toBe(true);
   });
 
   it('rejects non-array activations', () => {
-    expect(isSerializedTrajectoryPoint({
-      tokenIndex: 0,
-      token: 'Hello',
-      activations: new Map(),
-      position: [0, 0, 0],
-    })).toBe(false);
+    expect(
+      isSerializedTrajectoryPoint({
+        tokenIndex: 0,
+        token: 'Hello',
+        activations: new Map(),
+        position: [0, 0, 0],
+      })
+    ).toBe(false);
   });
 
   it('rejects invalid activation tuple', () => {
-    expect(isSerializedTrajectoryPoint({
-      tokenIndex: 0,
-      token: 'Hello',
-      activations: [['key']],
-      position: [0, 0, 0],
-    })).toBe(false);
-    expect(isSerializedTrajectoryPoint({
-      tokenIndex: 0,
-      token: 'Hello',
-      activations: [[123, 0.5]],
-      position: [0, 0, 0],
-    })).toBe(false);
+    expect(
+      isSerializedTrajectoryPoint({
+        tokenIndex: 0,
+        token: 'Hello',
+        activations: [['key']],
+        position: [0, 0, 0],
+      })
+    ).toBe(false);
+    expect(
+      isSerializedTrajectoryPoint({
+        tokenIndex: 0,
+        token: 'Hello',
+        activations: [[123, 0.5]],
+        position: [0, 0, 0],
+      })
+    ).toBe(false);
   });
 });
 

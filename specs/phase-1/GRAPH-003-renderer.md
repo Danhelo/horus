@@ -1,10 +1,10 @@
 # GRAPH-003: Graph Renderer
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | GRAPH-003 |
-| **Phase** | 1 - Static Viewer |
-| **Status** | Complete |
+| Field       | Value             |
+| ----------- | ----------------- |
+| **Spec ID** | GRAPH-003         |
+| **Phase**   | 1 - Static Viewer |
+| **Status**  | Complete          |
 | **Package** | `@horus/frontend` |
 
 ## Summary
@@ -37,6 +37,7 @@ function GraphCanvas() {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Canvas renders without errors
 - [x] Background is cosmic dark (#0a0a0f or similar)
 - [x] Performance stats visible in development mode
@@ -79,7 +80,8 @@ function NodeMesh() {
 ```
 
 **Acceptance Criteria:**
-- [x] Renders 50,000 nodes at 60fps on modern hardware *(verified via LOD geometry reduction)*
+
+- [x] Renders 50,000 nodes at 60fps on modern hardware _(verified via LOD geometry reduction)_
 - [x] Positions updated via `setMatrixAt`, not React state
 - [x] Colors updated via `instanceColor` attribute
 - [x] Uses refs and `getState()` in useFrame, never `setState`
@@ -92,11 +94,11 @@ Map activation values to colors using a gradient.
 
 ```typescript
 interface ColorMapping {
-  inactive: THREE.Color;      // Default state
+  inactive: THREE.Color; // Default state
   lowActivation: THREE.Color; // 0-0.3
   midActivation: THREE.Color; // 0.3-0.7
   highActivation: THREE.Color; // 0.7-1.0
-  selected: THREE.Color;       // User-selected nodes
+  selected: THREE.Color; // User-selected nodes
 }
 
 function activationToColor(value: number, isSelected: boolean): THREE.Color {
@@ -107,6 +109,7 @@ function activationToColor(value: number, isSelected: boolean): THREE.Color {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Inactive nodes are subtle gray/dark blue
 - [x] Activations map to gold/amber gradient (sacred gold aesthetic)
 - [x] Selected nodes have distinct highlight color (cyan)
@@ -147,6 +150,7 @@ function EdgeLines() {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Edges rendered as LineSegments (not individual Line objects)
 - [x] Edge positions use BufferGeometry with Float32Array
 - [x] Edges filtered by weight threshold (configurable via edgeWeightThreshold)
@@ -185,6 +189,7 @@ function NodeMeshLOD() {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Global LOD system with camera distance tracking (custom LODController - drei's Detailed doesn't work with InstancedMesh)
 - [x] Far distance: low-poly spheres (3 segments), edges hidden
 - [x] Medium distance: simple sphere geometry (6 segments)
@@ -227,6 +232,7 @@ function InteractiveNodes() {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Hover detection works on individual node instances (via instanceId)
 - [x] Click selects node and updates Zustand state
 - [x] Hovered node ID stored in app store (hoveredNodeId)
@@ -239,11 +245,12 @@ function InteractiveNodes() {
 Meet performance requirements for smooth flow state.
 
 **Acceptance Criteria:**
+
 - [x] 60fps with 50,000 nodes on M1 Mac / RTX 3060 equivalent (LOD reduces geometry at distance)
 - [x] < 100ms initial render after data load (benchmarks show ~81ms for full pipeline)
 - [x] < 16ms per frame (no dropped frames during navigation)
-- [ ] < 50MB GPU memory for 50k node graph *(needs runtime profiling)*
-- [ ] No memory leaks during extended sessions *(needs extended testing)*
+- [ ] < 50MB GPU memory for 50k node graph _(needs runtime profiling)_
+- [ ] No memory leaks during extended sessions _(needs extended testing)_
 
 ## Technical Notes
 
@@ -258,13 +265,13 @@ Meet performance requirements for smooth flow state.
 
 ```typescript
 const HORUS_COLORS = {
-  background: '#0a0a0f',      // Cosmic void
-  inactive: '#2a2a3a',        // Dormant nodes
-  lowActivation: '#8b6914',   // Dim gold
-  midActivation: '#d4a017',   // Sacred gold
-  highActivation: '#ffd700',  // Bright gold
-  selected: '#00ffff',        // Cyan highlight
-  edge: '#ffffff',            // White edges
+  background: '#0a0a0f', // Cosmic void
+  inactive: '#2a2a3a', // Dormant nodes
+  lowActivation: '#8b6914', // Dim gold
+  midActivation: '#d4a017', // Sacred gold
+  highActivation: '#ffd700', // Bright gold
+  selected: '#00ffff', // Cyan highlight
+  edge: '#ffffff', // White edges
 };
 ```
 
@@ -293,8 +300,8 @@ packages/frontend/src/components/graph/
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
-| 2025-01-10 | Initial draft |
-| 2025-01-10 | Implementation: Canvas setup, NodeMesh, EdgeLines, colors.ts, interactions |
+| Date       | Changes                                                                            |
+| ---------- | ---------------------------------------------------------------------------------- |
+| 2025-01-10 | Initial draft                                                                      |
+| 2025-01-10 | Implementation: Canvas setup, NodeMesh, EdgeLines, colors.ts, interactions         |
 | 2026-01-10 | Implementation: LOD system with LODController, geometry switching, edge visibility |

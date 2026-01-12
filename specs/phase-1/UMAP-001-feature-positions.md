@@ -1,11 +1,11 @@
 # UMAP-001: Feature Position Pipeline
 
-| Field | Value |
-|-------|-------|
-| **Spec ID** | UMAP-001 |
-| **Phase** | 1 - Static Viewer (CRITICAL BLOCKER) |
-| **Status** | Complete |
-| **Package** | `@horus/backend` + Python scripts |
+| Field       | Value                                |
+| ----------- | ------------------------------------ |
+| **Spec ID** | UMAP-001                             |
+| **Phase**   | 1 - Static Viewer (CRITICAL BLOCKER) |
+| **Status**  | Complete                             |
+| **Package** | `@horus/backend` + Python scripts    |
 
 ## Summary
 
@@ -26,6 +26,7 @@ Compute 3D UMAP positions for SAE features using decoder vectors. This is the fo
 Download decoder vectors from HuggingFace for target model.
 
 **Source**: `google/gemma-scope-2b-pt-res`
+
 - 26 layers (0-25)
 - 16,384 features per layer (16k SAE)
 - 2,304 dimensions per decoder vector
@@ -40,6 +41,7 @@ layer_12/width_16k/average_l0_82/
 ```
 
 **Acceptance Criteria:**
+
 - [x] Script downloads SAE weights for specified layer(s)
 - [x] Extracts decoder matrix `W_dec` (16384 × 2304)
 - [x] L2-normalizes decoder vectors before UMAP
@@ -75,6 +77,7 @@ positions_3d = umap_model.fit_transform(decoder_vectors)
 | random_state | 42 | Reproducible results |
 
 **Acceptance Criteria:**
+
 - [x] Computes 3D positions for 16,384 features in < 2 minutes (RAPIDS GPU) or < 10 minutes (CPU)
 - [x] Positions are normalized to reasonable range (e.g., -50 to +50)
 - [x] Semantic clusters emerge (visual inspection)
@@ -105,6 +108,7 @@ for i in range(num_features):
 ```
 
 **Acceptance Criteria:**
+
 - [x] Top-K neighbors computed for each feature
 - [x] Edges filtered by minimum similarity threshold (0.25)
 - [x] Bidirectional edges deduplicated (a→b = b→a)
@@ -119,7 +123,7 @@ interface PositionOutput {
   metadata: {
     modelId: string;
     layer: number;
-    sourceId: string;           // e.g., "12-gemmascope-res-16k"
+    sourceId: string; // e.g., "12-gemmascope-res-16k"
     featureCount: number;
     edgeCount: number;
     umapParams: {
@@ -128,11 +132,11 @@ interface PositionOutput {
       metric: string;
       seed: number;
     };
-    computedAt: string;         // ISO timestamp
-    version: string;            // Pipeline version
+    computedAt: string; // ISO timestamp
+    version: string; // Pipeline version
   };
   nodes: Array<{
-    id: string;                 // "gemma-2-2b:12:{index}"
+    id: string; // "gemma-2-2b:12:{index}"
     featureId: { modelId: string; layer: number; index: number };
     position: [number, number, number];
     // Labels populated later from Neuronpedia explanations
@@ -148,6 +152,7 @@ interface PositionOutput {
 ```
 
 **Acceptance Criteria:**
+
 - [x] Output validates against GraphJSONSchema (Zod)
 - [x] File size reasonable (~500KB gzipped, 5.75MB uncompressed for 16k features)
 - [x] Can be loaded by existing graphLoader
@@ -159,17 +164,18 @@ Cache computed positions in SQLite for instant retrieval.
 ```typescript
 // db/schema/positions.ts
 export const featurePositions = sqliteTable('feature_positions', {
-  id: text('id').primaryKey(),         // "gemma-2-2b:12-gemmascope-res-16k"
+  id: text('id').primaryKey(), // "gemma-2-2b:12-gemmascope-res-16k"
   modelId: text('model_id').notNull(),
   sourceId: text('source_id').notNull(),
   layer: integer('layer').notNull(),
-  positions: blob('positions'),         // Float32Array as binary
+  positions: blob('positions'), // Float32Array as binary
   metadata: text('metadata', { mode: 'json' }),
   computedAt: integer('computed_at', { mode: 'timestamp' }),
 });
 ```
 
 **API Endpoint:**
+
 ```typescript
 GET /api/positions/:modelId/:sourceId
 // Returns gzipped Float32Array + metadata
@@ -177,6 +183,7 @@ GET /api/positions/:modelId/:sourceId
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Positions stored efficiently (binary blob, not JSON) - **DEFERRED: using static JSON files**
 - [ ] API returns gzipped response - **DEFERRED: using static files**
 - [ ] Cache headers set for long-term caching - **DEFERRED**
@@ -199,12 +206,13 @@ const enrichNode = async (node) => {
   return {
     ...node,
     label: feature.explanations?.[0]?.description || `Feature ${node.featureId.index}`,
-    category: inferCategory(feature),  // From top tokens/logits
+    category: inferCategory(feature), // From top tokens/logits
   };
 };
 ```
 
 **Acceptance Criteria:**
+
 - [x] Labels fetched from Neuronpedia (cached)
 - [x] Fallback to "Feature {index}" if no explanation
 - [ ] Category inferred from feature characteristics - **DEFERRED**
@@ -223,24 +231,25 @@ huggingface_hub>=0.20.0
 ```
 
 For GPU acceleration (10-100x faster):
+
 ```
 cuml>=24.02  # RAPIDS
 ```
 
 ### Computation Time Estimates
 
-| Hardware | 16k features | 65k features |
-|----------|--------------|--------------|
-| CPU (M1) | ~8 min | ~45 min |
-| CPU (x86) | ~15 min | ~90 min |
-| GPU (RAPIDS) | ~30 sec | ~3 min |
+| Hardware     | 16k features | 65k features |
+| ------------ | ------------ | ------------ |
+| CPU (M1)     | ~8 min       | ~45 min      |
+| CPU (x86)    | ~15 min      | ~90 min      |
+| GPU (RAPIDS) | ~30 sec      | ~3 min       |
 
 ### Storage Estimates
 
-| Layer Count | File Size (gzip) | Memory |
-|-------------|------------------|--------|
-| 1 layer | ~2 MB | ~200 KB positions |
-| 26 layers | ~50 MB | ~5 MB positions |
+| Layer Count | File Size (gzip) | Memory            |
+| ----------- | ---------------- | ----------------- |
+| 1 layer     | ~2 MB            | ~200 KB positions |
+| 26 layers   | ~50 MB           | ~5 MB positions   |
 
 ### Pipeline Script Location
 
@@ -268,14 +277,15 @@ horus/
 
 ## Changelog
 
-| Date | Changes |
-|------|---------|
+| Date       | Changes                                                                |
+| ---------- | ---------------------------------------------------------------------- |
 | 2025-01-11 | **COMPLETE**: Pipeline implemented, layer 12 computed with 1000 labels |
-| 2025-01-10 | Initial draft with filler data workaround |
+| 2025-01-10 | Initial draft with filler data workaround                              |
 
 ## Implementation Notes
 
 **Actual Results (Layer 12):**
+
 - 16,384 nodes
 - 12,599 edges (k=25, threshold=0.25)
 - 1,000 labels from Neuronpedia
@@ -285,6 +295,7 @@ horus/
 **Pipeline Location:** `scripts/compute_positions/`
 
 **Key Files:**
+
 - `download_sae.py` - HuggingFace weight download
 - `compute_umap.py` - UMAP + edge computation
 - `fetch_labels.py` - Neuronpedia API labels

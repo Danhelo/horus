@@ -28,7 +28,9 @@
 ## Core Dependencies
 
 ### Neuronpedia
+
 The backbone. Provides:
+
 - **SAE feature data:** 50M+ features across multiple models
 - **Activation API:** Run text through model, get feature activations
 - **Steering API:** Clamp/boost features, generate steered output
@@ -38,7 +40,9 @@ The backbone. Provides:
 Neuronpedia is open source and has a public API. We can self-host for performance if needed.
 
 ### Target Model: Gemma-2-2B-it
+
 Why Gemma-2-2B:
+
 - Best SAE coverage on Neuronpedia
 - Small enough for reasonable latency
 - Instruction-tuned for good generation
@@ -53,6 +57,7 @@ Fallback: Llama-3.2-1B (even smaller, if latency is critical)
 ### 1. Real-Time Activation Projection
 
 **The problem:** Every text change needs to:
+
 1. Run inference through the model
 2. Extract activations at target layer(s)
 3. Project through SAE encoder
@@ -61,6 +66,7 @@ Fallback: Llama-3.2-1B (even smaller, if latency is critical)
 This is expensive. Naive implementation = seconds of latency.
 
 **Solutions:**
+
 - **Debounce:** Don't recompute on every keystroke. Wait for pause.
 - **Incremental:** Only recompute for changed tokens (if model supports KV caching)
 - **Approximate:** Use smaller proxy model for fast feedback, full model for final
@@ -74,6 +80,7 @@ This is expensive. Naive implementation = seconds of latency.
 **The problem:** Tens of thousands of nodes + edges. Can't render all of them.
 
 **Solutions:**
+
 - **Frustum culling:** Only render what's in view
 - **LOD (Level of Detail):** Far nodes = simple shapes, near nodes = full detail
 - **Clustering:** At zoom-out levels, show cluster centroids not individual nodes
@@ -87,6 +94,7 @@ This is expensive. Naive implementation = seconds of latency.
 **The problem:** Steering requires inference with modified activations. This is as expensive as generation.
 
 **Solutions:**
+
 - **Speculative execution:** Pre-compute likely steering outcomes
 - **Quantized models:** Use INT4/INT8 quantization for faster inference
 - **Streaming generation:** Show tokens as they generate, don't wait for full completion
@@ -99,6 +107,7 @@ This is expensive. Naive implementation = seconds of latency.
 **The problem:** When user zooms into a node, we need to compute/retrieve sub-features. This can't all be pre-computed.
 
 **Solutions:**
+
 - **Caching:** Once computed, cache hierarchy results
 - **LLM-assisted grouping:** Fast LLM call to suggest groupings
 - **Pre-compute common zooms:** Top-level hierarchy can be pre-computed
@@ -111,6 +120,7 @@ This is expensive. Naive implementation = seconds of latency.
 ## Data Architecture
 
 ### Feature Data (Static, Pre-loaded)
+
 ```javascript
 {
   features: [
@@ -131,6 +141,7 @@ This is expensive. Naive implementation = seconds of latency.
 ```
 
 ### Session State (Dynamic)
+
 ```javascript
 {
   text: "The current text being worked on...",
@@ -150,6 +161,7 @@ This is expensive. Naive implementation = seconds of latency.
 ```
 
 ### Derived State
+
 ```javascript
 {
   activeNodes: Set([...]),  // nodes to highlight
@@ -166,6 +178,7 @@ This is expensive. Naive implementation = seconds of latency.
 ### Neuronpedia Calls
 
 **Get activations for text:**
+
 ```
 POST /api/activations
 { model: "gemma-2-2b", text: "...", layers: [12, 13, 14] }
@@ -173,6 +186,7 @@ POST /api/activations
 ```
 
 **Generate with steering:**
+
 ```
 POST /api/generate
 {
@@ -185,6 +199,7 @@ POST /api/generate
 ```
 
 **Get feature info:**
+
 ```
 GET /api/features/{feature_id}
 → { label, description, top_activations, related_features, ... }
@@ -193,6 +208,7 @@ GET /api/features/{feature_id}
 ### Internal API (if we add a backend)
 
 **Save session:**
+
 ```
 POST /api/sessions
 { user_id, state }
@@ -200,6 +216,7 @@ POST /api/sessions
 ```
 
 **Share artifact:**
+
 ```
 POST /api/artifacts
 { type: "fingerprint" | "trajectory" | "diff", data, visibility: "public" | "unlisted" }
@@ -211,9 +228,11 @@ POST /api/artifacts
 ## Frontend Architecture
 
 ### Three.js / React Three Fiber
+
 The 3D graph is the core UI.
 
 Components:
+
 - `<GraphCanvas />` - main Three.js canvas
 - `<NodeMesh />` - instanced mesh for all nodes
 - `<EdgeLines />` - line geometry for edges
@@ -221,20 +240,25 @@ Components:
 - `<CameraController />` - orbit, fly, zoom controls
 
 ### Mixer Panel
+
 React components, could use a UI library (Radix, shadcn).
 
 Components:
+
 - `<Dial />` - individual dial with drag interaction
 - `<DialGroup />` - collection of related dials
 - `<MixerPanel />` - full mixer UI
 
 ### Text Panel
+
 - `<TextEditor />` - contenteditable or textarea with highlighting
 - `<Spectrogram />` - canvas-based spectrogram view
 - `<Timeline />` - scrubber for trajectory
 
 ### State Management
+
 Zustand or Jotai for lightweight reactive state. Need to handle:
+
 - Frequent updates (activations changing on keystroke)
 - Computed derivations (visible nodes, dial traces)
 - Undo/redo history (snapshots)
@@ -243,38 +267,42 @@ Zustand or Jotai for lightweight reactive state. Need to handle:
 
 ## Performance Budget
 
-| Operation | Target Latency |
-|-----------|----------------|
-| Graph render (60fps) | < 16ms |
-| Text → activation | < 300ms |
-| Dial → text update | < 500ms |
-| Zoom → hierarchy load | < 200ms |
-| Navigation | < 16ms (no network) |
-| Export fingerprint | < 1s |
-| Export trajectory GIF | < 5s |
+| Operation             | Target Latency      |
+| --------------------- | ------------------- |
+| Graph render (60fps)  | < 16ms              |
+| Text → activation     | < 300ms             |
+| Dial → text update    | < 500ms             |
+| Zoom → hierarchy load | < 200ms             |
+| Navigation            | < 16ms (no network) |
+| Export fingerprint    | < 1s                |
+| Export trajectory GIF | < 5s                |
 
 ---
 
 ## Phased Build
 
 ### Phase 1: Static Viewer
+
 - Load pre-computed graph
 - Basic navigation (orbit, zoom)
 - Paste text, show activation highlights
 - No steering, no generation
 
 ### Phase 2: Interactive Explorer
+
 - Dial controls (pre-defined dials)
 - Steering via Neuronpedia API
 - Text generation with steering
 - Spectrogram view
 
 ### Phase 3: Dynamic Hierarchy
+
 - LLM-assisted zoom/hierarchy
 - Semantic queries ("take me to...")
 - Custom dial creation
 
 ### Phase 4: Social Features
+
 - Save/share artifacts
 - Gallery
 - Profiles
@@ -283,13 +311,13 @@ Zustand or Jotai for lightweight reactive state. Need to handle:
 
 ## Risks & Mitigations
 
-| Risk | Mitigation |
-|------|------------|
-| Neuronpedia API rate limits | Self-host Neuronpedia, cache aggressively |
-| Latency kills flow | Aggressive optimization, speculative execution, manage expectations |
-| Graph too complex to navigate | Strong defaults, guided onboarding, presets |
-| Feature labels are meaningless | Curate high-quality labels, let users contribute |
-| WebGL compatibility issues | Fallback 2D view, progressive enhancement |
+| Risk                           | Mitigation                                                          |
+| ------------------------------ | ------------------------------------------------------------------- |
+| Neuronpedia API rate limits    | Self-host Neuronpedia, cache aggressively                           |
+| Latency kills flow             | Aggressive optimization, speculative execution, manage expectations |
+| Graph too complex to navigate  | Strong defaults, guided onboarding, presets                         |
+| Feature labels are meaningless | Curate high-quality labels, let users contribute                    |
+| WebGL compatibility issues     | Fallback 2D view, progressive enhancement                           |
 
 ---
 
@@ -307,4 +335,4 @@ Zustand or Jotai for lightweight reactive state. Need to handle:
 
 ---
 
-*The infrastructure is ready. Neuronpedia + open models + WebGL. We just need to build the instrument.*
+_The infrastructure is ready. Neuronpedia + open models + WebGL. We just need to build the instrument._

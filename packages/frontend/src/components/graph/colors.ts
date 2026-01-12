@@ -10,15 +10,15 @@ import * as THREE from 'three';
 // ---------------------------------------------------------------------------
 
 export const HORUS_COLORS = {
-  background: '#0a0a0f',      // Cosmic void
-  inactive: '#2a2a3a',        // Dormant nodes
-  lowActivation: '#8b6914',   // Dim gold
-  midActivation: '#d4a017',   // Sacred gold
-  highActivation: '#ffd700',  // Bright gold
-  selected: '#00ffff',        // Cyan highlight
-  hovered: '#ff6b6b',         // Warm highlight for hover
-  edge: '#ffffff',            // White edges
-  edgeActive: '#ffd700',      // Gold for active edges
+  background: '#0a0a0f', // Cosmic void
+  inactive: '#2a2a3a', // Dormant nodes
+  lowActivation: '#8b6914', // Dim gold
+  midActivation: '#d4a017', // Sacred gold
+  highActivation: '#ffd700', // Bright gold
+  selected: '#00ffff', // Cyan highlight
+  hovered: '#ff6b6b', // Warm highlight for hover
+  edge: '#ffffff', // White edges
+  edgeActive: '#ffd700', // Gold for active edges
 } as const;
 
 // Pre-computed THREE.Color instances for performance

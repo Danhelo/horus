@@ -5,7 +5,7 @@
  * which can lead to cancellation or unpredictable behavior.
  */
 
-import type { Dial, DialConflict, CONFLICT_THRESHOLDS } from '@horus/shared';
+import type { Dial, DialConflict } from '@horus/shared';
 import { CONFLICT_THRESHOLDS as THRESHOLDS } from '@horus/shared';
 
 /**
@@ -169,10 +169,7 @@ function calculateSeverity(
  * @param dialB - Second dial
  * @returns Conflict info if they conflict, null otherwise
  */
-export function checkDialPairConflict(
-  dialA: Dial,
-  dialB: Dial
-): DialConflict | null {
+export function checkDialPairConflict(dialA: Dial, dialB: Dial): DialConflict | null {
   const dials = new Map<string, Dial>([
     [dialA.id, dialA],
     [dialB.id, dialB],
@@ -185,9 +182,7 @@ export function checkDialPairConflict(
 /**
  * Gets all features affected by a set of dials (for debugging/visualization)
  */
-export function getAffectedFeatures(
-  dials: Map<string, Dial>
-): Map<string, number> {
+export function getAffectedFeatures(dials: Map<string, Dial>): Map<string, number> {
   const features = new Map<string, number>();
 
   for (const dial of dials.values()) {
@@ -195,10 +190,7 @@ export function getAffectedFeatures(
 
     for (const traceFeature of dial.trace.features) {
       const current = features.get(traceFeature.nodeId) ?? 0;
-      features.set(
-        traceFeature.nodeId,
-        current + dial.value * traceFeature.weight
-      );
+      features.set(traceFeature.nodeId, current + dial.value * traceFeature.weight);
     }
   }
 
@@ -215,7 +207,5 @@ export function filterConflictsBySeverity(
   const severityOrder = { low: 0, medium: 1, high: 2 };
   const minOrder = severityOrder[minSeverity];
 
-  return conflicts.filter(
-    (c) => severityOrder[c.severity] >= minOrder
-  );
+  return conflicts.filter((c) => severityOrder[c.severity] >= minOrder);
 }
