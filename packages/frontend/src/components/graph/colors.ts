@@ -11,7 +11,7 @@ import * as THREE from 'three';
 
 export const HORUS_COLORS = {
   background: '#0a0a0f',      // Cosmic void
-  inactive: '#2a2a3a',        // Dormant nodes
+  inactive: '#12121a',        // Dormant nodes (very dark)
   lowActivation: '#8b6914',   // Dim gold
   midActivation: '#d4a017',   // Sacred gold
   highActivation: '#ffd700',  // Bright gold
@@ -19,6 +19,9 @@ export const HORUS_COLORS = {
   hovered: '#ff6b6b',         // Warm highlight for hover
   edge: '#ffffff',            // White edges
   edgeActive: '#ffd700',      // Gold for active edges
+  // Vicinity highlighting (golden ripple)
+  vicinityDepth1: '#ffd700',  // Bright gold for direct neighbors
+  vicinityDepth2: '#d4af37',  // Dim gold for neighbors of neighbors
 } as const;
 
 // Pre-computed THREE.Color instances for performance
@@ -29,6 +32,14 @@ export const COLORS = {
   highActivation: new THREE.Color(HORUS_COLORS.highActivation),
   selected: new THREE.Color(HORUS_COLORS.selected),
   hovered: new THREE.Color(HORUS_COLORS.hovered),
+  vicinityDepth1: new THREE.Color(HORUS_COLORS.vicinityDepth1),
+  vicinityDepth2: new THREE.Color(HORUS_COLORS.vicinityDepth2),
+} as const;
+
+// Vicinity intensity multipliers (how bright the golden ripple is at each depth)
+const VICINITY_INTENSITY = {
+  1: 0.8,  // Depth 1: 80% intensity
+  2: 0.4,  // Depth 2: 40% intensity
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -43,13 +54,15 @@ export const COLORS = {
  * @param isSelected - Whether this node is currently selected
  * @param isHovered - Whether this node is currently hovered
  * @param tempColor - Pre-allocated Color object to write result into
+ * @param vicinityDepth - Optional vicinity depth (1 = direct neighbor, 2 = neighbor of neighbor)
  * @returns The tempColor object (for chaining)
  */
 export function activationToColor(
   value: number,
   isSelected: boolean,
   isHovered: boolean,
-  tempColor: THREE.Color
+  tempColor: THREE.Color,
+  vicinityDepth?: number
 ): THREE.Color {
   // Selection takes highest priority
   if (isSelected) {
@@ -59,6 +72,16 @@ export function activationToColor(
   // Hover takes second priority
   if (isHovered) {
     return tempColor.copy(COLORS.hovered);
+  }
+
+  // Vicinity highlighting (golden ripple)
+  if (vicinityDepth === 1) {
+    // Bright gold for direct neighbors
+    return tempColor.copy(COLORS.vicinityDepth1).multiplyScalar(VICINITY_INTENSITY[1]);
+  }
+  if (vicinityDepth === 2) {
+    // Dim gold for neighbors of neighbors
+    return tempColor.copy(COLORS.vicinityDepth2).multiplyScalar(VICINITY_INTENSITY[2]);
   }
 
   // Inactive nodes
@@ -112,13 +135,15 @@ export function edgeWeightToOpacity(weight: number): number {
  * @param nodeIndexMap - Map of nodeId -> array index
  * @param selectedIds - Set of selected node IDs
  * @param hoveredId - Currently hovered node ID (or null)
+ * @param vicinityMap - Optional map of nodeId -> depth for vicinity highlighting
  */
 export function updateNodeColors(
   colors: Float32Array,
   activations: Map<string, number>,
   nodeIndexMap: Map<string, number>,
   selectedIds: Set<string>,
-  hoveredId: string | null
+  hoveredId: string | null,
+  vicinityMap?: Map<string, number>
 ): void {
   const tempColor = new THREE.Color();
 
@@ -126,8 +151,9 @@ export function updateNodeColors(
     const activation = activations.get(nodeId) ?? 0;
     const isSelected = selectedIds.has(nodeId);
     const isHovered = nodeId === hoveredId;
+    const vicinityDepth = vicinityMap?.get(nodeId);
 
-    activationToColor(activation, isSelected, isHovered, tempColor);
+    activationToColor(activation, isSelected, isHovered, tempColor, vicinityDepth);
 
     const offset = index * 3;
     colors[offset] = tempColor.r;

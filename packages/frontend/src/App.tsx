@@ -6,8 +6,15 @@ import { GraphHUD } from './components/hud';
 import { SettingsBar } from './components/settings';
 import { ModelSelector } from './components/ModelSelector';
 import { useAppStore } from './stores';
+import { useVicinityLabels } from './hooks';
+import { useAudioMapping } from './audio';
 
 export function App() {
+  // Load labels for vicinity nodes when selection changes
+  useVicinityLabels();
+
+  // Map activations to sound
+  useAudioMapping();
   const loadGraphFromURL = useAppStore((state) => state.loadGraphFromURL);
   const isLoading = useAppStore((state) => state.isLoading);
   const loadError = useAppStore((state) => state.loadError);

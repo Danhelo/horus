@@ -4,6 +4,7 @@ import { shallow } from 'zustand/shallow';
 import type { StateCreator } from 'zustand';
 
 import type { GraphNode, GraphEdge, GraphData } from '@horus/shared';
+import { buildAdjacencyList } from '../utils/vicinityGraph';
 
 import { createGraphLoadingSlice } from './slices/graphLoadingSlice';
 import type { GraphLoadingSlice } from './slices/graphLoadingSlice';
@@ -28,6 +29,8 @@ import type { ModelSlice } from './slices/modelSlice';
 interface GraphSlice {
   nodes: Map<string, GraphNode>;
   edges: Map<string, GraphEdge>;
+  // Cached adjacency list for O(1) neighbor lookup
+  adjacencyList: Map<string, Set<string>>;
   setGraphData: (data: GraphData) => void;
   clearGraph: () => void;
 }
@@ -36,10 +39,14 @@ interface UISlice {
   selectedNodeIds: Set<string>;
   hoveredNodeId: string | null;
   panelsOpen: Record<string, boolean>;
+  // Vicinity highlighting: nodeId -> depth (1 = direct neighbor, 2 = neighbor of neighbor)
+  vicinityNodeIds: Map<string, number>;
   selectNodes: (ids: string[]) => void;
   clearSelection: () => void;
   setHoveredNode: (id: string | null) => void;
   togglePanel: (panelId: string) => void;
+  setVicinity: (vicinity: Map<string, number>) => void;
+  clearVicinity: () => void;
 }
 
 interface CameraSlice {
@@ -83,15 +90,19 @@ export type AppStore = GraphSlice &
 const createGraphSlice: StateCreator<AppStore, [], [], GraphSlice> = (set) => ({
   nodes: new Map(),
   edges: new Map(),
-  setGraphData: (data) =>
+  adjacencyList: new Map(),
+  setGraphData: (data) => {
     set({
       nodes: data.nodes,
       edges: data.edges,
-    }),
+      adjacencyList: buildAdjacencyList(data.edges),
+    });
+  },
   clearGraph: () =>
     set({
       nodes: new Map(),
       edges: new Map(),
+      adjacencyList: new Map(),
     }),
 });
 
@@ -103,6 +114,7 @@ const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set) => ({
     details: false,
     trajectory: false,
   },
+  vicinityNodeIds: new Map(),
   selectNodes: (ids) =>
     set({
       selectedNodeIds: new Set(ids),
@@ -110,6 +122,7 @@ const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set) => ({
   clearSelection: () =>
     set({
       selectedNodeIds: new Set(),
+      vicinityNodeIds: new Map(),
     }),
   setHoveredNode: (id) =>
     set({
@@ -122,6 +135,14 @@ const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set) => ({
         [panelId]: !state.panelsOpen[panelId],
       },
     })),
+  setVicinity: (vicinity) =>
+    set({
+      vicinityNodeIds: vicinity,
+    }),
+  clearVicinity: () =>
+    set({
+      vicinityNodeIds: new Map(),
+    }),
 });
 
 const createCameraSlice: StateCreator<AppStore, [], [], CameraSlice> = (set) => ({

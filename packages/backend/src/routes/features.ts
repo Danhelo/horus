@@ -100,6 +100,70 @@ const featuresRoutes = new Hono()
       );
       return c.json({ results, count: results.length });
     }
+  )
+
+  /**
+   * POST /api/features/batch
+   * Fetch labels for multiple features at once (for vicinity loading)
+   * Returns only labels to minimize payload size
+   */
+  .post(
+    '/batch',
+    proxyRateLimit,
+    zValidator(
+      'json',
+      z.object({
+        features: z
+          .array(
+            z.object({
+              modelId: z.string(),
+              layer: z.number().int().min(0),
+              index: z.number().int().min(0),
+            })
+          )
+          .min(1)
+          .max(50), // Max 50 features per batch to respect rate limits
+      })
+    ),
+    async (c) => {
+      const { features } = c.req.valid('json');
+
+      // Validate all features
+      for (const f of features) {
+        if (!isModelSupported(f.modelId)) {
+          throw new AppError(`Unsupported model: ${f.modelId}`, 400, 'BAD_REQUEST');
+        }
+        if (!isValidLayer(f.modelId, f.layer)) {
+          throw new AppError(`Invalid layer ${f.layer} for model ${f.modelId}`, 400, 'BAD_REQUEST');
+        }
+        if (!isValidFeatureIndex(f.modelId, f.index)) {
+          throw new AppError(`Invalid index ${f.index} for model ${f.modelId}`, 400, 'BAD_REQUEST');
+        }
+      }
+
+      // Fetch all features in parallel (they each hit cache first)
+      const results = await Promise.allSettled(
+        features.map((f) => neuronpediaService.getFeature(f.modelId, f.layer, f.index))
+      );
+
+      // Build response with only labels (minimal payload)
+      const labels: Array<{
+        modelId: string;
+        layer: number;
+        index: number;
+        label: string | null;
+      }> = features.map((f, i) => {
+        const result = results[i];
+        return {
+          modelId: f.modelId,
+          layer: f.layer,
+          index: f.index,
+          label: result.status === 'fulfilled' ? (result.value.label ?? null) : null,
+        };
+      });
+
+      return c.json({ labels });
+    }
   );
 
 export { featuresRoutes };

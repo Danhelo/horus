@@ -567,8 +567,11 @@ export function CameraController() {
       animationProgress = 0;
       animationDuration = duration;
       isAnimating = true;
+
+      // Kick off the animation loop (required for frameloop="demand")
+      invalidate();
     },
-    [camera]
+    [camera, invalidate]
   );
 
   // focusOnNode: calculate optimal camera position and animate to it
@@ -594,9 +597,19 @@ export function CameraController() {
 
       const targetLookAt: [number, number, number] = [nodeX, nodeY, nodeZ];
 
-      flyTo(cameraPosition, targetLookAt);
+      // Calculate distance-based duration for smoother long-range transitions
+      const currentPos = camera.position;
+      const distance = Math.sqrt(
+        (cameraPosition[0] - currentPos.x) ** 2 +
+        (cameraPosition[1] - currentPos.y) ** 2 +
+        (cameraPosition[2] - currentPos.z) ** 2
+      );
+      // Base duration 800ms + 30ms per unit distance, capped at 2500ms
+      const duration = Math.min(800 + distance * 30, 2500);
+
+      flyTo(cameraPosition, targetLookAt, duration);
     },
-    [flyTo]
+    [flyTo, camera]
   );
 
   // focusOnRegion: frame a region in view

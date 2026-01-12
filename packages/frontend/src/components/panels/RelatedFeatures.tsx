@@ -180,13 +180,25 @@ export function RelatedFeatures({ nodeId }: RelatedFeaturesProps) {
           fontSize: 12,
           fontWeight: 500,
           color: 'var(--color-text-secondary)',
-          marginBottom: 12,
+          marginBottom: 4,
           textTransform: 'uppercase',
           letterSpacing: '0.04em',
         }}
       >
         Related Features
       </h3>
+
+      {/* Info note about cosine similarity */}
+      <p
+        style={{
+          fontSize: 11,
+          color: 'var(--color-text-muted)',
+          marginBottom: 12,
+          lineHeight: 1.4,
+        }}
+      >
+        k-NN neighbors by cosine similarity of decoder vectors
+      </p>
 
       <ul
         style={{

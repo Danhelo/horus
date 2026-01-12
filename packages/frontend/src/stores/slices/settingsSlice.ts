@@ -23,6 +23,11 @@ export interface SettingsSlice {
   showEdges: boolean; // Whether to show edge lines
   edgeFadeStart: number; // Distance where edges start fading, default 40
   edgeFadeEnd: number; // Distance where edges are fully transparent, default 80
+  breathingEnabled: boolean; // Whether nodes pulse based on activation, default true
+
+  // Audio settings
+  soundEnabled: boolean; // Whether sound is enabled, default false
+  masterVolume: number; // Master volume 0-1, default 0.3
 
   // UI settings
   settingsBarCollapsed: boolean; // Whether settings bar is collapsed
@@ -37,6 +42,9 @@ export interface SettingsSlice {
   setShowEdges: (show: boolean) => void;
   setEdgeFadeStart: (distance: number) => void;
   setEdgeFadeEnd: (distance: number) => void;
+  setBreathingEnabled: (enabled: boolean) => void;
+  setSoundEnabled: (enabled: boolean) => void;
+  setMasterVolume: (volume: number) => void;
   setSettingsBarCollapsed: (collapsed: boolean) => void;
   loadSettingsFromStorage: () => void;
 }
@@ -52,6 +60,9 @@ const DEFAULT_SETTINGS = {
   showEdges: true,
   edgeFadeStart: 40,
   edgeFadeEnd: 80,
+  breathingEnabled: true,
+  soundEnabled: false,
+  masterVolume: 0.3,
   settingsBarCollapsed: false,
 };
 
@@ -64,6 +75,9 @@ interface StoredSettings {
   showEdges?: boolean;
   edgeFadeStart?: number;
   edgeFadeEnd?: number;
+  breathingEnabled?: boolean;
+  soundEnabled?: boolean;
+  masterVolume?: number;
   settingsBarCollapsed?: boolean;
 }
 
@@ -96,6 +110,9 @@ function getAllSettings(state: SettingsSlice): StoredSettings {
     showEdges: state.showEdges,
     edgeFadeStart: state.edgeFadeStart,
     edgeFadeEnd: state.edgeFadeEnd,
+    breathingEnabled: state.breathingEnabled,
+    soundEnabled: state.soundEnabled,
+    masterVolume: state.masterVolume,
     settingsBarCollapsed: state.settingsBarCollapsed,
   };
 }
@@ -116,6 +133,9 @@ export const createSettingsSlice: StateCreator<
   showEdges: DEFAULT_SETTINGS.showEdges,
   edgeFadeStart: DEFAULT_SETTINGS.edgeFadeStart,
   edgeFadeEnd: DEFAULT_SETTINGS.edgeFadeEnd,
+  breathingEnabled: DEFAULT_SETTINGS.breathingEnabled,
+  soundEnabled: DEFAULT_SETTINGS.soundEnabled,
+  masterVolume: DEFAULT_SETTINGS.masterVolume,
   settingsBarCollapsed: DEFAULT_SETTINGS.settingsBarCollapsed,
 
   setMovementSpeed: (speed) => {
@@ -169,6 +189,22 @@ export const createSettingsSlice: StateCreator<
     saveToStorage({ ...getAllSettings(get()), edgeFadeEnd: clamped });
   },
 
+  setBreathingEnabled: (enabled) => {
+    set({ breathingEnabled: enabled });
+    saveToStorage({ ...getAllSettings(get()), breathingEnabled: enabled });
+  },
+
+  setSoundEnabled: (enabled) => {
+    set({ soundEnabled: enabled });
+    saveToStorage({ ...getAllSettings(get()), soundEnabled: enabled });
+  },
+
+  setMasterVolume: (volume) => {
+    const clamped = Math.max(0, Math.min(1, volume));
+    set({ masterVolume: clamped });
+    saveToStorage({ ...getAllSettings(get()), masterVolume: clamped });
+  },
+
   setSettingsBarCollapsed: (collapsed) => {
     set({ settingsBarCollapsed: collapsed });
     saveToStorage({ ...getAllSettings(get()), settingsBarCollapsed: collapsed });
@@ -186,6 +222,9 @@ export const createSettingsSlice: StateCreator<
       showEdges: stored.showEdges ?? DEFAULT_SETTINGS.showEdges,
       edgeFadeStart: stored.edgeFadeStart ?? DEFAULT_SETTINGS.edgeFadeStart,
       edgeFadeEnd: stored.edgeFadeEnd ?? DEFAULT_SETTINGS.edgeFadeEnd,
+      breathingEnabled: stored.breathingEnabled ?? DEFAULT_SETTINGS.breathingEnabled,
+      soundEnabled: stored.soundEnabled ?? DEFAULT_SETTINGS.soundEnabled,
+      masterVolume: stored.masterVolume ?? DEFAULT_SETTINGS.masterVolume,
       settingsBarCollapsed: stored.settingsBarCollapsed ?? DEFAULT_SETTINGS.settingsBarCollapsed,
     });
   },

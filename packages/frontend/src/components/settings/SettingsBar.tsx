@@ -124,6 +124,14 @@ export function SettingsBar() {
   const isCollapsed = useAppStore((state) => state.settingsBarCollapsed);
   const setCollapsed = useAppStore((state) => state.setSettingsBarCollapsed);
 
+  // Sound and animation settings
+  const soundEnabled = useAppStore((state) => state.soundEnabled);
+  const setSoundEnabled = useAppStore((state) => state.setSoundEnabled);
+  const masterVolume = useAppStore((state) => state.masterVolume);
+  const setMasterVolume = useAppStore((state) => state.setMasterVolume);
+  const breathingEnabled = useAppStore((state) => state.breathingEnabled);
+  const setBreathingEnabled = useAppStore((state) => state.setBreathingEnabled);
+
   // Edge settings from large data store
   const showEdges = useLargeDataStore((state) => state.edgesVisible);
   const setShowEdges = useLargeDataStore((state) => state.setEdgesVisible);
@@ -162,6 +170,21 @@ export function SettingsBar() {
   const handleEdgeFadeEndChange = useCallback(
     (value: number) => setEdgeFadeEnd(value),
     [setEdgeFadeEnd]
+  );
+
+  const handleSoundEnabledChange = useCallback(
+    (checked: boolean) => setSoundEnabled(checked),
+    [setSoundEnabled]
+  );
+
+  const handleMasterVolumeChange = useCallback(
+    (value: number) => setMasterVolume(value),
+    [setMasterVolume]
+  );
+
+  const handleBreathingEnabledChange = useCallback(
+    (checked: boolean) => setBreathingEnabled(checked),
+    [setBreathingEnabled]
   );
 
   const toggleCollapsed = useCallback(() => {
@@ -320,6 +343,45 @@ export function SettingsBar() {
               step={5}
               onChange={handleEdgeFadeEndChange}
               labelWidth={70}
+            />
+          </div>
+
+          {/* Row 3: Sound & Animation */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 24,
+              flexWrap: 'wrap',
+              marginTop: 8,
+            }}
+          >
+            {/* Sound Toggle */}
+            <Toggle
+              label="Sound"
+              checked={soundEnabled}
+              onChange={handleSoundEnabledChange}
+            />
+
+            {/* Master Volume */}
+            <Slider
+              label="Volume"
+              value={masterVolume}
+              min={0}
+              max={1}
+              step={0.05}
+              onChange={handleMasterVolumeChange}
+            />
+
+            {/* Divider */}
+            <div style={{ height: 16, width: 1, backgroundColor: '#3a3a45' }} />
+
+            {/* Breathing Toggle */}
+            <Toggle
+              label="Breathing"
+              checked={breathingEnabled}
+              onChange={handleBreathingEnabledChange}
             />
           </div>
         </div>
